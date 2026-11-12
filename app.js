@@ -12,7 +12,9 @@
   const app = document.getElementById('app');
   const $ = (s, r = document) => r.querySelector(s);
   const $$ = (s, r = document) => [...r.querySelectorAll(s)];
-  const MCP_URL = 'https://mcp.playbook.example';
+  const MCP_PKG = 'github:rexgu9911/playbook-mcp';
+  const MCP_CMD = `claude mcp add playbook -- npx -y ${MCP_PKG}`;
+  const MCP_REPO = 'https://github.com/rexgu9911/playbook-mcp';
   const SITE = 'playbook.example';
 
   const esc = s => String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
@@ -218,7 +220,6 @@
   }
 
   function home() {
-    const install = `claude mcp add playbook --transport http ${MCP_URL}`;
     const week = [...DISC].sort(byNew);
     const covered = week.filter(d => d.cover);
     const feat = FEATURE.map(t => DISC.find(d => d.title === t && d.cover)).filter(Boolean);
@@ -262,11 +263,11 @@
       <div class="wrap">
         <section class="promo2">
           <div class="promo-big rv">
-            <span class="sticker">Coming<br>soon</span>
+            <span class="sticker">Free &amp;<br>open source</span>
             <span class="pb-tag"><span class="dot"></span>Playbook MCP</span>
             <h2>Saw a game you love?<span>Make your own version in your agent</span></h2>
-            <p class="pb-sub">Playbook MCP is in private preview. Until then, every recipe and mechanic has a prompt you can paste into Claude Code or Cursor today.</p>
-            <div class="pb-acts"><a class="btn btn-ink" href="${issueUrl('Playbook MCP waitlist', 'I would like early access to Playbook MCP.\n\nI use: (Claude Code / Cursor / Codex / other)', 'waitlist')}" target="_blank" rel="noopener">Join the waitlist</a><a class="btn" href="#/mechanics">Copy a mechanic prompt</a></div>
+            <div class="cmd"><code><b>$</b> ${esc(MCP_CMD)}</code><button class="copy" data-copy="${esc(MCP_CMD)}">Copy</button></div>
+            <div class="pb-acts"><a class="btn btn-ink" href="#/mcp">Setup for Cursor, Codex, Desktop</a><a class="btn" href="#/mechanics">Browse mechanics</a></div>
           </div>
           <div class="tiles2">${tiles.map((t, k) => `<a class="tile2 rv" style="--d:${k * 50}ms" href="${t[0]}" ${t[5] || ''}><span class="ti">${t[1]}</span><div><h3>${t[2]} <em>${t[3]}</em></h3><p>${t[4]}</p></div></a>`).join('')}</div>
         </section>
@@ -305,23 +306,30 @@
   }
 
   const CLIENTS = {
-    'Claude': { cmd: `Settings → Connectors → Add custom connector → ${MCP_URL}`, cta: 'Add Playbook to Claude' },
-    'Claude Code': { cmd: `claude mcp add playbook --transport http ${MCP_URL}`, cta: 'Copy install command' },
-    'Cursor': { cmd: `{ "mcpServers": { "playbook": { "url": "${MCP_URL}" } } }`, cta: 'Copy Cursor config' },
-    'Codex': { cmd: `codex mcp add playbook --url ${MCP_URL}`, cta: 'Copy install command' },
-    'CLI': { cmd: `npx playbook remix neon-drift --theme "underwater"`, cta: 'Copy CLI command' },
-    'Other': { cmd: MCP_URL, cta: 'Copy MCP URL' },
+    'Claude Code': { how: 'Run this in your terminal, then start claude in your project.', cmd: MCP_CMD },
+    'Cursor': { how: 'Add this to ~/.cursor/mcp.json (or .cursor/mcp.json in your project).', cmd: `{\n  "mcpServers": {\n    "playbook": { "command": "npx", "args": ["-y", "${MCP_PKG}"] }\n  }\n}` },
+    'Codex': { how: 'Add this to ~/.codex/config.toml.', cmd: `[mcp_servers.playbook]\ncommand = "npx"\nargs = ["-y", "${MCP_PKG}"]` },
+    'Claude Desktop': { how: 'Settings → Developer → Edit Config, add this to claude_desktop_config.json, then restart.', cmd: `{\n  "mcpServers": {\n    "playbook": { "command": "npx", "args": ["-y", "${MCP_PKG}"] }\n  }\n}` },
+    'Other': { how: 'Any MCP client that runs stdio servers. Needs Node 18+.', cmd: `npx -y ${MCP_PKG}` },
   };
   function mcpPage() {
+    if (!CLIENTS[state.client]) state.client = 'Claude Code';
     const c = CLIENTS[state.client];
     const originals = games.filter(g => !g.parent);
     app.innerHTML = `
       <div class="subbar" id="clients">${Object.keys(CLIENTS).map(k => `<button class="${k === state.client ? 'on' : ''}" data-client="${k}"><i></i>${k}</button>`).join('')}</div>
       <section class="page-head dots" style="padding:96px 0 72px"><div class="wrap">
         <h1>Remake <em>web games</em><br>in ${esc(state.client)} with Playbook</h1>
-        <div class="acts"><a class="btn btn-white btn-lg" href="${issueUrl('Playbook MCP waitlist', 'I would like early access to Playbook MCP.\n\nI use: ' + state.client, 'waitlist')}" target="_blank" rel="noopener">Join the waitlist</a><a class="btn btn-lg" href="#/mechanics">Use a prompt today</a></div>
-        <div class="cmd" style="max-width:640px;margin:22px auto 0;opacity:.6"><code><b>›</b> ${esc(c.cmd)}</code><span class="chip">Preview</span></div>
-        <p class="note">Playbook MCP is in private preview; this is how connecting will look. The endpoint is not live yet.</p>
+        <p>${esc(c.how)}</p>
+        <div class="mcp-code"><pre>${esc(c.cmd)}</pre><button class="copy" data-copy="${esc(c.cmd)}">Copy</button></div>
+        <div class="acts"><a class="btn btn-lg" href="${MCP_REPO}" target="_blank" rel="noopener">Source on GitHub</a><a class="btn btn-lg" href="#/mechanics">Browse mechanics</a></div>
+        <div class="mcp-tools">
+          <div><code>search</code><span>Find recipes, mechanics and AI games from the web</span></div>
+          <div><code>get_recipe</code><span>Prompt, mechanics, look, sound and source of a game</span></div>
+          <div><code>get_mechanic</code><span>A game-feel part with a working reference implementation</span></div>
+          <div><code>list</code><span>Every recipe or mechanic, by genre or category</span></div>
+        </div>
+        <p class="note">Then just ask: “Add hit-stop to my game” · “Remake Neon Drift, but underwater” · “Find AI-made racing games for inspiration”.</p>
       </div></section>
       <div class="wrap">
         <div class="sec-head plain"><h2>Recipes with <span style="color:#ff6a3d">✺</span> Fable 5.2</h2></div>
@@ -427,7 +435,7 @@
   function mechanicPage(slug) {
     const m = mechBySlug[slug]; if (!m) return notFound();
     const used = games.filter(g => g.mechanics.includes(slug) && !g.parent);
-    const cmd = `playbook add ${m.slug}`;
+    const cmd = `Use playbook get_mechanic ${m.slug} and add it to my game`;
     app.innerHTML = `
       <section class="gpage"><div class="wrap">
         <div class="crumbs"><a href="#/mechanics">Mechanics</a><span>/</span><span>${esc(m.cat)}</span></div>
@@ -440,10 +448,10 @@
           <aside class="recipe bezel rv" style="--d:100ms"><div class="core">
             <h2>Install <span class="chip">${esc(m.cat)}</span></h2>
             <p class="lead">${esc(m.desc)}</p>
-            <div class="cmd" style="margin-top:0"><code><b>$</b> ${cmd}</code><button class="copy" data-copy="${cmd}">Copy</button></div>
+            <div class="cmd" style="margin-top:0"><code><b>›</b> ${cmd}</code><button class="copy" data-copy="${cmd}">Copy</button></div>
             <div class="rsec" style="margin-top:18px"><label>Or paste into your agent</label><div class="prompt">${esc(m.prompt)}</div><div class="prompt-row"><button class="copy" data-copy="${esc(m.prompt)}">Copy prompt</button></div></div>
             <div class="rsec"><label>Works with</label><div class="mchips"><span class="mchip">Canvas 2D</span><span class="mchip">Three.js</span><span class="mchip">Phaser</span></div></div>
-            <p class="note">The install command arrives with Playbook MCP (private preview). The prompt works in any coding agent today.</p>
+            <p class="note">The first line works once <a class="link" href="#/mcp">Playbook MCP</a> is installed; the prompt works in any coding agent as is.</p>
           </div></aside>
         </div>
       </div></section>
@@ -900,20 +908,20 @@
 
   function mcpModal() {
     const tabs = {
-      'Claude Code': `claude mcp add playbook --transport http ${MCP_URL}`,
-      'Cursor': `{\n  "mcpServers": {\n    "playbook": { "url": "${MCP_URL}" }\n  }\n}`,
-      'Codex': `codex mcp add playbook --url ${MCP_URL}`,
+      'Claude Code': CLIENTS['Claude Code'].cmd,
+      'Cursor': CLIENTS['Cursor'].cmd,
+      'Codex': CLIENTS['Codex'].cmd,
     };
     openModal(`
       <span class="tag"><span class="dot"></span>Playbook MCP</span>
       <h2>Bring the wall into your agent.</h2>
-      <p class="lead">Search games and mechanics, pull a recipe, and publish, without leaving your editor.</p>
+      <p class="lead">Search games and mechanics and pull a recipe, without leaving your editor.</p>
       <div class="tabs" id="mtabs">${Object.keys(tabs).map((t, i) => `<button class="${i ? '' : 'on'}" data-t="${t}">${t}</button>`).join('')}</div>
       <div class="prompt" id="mcode">${esc(tabs['Claude Code'])}</div>
       <div class="prompt-row"><button class="copy" id="mcopy" data-copy="${esc(tabs['Claude Code'])}">Copy</button></div>
       <div class="rsec" style="margin-top:16px"><label>Then just ask</label>
-        <div class="mchips"><span class="mchip">“Remake Neon Drift but underwater”</span><span class="mchip">“Add hit-stop to my game”</span><span class="mchip">“Publish this”</span></div></div>
-      <p class="note">Playbook MCP is in private preview; the endpoint is not live yet. <a class="link" href="${issueUrl('Playbook MCP waitlist', 'I would like early access to Playbook MCP.', 'waitlist')}" target="_blank" rel="noopener">Join the waitlist</a></p>`);
+        <div class="mchips"><span class="mchip">“Remake Neon Drift but underwater”</span><span class="mchip">“Add hit-stop to my game”</span><span class="mchip">“Find racing games for ideas”</span></div></div>
+      <p class="note">Free and open source. Needs Node 18+. <a class="link" href="${MCP_REPO}" target="_blank" rel="noopener">Source on GitHub</a></p>`);
     $('#mtabs').onclick = e => { const b = e.target.closest('[data-t]'); if (!b) return; $$('#mtabs button').forEach(x => x.classList.toggle('on', x === b)); $('#mcode').textContent = tabs[b.dataset.t]; $('#mcopy').dataset.copy = tabs[b.dataset.t]; };
   }
 
@@ -928,16 +936,16 @@
         <div class="field"><label>Player is</label><input id="rHero" value="a tiny submarine" maxlength="60"></div>
         <div class="field"><label>Difficulty</label><select id="rDiff"><option>Chill</option><option selected>Same as original</option><option>Brutal</option></select></div>
       </div>
-      <div class="tabs" id="rtabs"><button class="on" data-t="prompt">Agent prompt</button><button data-t="cli">CLI</button></div>
+      <div class="tabs" id="rtabs"><button class="on" data-t="prompt">With Playbook MCP</button><button data-t="plain">Without MCP</button></div>
       <div class="prompt" id="rOut"></div>
       <div class="prompt-row"><button class="copy" id="rCopy">Copy</button></div>
-      <p class="note">The agent prompt works today in any coding agent. The playbook MCP and CLI are in private preview.</p>`);
+      <p class="note">Paste into Claude Code, Cursor or Codex. The MCP version also pulls the source and mechanic code: <a class="link" href="#/mcp">install it</a>.</p>`);
     let tab = 'prompt';
     const draw = () => {
       const th = $('#rTheme').value.trim() || g.style, he = $('#rHero').value.trim() || 'the same hero', d = $('#rDiff').value;
       const out = tab === 'prompt'
-        ? `Use the playbook MCP to fetch the recipe for "${g.id}".\nRemake it as a single HTML file with this theme: ${th}.\nThe player is ${he}. Difficulty: ${d.toLowerCase()}.\nKeep these mechanics: ${g.mechanics.join(', ')}.\nWhen it runs cleanly, publish it as a remix of ${g.id}.`
-        : `playbook remix ${g.id} \\\n  --theme "${th}" \\\n  --hero "${he}" \\\n  --difficulty ${d.toLowerCase().replace(/\s+/g, '-')}`;
+        ? `Use the playbook MCP: get_recipe "${g.id}" with include_source.\nRemake it as a single HTML file with this theme: ${th}.\nThe player is ${he}. Difficulty: ${d.toLowerCase()}.\nKeep these mechanics and their timings: ${g.mechanics.join(', ')}.\nCredit it as a remix of ${g.title} from Playbook.`
+        : `${g.prompt}\n\nTheme: ${th}. The player is ${he}. Difficulty: ${d.toLowerCase()}.\nInclude: ${g.mechanics.map(s => mechBySlug[s]?.name || s).join(', ')}.\nSound: ${g.audio}`;
       $('#rOut').textContent = out; $('#rCopy').dataset.copy = out;
     };
     draw();

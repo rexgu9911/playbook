@@ -15,5 +15,20 @@ Use **"Is this yours? Claim or remove"** on its card, or [open an issue](https:/
 ## Submit a game
 Use **"Submit a game"** on the site, or [open an issue](https://github.com/rexgu9911/playbook/issues/new?labels=submission&title=Submit:%20) with the playable link and where it was shared.
 
+## Playbook MCP
+Pull a recipe or a game-feel mechanic into your own coding agent. Free, open source, no account:
+
+```bash
+claude mcp add playbook -- npx -y github:rexgu9911/playbook-mcp
+```
+
+Setup for Cursor, Codex and Claude Desktop: [playbook-mcp](https://github.com/rexgu9911/playbook-mcp).
+
+## Public API
+Static JSON, read by the MCP server and free for anyone to use: [`api/index.json`](https://rexgu9911.github.io/playbook/api/index.json), `api/recipes.json`, `api/mechanics.json`, `api/discover.json`.
+
+## License
+Playbook's own code, recipes and mechanics are MIT. Games listed under Discover belong to their creators and are not covered; see [LICENSE](LICENSE).
+
 ## Coming soon
-Playbook MCP (pull a recipe or mechanic into Claude Code, Cursor or Codex), one-command publishing, and Jam #1.
+One-command publishing and Jam #1.

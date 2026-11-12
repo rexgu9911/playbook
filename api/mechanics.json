@@ -1,0 +1,206 @@
+[
+ {
+  "slug": "platformer-controller",
+  "name": "Platformer Controller",
+  "category": "Movement",
+  "description": "Acceleration, variable jump height, coyote time and jump buffering, with squash and stretch.",
+  "prompt": "Add a platformer controller with acceleration curves, variable jump height, 100ms coyote time, 120ms jump buffer, squash & stretch and landing dust.",
+  "demo_url": "https://rexgu9911.github.io/playbook/mechanics/platformer-controller.html",
+  "page_url": "https://rexgu9911.github.io/playbook/#/mechanic/platformer-controller",
+  "source_url": "https://raw.githubusercontent.com/rexgu9911/playbook/main/mechanics/platformer-controller.html",
+  "works_with": [
+   "Canvas 2D",
+   "Three.js",
+   "Phaser"
+  ],
+  "used_by": [
+   "sky-hop"
+  ],
+  "license": "MIT"
+ },
+ {
+  "slug": "screen-shake",
+  "name": "Trauma Screen Shake",
+  "category": "Feel",
+  "description": "Trauma-based camera shake that stacks and decays, instead of random jitter.",
+  "prompt": "Add trauma-based screen shake: impacts add trauma (0–1), shake = trauma², decay over time, rotate slightly as well as translate.",
+  "demo_url": "https://rexgu9911.github.io/playbook/mechanics/screen-shake.html",
+  "page_url": "https://rexgu9911.github.io/playbook/#/mechanic/screen-shake",
+  "source_url": "https://raw.githubusercontent.com/rexgu9911/playbook/main/mechanics/screen-shake.html",
+  "works_with": [
+   "Canvas 2D",
+   "Three.js",
+   "Phaser"
+  ],
+  "used_by": [
+   "neon-drift",
+   "swarm-arena",
+   "core-defender",
+   "tile-forge"
+  ],
+  "license": "MIT"
+ },
+ {
+  "slug": "hit-stop",
+  "name": "Hit Stop",
+  "category": "Feel",
+  "description": "Freeze frames, white flash and knockback so every hit lands.",
+  "prompt": "Add hit-stop on impact: freeze both actors 60–90ms, flash the target white, then apply knockback with recoil on the attacker.",
+  "demo_url": "https://rexgu9911.github.io/playbook/mechanics/hit-stop.html",
+  "page_url": "https://rexgu9911.github.io/playbook/#/mechanic/hit-stop",
+  "source_url": "https://raw.githubusercontent.com/rexgu9911/playbook/main/mechanics/hit-stop.html",
+  "works_with": [
+   "Canvas 2D",
+   "Three.js",
+   "Phaser"
+  ],
+  "used_by": [
+   "swarm-arena",
+   "core-defender"
+  ],
+  "license": "MIT"
+ },
+ {
+  "slug": "particle-burst",
+  "name": "Layered Particle Burst",
+  "category": "Feel",
+  "description": "Sparks, smoke, shockwave ring and debris in one call.",
+  "prompt": "Add a burst(x, y, power) effect with four layers: fast sparks, slow smoke, an expanding shockwave ring and debris with gravity. Cap total particles.",
+  "demo_url": "https://rexgu9911.github.io/playbook/mechanics/particle-burst.html",
+  "page_url": "https://rexgu9911.github.io/playbook/#/mechanic/particle-burst",
+  "source_url": "https://raw.githubusercontent.com/rexgu9911/playbook/main/mechanics/particle-burst.html",
+  "works_with": [
+   "Canvas 2D",
+   "Three.js",
+   "Phaser"
+  ],
+  "used_by": [
+   "neon-drift",
+   "swarm-arena",
+   "sky-hop",
+   "grapple-rush",
+   "core-defender",
+   "tile-forge"
+  ],
+  "license": "MIT"
+ },
+ {
+  "slug": "grapple-hook",
+  "name": "Grapple Hook",
+  "category": "Movement",
+  "description": "Pendulum rope physics with a release fling.",
+  "prompt": "Add a grappling hook: fire at the nearest anchor, constrain to rope length, simulate pendulum swing, keep momentum on release.",
+  "demo_url": "https://rexgu9911.github.io/playbook/mechanics/grapple-hook.html",
+  "page_url": "https://rexgu9911.github.io/playbook/#/mechanic/grapple-hook",
+  "source_url": "https://raw.githubusercontent.com/rexgu9911/playbook/main/mechanics/grapple-hook.html",
+  "works_with": [
+   "Canvas 2D",
+   "Three.js",
+   "Phaser"
+  ],
+  "used_by": [
+   "grapple-rush"
+  ],
+  "license": "MIT"
+ },
+ {
+  "slug": "dash-trail",
+  "name": "Dash + Afterimage",
+  "category": "Movement",
+  "description": "A snappy dash with afterimages, speed lines and a cooldown ring.",
+  "prompt": "Add a dash toward the pointer with eased burst speed, fading afterimages, speed lines and a visible cooldown ring.",
+  "demo_url": "https://rexgu9911.github.io/playbook/mechanics/dash-trail.html",
+  "page_url": "https://rexgu9911.github.io/playbook/#/mechanic/dash-trail",
+  "source_url": "https://raw.githubusercontent.com/rexgu9911/playbook/main/mechanics/dash-trail.html",
+  "works_with": [
+   "Canvas 2D",
+   "Three.js",
+   "Phaser"
+  ],
+  "used_by": [
+   "neon-drift",
+   "grapple-rush"
+  ],
+  "license": "MIT"
+ },
+ {
+  "slug": "upgrade-cards",
+  "name": "Pick 1 of 3",
+  "category": "Progression",
+  "description": "Level-up cards that deal in, tilt on hover and confirm with a burst.",
+  "prompt": "Add a level-up screen that pauses the game and deals three upgrade cards with stagger, 3D tilt on hover and a confirm burst.",
+  "demo_url": "https://rexgu9911.github.io/playbook/mechanics/upgrade-cards.html",
+  "page_url": "https://rexgu9911.github.io/playbook/#/mechanic/upgrade-cards",
+  "source_url": "https://raw.githubusercontent.com/rexgu9911/playbook/main/mechanics/upgrade-cards.html",
+  "works_with": [
+   "Canvas 2D",
+   "Three.js",
+   "Phaser"
+  ],
+  "used_by": [
+   "swarm-arena"
+  ],
+  "license": "MIT"
+ },
+ {
+  "slug": "loot-reveal",
+  "name": "Loot Reveal",
+  "category": "Progression",
+  "description": "Shake, crack, rarity beam, confetti.",
+  "prompt": "Add a loot reveal: the capsule shakes with rising intensity, cracks open, shows the item with a rarity-coloured beam and confetti.",
+  "demo_url": "https://rexgu9911.github.io/playbook/mechanics/loot-reveal.html",
+  "page_url": "https://rexgu9911.github.io/playbook/#/mechanic/loot-reveal",
+  "source_url": "https://raw.githubusercontent.com/rexgu9911/playbook/main/mechanics/loot-reveal.html",
+  "works_with": [
+   "Canvas 2D",
+   "Three.js",
+   "Phaser"
+  ],
+  "used_by": [
+   "tile-forge"
+  ],
+  "license": "MIT"
+ },
+ {
+  "slug": "damage-numbers",
+  "name": "Damage Numbers",
+  "category": "Feedback",
+  "description": "Pop, arc and fade, with crits that look like crits.",
+  "prompt": "Add floating damage numbers: pop-scale in, arc sideways, fade out; crits are larger, coloured and shake; nearby numbers stack.",
+  "demo_url": "https://rexgu9911.github.io/playbook/mechanics/damage-numbers.html",
+  "page_url": "https://rexgu9911.github.io/playbook/#/mechanic/damage-numbers",
+  "source_url": "https://raw.githubusercontent.com/rexgu9911/playbook/main/mechanics/damage-numbers.html",
+  "works_with": [
+   "Canvas 2D",
+   "Three.js",
+   "Phaser"
+  ],
+  "used_by": [
+   "swarm-arena",
+   "core-defender",
+   "tile-forge"
+  ],
+  "license": "MIT"
+ },
+ {
+  "slug": "camera-follow",
+  "name": "Smooth Camera",
+  "category": "Camera",
+  "description": "Smooth-damped follow with look-ahead and a dead zone.",
+  "prompt": "Add a camera that follows with critically damped smoothing, look-ahead in the movement direction and a small dead zone.",
+  "demo_url": "https://rexgu9911.github.io/playbook/mechanics/camera-follow.html",
+  "page_url": "https://rexgu9911.github.io/playbook/#/mechanic/camera-follow",
+  "source_url": "https://raw.githubusercontent.com/rexgu9911/playbook/main/mechanics/camera-follow.html",
+  "works_with": [
+   "Canvas 2D",
+   "Three.js",
+   "Phaser"
+  ],
+  "used_by": [
+   "neon-drift",
+   "sky-hop",
+   "grapple-rush"
+  ],
+  "license": "MIT"
+ }
+]
