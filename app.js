@@ -307,9 +307,9 @@
 
   const CLIENTS = {
     'Claude Code': { how: 'Run this in your terminal, then start claude in your project.', cmd: MCP_CMD },
-    'Cursor': { how: 'Add this to ~/.cursor/mcp.json (or .cursor/mcp.json in your project).', cmd: `{\n  "mcpServers": {\n    "playbook": { "command": "npx", "args": ["-y", "${MCP_PKG}"] }\n  }\n}` },
-    'Codex': { how: 'Add this to ~/.codex/config.toml.', cmd: `[mcp_servers.playbook]\ncommand = "npx"\nargs = ["-y", "${MCP_PKG}"]` },
-    'Claude Desktop': { how: 'Settings → Developer → Edit Config, add this to claude_desktop_config.json, then restart.', cmd: `{\n  "mcpServers": {\n    "playbook": { "command": "npx", "args": ["-y", "${MCP_PKG}"] }\n  }\n}` },
+    'Cursor': { how: 'Add this to ~/.cursor/mcp.json (or .cursor/mcp.json in your project), then reload Cursor.', cmd: `{\n  "mcpServers": {\n    "playbook": { "type": "stdio", "command": "npx", "args": ["-y", "${MCP_PKG}"] }\n  }\n}` },
+    'Codex': { how: 'Run this once (it writes ~/.codex/config.toml for you).', cmd: `codex mcp add playbook -- npx -y ${MCP_PKG}` },
+    'Claude Desktop': { how: 'In the macOS menu bar: Claude → Settings… → Developer → Edit Config. Add this to claude_desktop_config.json, then quit and reopen Claude.', cmd: `{\n  "mcpServers": {\n    "playbook": { "command": "npx", "args": ["-y", "${MCP_PKG}"] }\n  }\n}` },
     'Other': { how: 'Any MCP client that runs stdio servers. Needs Node 18+.', cmd: `npx -y ${MCP_PKG}` },
   };
   function mcpPage() {
