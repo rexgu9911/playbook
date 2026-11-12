@@ -1,0 +1,203 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Combo Window</title>
+<style>html,body{margin:0;height:100%;background:#0D0D10;overflow:hidden}canvas{display:block;width:100%;height:100%;touch-action:none}</style>
+</head><body><canvas id="c"></canvas><script>
+(()=>{
+const K={
+  WINDUP: 0.07,            // s anticipation before the blade moves
+  ACTIVE: 0.06,            // s the blade sweeps; the hit lands at the end
+  RECOVER: 0.32,           // s follow-through after hits 1 and 2
+  FINISHER_RECOVER: 0.50,  // s follow-through after hit 3 (no cancel: the combo ends here)
+  CANCEL_START: 0.45,      // 0–1 point in RECOVER where the cancel window opens (a press chains instantly)
+  INPUT_BUFFER: 0.25,      // s an early press is remembered and fires the moment the window opens
+  RESET_TIME: 0.30,        // s of idle after recovery before the chain drops back to hit 1
+  LUNGE: 12,               // px forward step on hits 1 and 2
+  FINISHER_LUNGE: 28,      // px forward step on hit 3
+  KNOCKBACK: 120,          // px/s dummy push on hits 1 and 2
+  FINISHER_KNOCKBACK: 300, // px/s dummy push on hit 3
+  FINISHER_SHAKE: 0.45,    // 0–1 screen trauma added by hit 3
+};
+const C={bg:'#0D0D10',dot:'#1A1A20',a:'#FF4D2E',y:'#F5E663',ink:'#F4F1EA',mu:'#6B6B76'};
+const cv=document.getElementById('c'),ctx=cv.getContext('2d');
+let W=300,H=200,D=1,S=1,VW=440,VH=280,GY=210,HX=172,DX=262;
+function layout(){GY=VH*0.5+70;HX=VW/2-50;DX=VW/2+42;}
+function resize(){
+  D=Math.min(2,window.devicePixelRatio||1);W=Math.max(40,innerWidth||300);H=Math.max(40,innerHeight||200);
+  cv.width=Math.round(W*D);cv.height=Math.round(H*D);S=Math.min(W/440,H/280);VW=W/S;VH=H/S;layout();
+}
+addEventListener('resize',resize);resize();
+function rr(x,y,w,h,r){r=Math.min(r,w/2,h/2);ctx.beginPath();ctx.moveTo(x+r,y);ctx.arcTo(x+w,y,x+w,y+h,r);ctx.arcTo(x+w,y+h,x,y+h,r);ctx.arcTo(x,y+h,x,y,r);ctx.arcTo(x,y,x+w,y,r);ctx.closePath();}
+const lerp=(a,b,k)=>a+(b-a)*k,clamp=(v,a,b)=>Math.max(a,Math.min(b,v)),eo=k=>1-Math.pow(1-clamp(k,0,1),3);
+
+// ---- mechanic ----
+// a different swing per step (pose data, cosmetic): blade angle from -> to
+const SWINGS=[
+  {from:-2.2,to:0.9,col:C.y},    // 1: forward slash, high to low
+  {from:1.3,to:-1.5,col:C.y},    // 2: rising backhand
+  {from:-3.0,to:1.3,col:C.a},    // 3: overhead finisher
+];
+// state: idle | windup | active | recover. step = swing in progress (0..2). next = swing an idle press starts.
+const hero={state:'idle',t:0,step:0,next:0,hits:0,buffer:0,linger:0,clock:0,pressAt:-1,ang:-0.6,ang0:-0.6,x:0,x0:0,barA:0,reset:0};
+const recoverTime=i=>i===2?K.FINISHER_RECOVER:K.RECOVER;
+
+function inWindow(){ // would a press chain into the next hit right now?
+  if(hero.state==='recover')return hero.step<2&&hero.t>=recoverTime(hero.step)*K.CANCEL_START;
+  return hero.state==='idle'&&hero.linger>0;      // grace period after recovery
+}
+function press(){
+  hero.buffer=K.INPUT_BUFFER;                     // remembered, not acted on until a chain is allowed
+  hero.pressAt=hero.barA>0.05?hero.clock:-1;      // for the timing bar
+}
+function startSwing(i){
+  if(i===0)hero.hits=0;
+  hero.step=i;hero.state='windup';hero.t=0;hero.clock=0;hero.buffer=0;hero.linger=0;hero.pressAt=-1;hero.ang0=hero.ang;hero.reset=0;
+}
+function comboUpdate(dt){
+  hero.buffer=Math.max(0,hero.buffer-dt);hero.t+=dt;hero.clock+=dt;
+  const sw=SWINGS[hero.step],fin=hero.step===2;
+  if(hero.state==='idle'){
+    if(hero.buffer>0)startSwing(hero.next);       // next = step+1 during the grace period, else 0
+    else if(hero.linger>0){hero.linger-=dt;if(hero.linger<=0){hero.next=0;hero.hits=0;hero.reset=1;}}  // waited too long
+    hero.ang=lerp(hero.ang,-0.6,Math.min(1,dt*10));hero.x=lerp(hero.x,0,Math.min(1,dt*8));
+  }else if(hero.state==='windup'){
+    hero.ang=lerp(hero.ang0,sw.from,eo(hero.t/K.WINDUP));
+    if(hero.t>=K.WINDUP){hero.state='active';hero.t=0;hero.x0=hero.x;slash={a0:sw.from,a1:sw.from,t:0,col:sw.col};}
+  }else if(hero.state==='active'){
+    const k=clamp(hero.t/K.ACTIVE,0,1);
+    hero.ang=lerp(sw.from,sw.to,k);hero.x=lerp(hero.x0,fin?K.FINISHER_LUNGE:K.LUNGE,k);if(slash)slash.a1=hero.ang;
+    if(k>=1){hero.state='recover';hero.t=0;hero.hits=hero.step+1;onHit(hero.step);}
+  }else{ // recover: the late part of it is the cancel window
+    const rec=recoverTime(hero.step),k=hero.t/rec;
+    hero.ang=lerp(sw.to,sw.to*0.7,eo(k));hero.x=lerp(fin?K.FINISHER_LUNGE:K.LUNGE,0,eo(k)*0.6);
+    if(inWindow()&&hero.buffer>0)startSwing(hero.step+1);              // cancel the rest of the recovery
+    else if(hero.t>=rec){hero.state='idle';hero.t=0;
+      if(fin){hero.next=0;hero.linger=0;}else{hero.next=hero.step+1;hero.linger=K.RESET_TIME;}}
+  }
+  // the timing bar is shown for the whole swing + grace period
+  hero.barA=clamp(hero.barA+(hero.state!=='idle'||hero.linger>0?dt*12:-dt*3),0,1);
+  hero.reset=Math.max(0,hero.reset-dt*1.2);
+}
+function drawWindowBar(){
+  if(hero.barA<=0)return;
+  const fin=hero.step===2,rec=recoverTime(hero.step),pre=K.WINDUP+K.ACTIVE,total=pre+rec+(fin?0:K.RESET_TIME);
+  const bw=200,bh=6,bx=VW/2-bw/2,by=GY-120,X=t=>bx+bw*clamp(t/total,0,1);
+  ctx.globalAlpha=hero.barA;
+  rr(bx,by,bw,bh,2);ctx.fillStyle=C.dot;ctx.fill();
+  ctx.fillStyle=C.mu;ctx.fillRect(bx,by,X(pre)-bx,bh);                  // swing itself: locked
+  if(!fin){
+    const w0=X(pre+rec*K.CANCEL_START),w1=X(pre+rec);
+    ctx.fillStyle=C.y;ctx.fillRect(w0,by,w1-w0,bh);                     // cancel window
+    ctx.globalAlpha=hero.barA*0.4;ctx.fillRect(w1,by,bx+bw-w1,bh);ctx.globalAlpha=hero.barA;  // grace before reset
+  }
+  ctx.fillStyle=C.ink;ctx.fillRect(X(hero.clock)-1,by-4,2,bh+8);       // playhead
+  if(hero.pressAt>=0){ctx.fillStyle=hero.buffer>0?C.a:C.mu;              // buffered press (grey once it expired)
+    const px=X(hero.pressAt);ctx.beginPath();ctx.moveTo(px,by+bh+3);ctx.lineTo(px-4,by+bh+9);ctx.lineTo(px+4,by+bh+9);ctx.fill();}
+  ctx.font='9px ui-sans-serif,system-ui,-apple-system,Helvetica,Arial,sans-serif';ctx.textAlign='left';
+  let label='',col=C.mu;
+  if(fin)label='finisher · no cancel';else if(inWindow()){label='chain now';col=C.y;}else if(hero.buffer>0){label='buffered';col=C.a;}else label='locked';
+  ctx.fillStyle=col;ctx.fillText(label,bx,by-8);
+  for(let i=0;i<3;i++){rr(bx+bw-30+i*11,by-15,8,8,2);ctx.fillStyle=i<hero.hits?C.a:C.dot;ctx.fill();}  // hit pips
+  ctx.globalAlpha=1;
+}
+
+// ---- demo ----
+const dum={ang:0,av:0,kx:0,kv:0,flash:0};
+let slash=null,sparks=[],trauma=0,time=0,userT=0,AC=null;
+function onHit(i){
+  const fin=i===2,px=DX-14,py=GY-34-(i===1?8:0);
+  dum.flash=1;dum.kv+=fin?K.FINISHER_KNOCKBACK:K.KNOCKBACK;dum.av+=fin?6:i===1?-3:3;
+  if(fin)trauma=Math.min(1,trauma+K.FINISHER_SHAKE);
+  for(let n=0;n<(fin?14:7)&&sparks.length<50;n++){const a=(Math.random()-0.5)*1.8+(i===1?-0.6:0.2),sp=150+Math.random()*(fin?320:200);
+    sparks.push({x:px,y:py,vx:Math.cos(a)*sp,vy:Math.sin(a)*sp-30,life:0,max:0.2+Math.random()*0.25,col:n%3?C.y:C.ink});}
+  sfx(220+i*90,fin?0.07:0.045);
+}
+const PLANS=[['window','window'],['buffer','window'],['window','late'],['grace','buffer'],['late']];
+const ai={i:0,plan:PLANS[0],wait:0.35,pressed:-1};
+function autopilot(dt){
+  if(hero.state==='idle'&&hero.linger<=0){        // between combos
+    ai.wait-=dt;if(ai.wait<=0){ai.plan=PLANS[ai.i++%PLANS.length];ai.pressed=-1;ai.wait=0.75;press();}
+    return;
+  }
+  const s=hero.step;if(s>=2||ai.pressed===s)return;
+  const act=ai.plan[s],rec=recoverTime(s);let go=false;
+  if(act==='buffer')go=hero.state==='active';                                             // early: gets buffered
+  else if(act==='window')go=hero.state==='recover'&&hero.t>=rec*(K.CANCEL_START+(1-K.CANCEL_START)*0.4);
+  else if(act==='grace')go=hero.state==='idle'&&hero.linger<K.RESET_TIME*0.5;             // just before reset
+  if(go){press();ai.pressed=s;}
+}
+function sfx(f,v){
+  if(!AC||userT<=0)return;
+  const t=AC.currentTime,o=AC.createOscillator(),g=AC.createGain();
+  o.type='triangle';o.frequency.setValueAtTime(f,t);o.frequency.exponentialRampToValueAtTime(f*0.5,t+0.1);
+  g.gain.setValueAtTime(v,t);g.gain.exponentialRampToValueAtTime(0.0001,t+0.12);o.connect(g).connect(AC.destination);o.start(t);o.stop(t+0.13);
+}
+function update(dt){
+  time+=dt;trauma=Math.max(0,trauma-dt*1.6);
+  if(userT>0)userT-=dt;else autopilot(dt);
+  comboUpdate(dt);
+  dum.av+=(-95*dum.ang-5.5*dum.av)*dt;dum.ang+=dum.av*dt;
+  dum.kv+=(-70*dum.kx-9*dum.kv)*dt;dum.kx+=dum.kv*dt;dum.flash=Math.max(0,dum.flash-dt*9);
+  if(!isFinite(dum.ang+dum.kx+hero.x+hero.ang)){dum.ang=dum.av=dum.kx=dum.kv=0;hero.x=0;hero.ang=-0.6;hero.state='idle';}
+  for(const s of sparks){s.life+=dt;s.x+=s.vx*dt;s.y+=s.vy*dt;s.vy+=500*dt;}
+  sparks=sparks.filter(s=>s.life<s.max);
+  if(slash){slash.t+=dt;if(slash.t>0.2)slash=null;}
+}
+function draw(){
+  ctx.setTransform(1,0,0,1,0,0);ctx.fillStyle=C.bg;ctx.fillRect(0,0,cv.width,cv.height);
+  const sh=trauma*trauma;
+  ctx.setTransform(D*S,0,0,D*S,D*S*Math.sin(time*61)*6*sh,D*S*Math.sin(time*47+2)*4*sh);
+  ctx.fillStyle=C.dot;for(let x=-10;x<VW+20;x+=20)for(let y=-10;y<VH+20;y+=20)ctx.fillRect(x-0.75,y-0.75,1.5,1.5);
+  ctx.strokeStyle=C.ink;ctx.lineWidth=1.5;ctx.beginPath();ctx.moveTo(VW/2-140,GY);ctx.lineTo(VW/2+140,GY);ctx.stroke();
+  // dummy
+  ctx.save();ctx.translate(DX+dum.kx,GY);
+  ctx.fillStyle=C.mu;rr(-13,-4,26,4,2);ctx.fill();
+  ctx.rotate(dum.ang*0.5);ctx.strokeStyle=C.mu;ctx.lineWidth=3;ctx.lineCap='round';ctx.beginPath();ctx.moveTo(0,-4);ctx.lineTo(0,-20);ctx.stroke();
+  ctx.translate(0,-20);ctx.rotate(dum.ang*0.5);
+  rr(-13,-36,26,36,9);ctx.fillStyle='#17171C';ctx.fill();ctx.strokeStyle=C.ink;ctx.lineWidth=1.5;ctx.stroke();
+  ctx.strokeStyle=C.mu;ctx.beginPath();ctx.moveTo(-13,-14);ctx.lineTo(13,-14);ctx.stroke();
+  if(dum.flash>0){ctx.globalAlpha=dum.flash;rr(-14,-37,28,38,10);ctx.fillStyle=C.ink;ctx.fill();ctx.globalAlpha=1;}
+  ctx.restore();
+  // hero
+  const hx=HX+hero.x,lean=clamp(hero.x/40,-0.3,1)*0.25;
+  ctx.fillStyle='rgba(0,0,0,.45)';ctx.beginPath();ctx.ellipse(hx,GY+2,11,2.4,0,0,6.283);ctx.fill();
+  ctx.save();ctx.translate(hx,GY);ctx.rotate(lean);
+  rr(-10,-24,20,24,7);ctx.fillStyle=C.a;ctx.fill();
+  ctx.fillStyle=C.ink;rr(1,-18,3,4.5,1.5);ctx.fill();rr(6,-18,3,4.5,1.5);ctx.fill();
+  ctx.translate(4,-12);ctx.rotate(hero.ang);ctx.strokeStyle=C.ink;ctx.lineWidth=3;ctx.lineCap='round';ctx.beginPath();ctx.moveTo(6,0);ctx.lineTo(32,0);ctx.stroke();
+  ctx.strokeStyle=C.mu;ctx.beginPath();ctx.moveTo(7,-4);ctx.lineTo(7,4);ctx.stroke();
+  ctx.restore();
+  // slash crescent (tapered arc)
+  if(slash){const k=slash.t/0.2,cx=hx+4,cy=GY-12,n=10,ccw=slash.a1<slash.a0;ctx.strokeStyle=slash.col;
+    for(let i=0;i<n;i++){const u0=i/n,u1=(i+1)/n;ctx.globalAlpha=(1-k)*(0.25+0.75*u1);ctx.lineWidth=Math.max(0.5,Math.sin(u1*Math.PI*0.9)*7*(1-k*0.5));
+      ctx.beginPath();ctx.arc(cx,cy,32+k*4,lerp(slash.a0,slash.a1,u0),lerp(slash.a0,slash.a1,u1),ccw);ctx.stroke();}
+    ctx.globalAlpha=1;}
+  ctx.lineWidth=2;
+  for(const s of sparks){ctx.globalAlpha=1-s.life/s.max;ctx.strokeStyle=s.col;ctx.beginPath();ctx.moveTo(s.x,s.y);ctx.lineTo(s.x-s.vx*0.035,s.y-s.vy*0.035);ctx.stroke();}
+  ctx.globalAlpha=1;ctx.lineCap='butt';
+  drawWindowBar();
+  if(hero.reset>0){ctx.globalAlpha=hero.reset;ctx.font='9px ui-sans-serif,system-ui,-apple-system,Helvetica,Arial,sans-serif';ctx.textAlign='center';ctx.fillStyle=C.mu;
+    ctx.fillText('too slow · combo reset',VW/2,GY-92);ctx.globalAlpha=1;}
+  ctx.font='10px ui-sans-serif,system-ui,-apple-system,Helvetica,Arial,sans-serif';ctx.textAlign='center';ctx.fillStyle=C.mu;
+  ctx.fillText('Click or Space to attack · press again in the yellow window to chain',VW/2,VH-12);
+}
+let last=0;
+function frame(t){
+  requestAnimationFrame(frame);if(document.hidden){last=0;return;}
+  let dt=last?(t-last)/1000:0.016;last=t;if(!(dt>0))dt=0.016;dt=Math.min(dt,0.033);
+  update(dt);draw();
+}
+function act(){
+  userT=3.5;ai.wait=0.6;
+  if(!AC){try{AC=new(window.AudioContext||window.webkitAudioContext)();}catch(e){AC=null;}}
+  if(AC&&AC.state==='suspended')AC.resume();
+  press();
+}
+cv.addEventListener('pointerdown',e=>{act();e.preventDefault();});
+addEventListener('keydown',e=>{
+  if([' ','ArrowLeft','ArrowRight','ArrowUp','ArrowDown'].includes(e.key))e.preventDefault();
+  if((e.key===' '||e.key==='Enter'||e.key==='x'||e.key==='z'||e.key==='j')&&!e.repeat)act();
+});
+requestAnimationFrame(frame);
+})();
+</script></body></html>

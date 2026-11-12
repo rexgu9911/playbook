@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Number Roll</title>
+<style>html,body{margin:0;height:100%;background:#0D0D10;overflow:hidden}canvas{display:block;width:100%;height:100%;touch-action:none}</style>
+</head><body><canvas id="c"></canvas><script>
+(()=>{
+const K={
+  ROLL_BASE: 0.35,        // s roll time for a gain of 1–9
+  ROLL_PER_DECADE: 0.22,  // s added per ×10 of the gain (so big gains cover far more units per second)
+  ROLL_MAX: 1.1,          // s cap on any roll
+  POP_SCALE: 0.28,        // extra scale when a gain lands (0.28 = 128%)
+  POP_TIME: 0.22,         // s for the pop to settle
+  TICK_POP: 0.04,         // extra scale each time the ones digit ticks over
+  TICK_TIME: 0.08,        // s for a tick bump to settle
+  FLOAT_RISE: 22,         // px a +N floater drifts up
+  FLOAT_TIME: 0.8,        // s a +N floater lives
+  FLOAT_MERGE: 0.3,       // s window in which new gains add into the latest floater instead of a new one
+  MIN_DIGITS: 5,          // digit columns always shown (leading zeros dimmed)
+};
+const C={bg:'#0D0D10',dot:'#1A1A20',a:'#FF4D2E',y:'#F5E663',ink:'#F4F1EA',mu:'#6B6B76'};
+const cv=document.getElementById('c'),ctx=cv.getContext('2d');
+let W=300,H=200,D=1,S=1,VW=440,VH=280;
+const lerp=(a,b,k)=>a+(b-a)*k,clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
+const easeOut=k=>1-Math.pow(1-k,3);
+const FONT='ui-monospace,SFMono-Regular,Menlo,Consolas,monospace',SANS='ui-sans-serif,system-ui,-apple-system,Helvetica,Arial,sans-serif';
+
+// ---- mechanic ----
+// value = the real score; shown = the (fractional) number on screen, eased from `from` to value over `dur`.
+const counter={value:0,shown:0,from:0,t:0,dur:1,pop:0,tick:0,lastInt:0};
+const floaters=[];
+function addScore(n){
+  counter.value+=n;
+  counter.from=counter.shown;counter.t=0;              // restart from what's on screen: never jumps
+  const dist=counter.value-counter.shown;              // remaining distance decides the duration
+  counter.dur=Math.min(K.ROLL_MAX,K.ROLL_BASE+K.ROLL_PER_DECADE*Math.log10(Math.max(1,dist)));
+  counter.pop=1;
+  const f=floaters[floaters.length-1];
+  if(f&&f.age<K.FLOAT_MERGE){f.n+=n;f.age=0;f.bump=1;} // rapid gains merge into one growing +N
+  else{floaters.push({n,age:0,bump:1});if(floaters.length>6)floaters.shift();}
+}
+function updateCounter(dt){
+  if(counter.shown<counter.value){
+    counter.t+=dt;const k=Math.min(1,counter.t/counter.dur);
+    counter.shown=k>=1?counter.value:lerp(counter.from,counter.value,easeOut(k));  // fast start, soft landing
+  }
+  const i=Math.floor(counter.shown);if(i!==counter.lastInt){counter.lastInt=i;counter.tick=1;}
+  counter.pop=Math.max(0,counter.pop-dt/K.POP_TIME);counter.tick=Math.max(0,counter.tick-dt/K.TICK_TIME);
+  for(const f of floaters){f.age+=dt;f.bump=Math.max(0,f.bump-dt*8);}
+  while(floaters.length&&floaters[0].age>K.FLOAT_TIME)floaters.shift();
+}
+// Odometer: each column slides to the next digit only while every column to its right is rolling 9 -> 0.
+function drawCounter(cx,cy){
+  const v=counter.shown,nd=Math.max(K.MIN_DIGITS,String(Math.floor(counter.value)).length),CW=19,LH=32;
+  const s=1+K.POP_SCALE*counter.pop*counter.pop+K.TICK_POP*counter.tick;
+  ctx.save();ctx.translate(cx,cy);ctx.scale(s,s);
+  ctx.beginPath();ctx.rect(-nd*CW/2-2,-LH/2,nd*CW+4,LH);ctx.clip();
+  ctx.font='bold 28px '+FONT;ctx.textAlign='center';ctx.textBaseline='middle';
+  for(let i=0;i<nd;i++){
+    const p=Math.pow(10,i),d=Math.floor(v/p)%10;
+    const carry=clamp((v%p)-(p-1),0,1);                // 0..1 progress of this column's roll
+    const lead=i>0&&Math.floor(v/p)===0&&carry===0;    // leading zero
+    const x=nd*CW/2-CW/2-i*CW;
+    ctx.fillStyle=lead?C.mu:C.ink;ctx.globalAlpha=lead?0.35:1;
+    ctx.fillText(d,x,-carry*LH+1);ctx.fillText((d+1)%10,x,(1-carry)*LH+1);ctx.globalAlpha=1;
+  }
+  ctx.restore();
+  ctx.font='bold 13px '+SANS;ctx.textAlign='left';ctx.textBaseline='middle';
+  for(const f of floaters){const k=f.age/K.FLOAT_TIME;
+    ctx.globalAlpha=k<0.6?1:1-(k-0.6)/0.4;ctx.fillStyle=C.y;
+    ctx.save();ctx.translate(cx+nd*CW/2+14,cy+12-easeOut(k)*K.FLOAT_RISE);ctx.scale(1+f.bump*0.3,1+f.bump*0.3);ctx.fillText('+'+f.n,0,0);ctx.restore();}
+  ctx.globalAlpha=1;ctx.textBaseline='alphabetic';
+}
+
+// ---- demo ----
+let CX=220,CY=50,userT=0,autoT=0.15,autoN=0,coins=[],rings=[],time=0;
+function resize(){
+  D=Math.min(2,window.devicePixelRatio||1);W=Math.max(40,innerWidth||300);H=Math.max(40,innerHeight||200);
+  cv.width=Math.round(W*D);cv.height=Math.round(H*D);S=Math.min(W/440,H/280);VW=W/S;VH=H/S;CX=VW/2;CY=50;
+}
+addEventListener('resize',resize);resize();
+const iconX=()=>CX-Math.max(K.MIN_DIGITS,String(Math.floor(counter.value)).length)*19/2-20;
+function drop(x,y,n,val,big){
+  for(let i=0;i<n&&coins.length<60;i++){const a=-Math.PI/2+(Math.random()-0.5)*2.2,sp=110+Math.random()*130;
+    coins.push({x,y,vx:Math.cos(a)*sp,vy:Math.sin(a)*sp,t:-i*0.03,ph:0,val,big:big&&i===0,sx:0,sy:0,spin:Math.random()*6});}
+}
+function jackpot(){const x=VW/2+(Math.random()-0.5)*200,y=VH-80;drop(x,y,1,500,true);drop(x,y,10,25,false);}
+function update(dt){
+  time+=dt;
+  if(userT>0)userT-=dt;
+  else{autoT-=dt;if(autoT<=0){autoN++;
+    if(autoN%5===0){jackpot();autoT=2.2;}
+    else{drop(VW/2+(Math.random()-0.5)*300,VH-70-Math.random()*60,2+Math.floor(Math.random()*4),1+Math.floor(Math.random()*3)*2,false);autoT=0.9+Math.random()*0.4;}
+  }}
+  if(counter.value>9e6){counter.value=counter.shown=counter.from=0;}
+  const tx=iconX(),ty=CY;
+  for(const c of coins){c.t+=dt;c.spin+=dt*10;if(c.t<0)continue;
+    if(c.ph===0){c.vy+=600*dt;c.x+=c.vx*dt;c.y+=c.vy*dt;if(c.t>0.3){c.ph=1;c.t=0;c.sx=c.x;c.sy=c.y;}}   // pop out
+    else{const k=Math.min(1,c.t/0.45),e=k*k;                                                      // fly to the counter
+      c.x=lerp(c.sx,tx,e)+Math.sin(k*Math.PI)*30;c.y=lerp(c.sy,ty,e);
+      if(k>=1){c.done=true;addScore(c.val);rings.push({t:0});}}}
+  coins=coins.filter(c=>!c.done);
+  updateCounter(dt);
+  for(const r of rings)r.t+=dt;rings=rings.filter(r=>r.t<0.3);if(rings.length>8)rings.shift();
+}
+function coin(x,y,r,spin,big){
+  if(big){ctx.save();ctx.translate(x,y);ctx.rotate(spin*0.3);ctx.fillStyle=C.a;ctx.beginPath();ctx.moveTo(0,-r);ctx.lineTo(r*0.8,0);ctx.lineTo(0,r);ctx.lineTo(-r*0.8,0);ctx.closePath();ctx.fill();
+    ctx.fillStyle='rgba(255,255,255,0.35)';ctx.beginPath();ctx.moveTo(0,-r);ctx.lineTo(r*0.8,0);ctx.lineTo(0,0);ctx.closePath();ctx.fill();ctx.restore();return;}
+  const sx=Math.max(0.15,Math.abs(Math.cos(spin)));
+  ctx.save();ctx.translate(x,y);ctx.scale(sx,1);ctx.fillStyle=C.y;ctx.beginPath();ctx.arc(0,0,r,0,6.283);ctx.fill();
+  ctx.strokeStyle='rgba(13,13,16,0.35)';ctx.lineWidth=1.2;ctx.beginPath();ctx.arc(0,0,r*0.6,0,6.283);ctx.stroke();ctx.restore();
+}
+function draw(){
+  ctx.setTransform(1,0,0,1,0,0);ctx.fillStyle=C.bg;ctx.fillRect(0,0,cv.width,cv.height);
+  ctx.setTransform(D*S,0,0,D*S,0,0);
+  ctx.fillStyle=C.dot;for(let x=10;x<VW;x+=20)for(let y=10;y<VH;y+=20)ctx.fillRect(x-0.75,y-0.75,1.5,1.5);
+  // counter panel
+  const nd=Math.max(K.MIN_DIGITS,String(Math.floor(counter.value)).length),pw=nd*19+58;
+  ctx.fillStyle='#131317';ctx.fillRect(CX-pw/2-6,CY-24,pw,48);ctx.strokeStyle=C.dot;ctx.lineWidth=1;ctx.strokeRect(CX-pw/2-6,CY-24,pw,48);
+  const ix=iconX();
+  for(const r of rings){const k=r.t/0.3;ctx.globalAlpha=1-k;ctx.strokeStyle=C.y;ctx.lineWidth=1.5;ctx.beginPath();ctx.arc(ix,CY,8+k*12,0,6.283);ctx.stroke();}
+  ctx.globalAlpha=1;
+  coin(ix,CY,8,0,false);
+  drawCounter(CX+6,CY);
+  for(const c of coins)if(c.t>=0)coin(c.x,c.y,c.big?10:5.5,c.spin,c.big);
+  ctx.font='10px '+SANS;ctx.textAlign='center';ctx.fillStyle=C.mu;ctx.fillText('Click to drop coins · Space for a jackpot',VW/2,VH-12);
+}
+let last=0;
+function frame(t){
+  requestAnimationFrame(frame);if(document.hidden){last=0;return;}
+  let dt=last?(t-last)/1000:0.016;last=t;if(!(dt>0))dt=0.016;dt=Math.min(dt,0.033);
+  update(dt);draw();
+}
+cv.addEventListener('pointerdown',e=>{
+  const r=cv.getBoundingClientRect();drop((e.clientX-r.left)/S,Math.max(CY+60,(e.clientY-r.top)/S),3+Math.floor(Math.random()*4),1+Math.floor(Math.random()*5),false);
+  userT=3.5;autoT=0.8;e.preventDefault();
+});
+addEventListener('keydown',e=>{
+  if([' ','ArrowLeft','ArrowRight','ArrowUp','ArrowDown'].includes(e.key))e.preventDefault();
+  if((e.key===' '||e.key==='Enter')&&!e.repeat){jackpot();userT=3.5;autoT=0.8;}
+});
+requestAnimationFrame(frame);
+})();
+</script></body></html>

@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Health Bar Lag</title>
+<style>html,body{margin:0;height:100%;background:#0D0D10;overflow:hidden}canvas{display:block;width:100%;height:100%;touch-action:none}</style>
+</head><body><canvas id="c"></canvas><script>
+(()=>{
+const K={
+  MAX_HP: 100,           // hp of a full bar
+  LAG_DELAY: 0.45,       // s the light "recent damage" chunk hangs before draining (each hit re-arms it)
+  DRAIN_EASE: 5,         // 1/s exponential drain rate of the chunk (higher = snappier)
+  DRAIN_MIN: 12,         // hp/s minimum drain speed so the tail never crawls
+  HEAL_DELAY: 0.18,      // s the heal preview shows before the main bar fills into it
+  FILL_EASE: 6,          // 1/s exponential fill rate of a heal
+  FILL_MIN: 15,          // hp/s minimum fill speed
+  LOW_HP: 0.3,           // 0–1 fraction of max below which the bar pulses
+  PULSE_HZ_MIN: 1.4,     // pulses/s at the LOW_HP threshold
+  PULSE_HZ_MAX: 3.2,     // pulses/s near 0 hp
+  SHAKE: 4,              // px horizontal jolt of the bar on a full-strength hit
+  SHAKE_FULL_DMG: 20,    // hp of damage that gives the full SHAKE (smaller hits scale down)
+  SHAKE_TIME: 0.25,      // s for the jolt to settle
+  FLASH_TIME: 0.12,      // s the bar's new edge flashes white on a hit
+};
+const C={bg:'#0D0D10',dot:'#1A1A20',a:'#FF4D2E',y:'#F5E663',ink:'#F4F1EA',mu:'#6B6B76'};
+const cv=document.getElementById('c'),ctx=cv.getContext('2d');
+let W=300,H=200,D=1,S=1,VW=440,VH=280;
+function rr(x,y,w,h,r){r=Math.min(r,w/2,h/2);ctx.beginPath();ctx.moveTo(x+r,y);ctx.arcTo(x+w,y,x+w,y+h,r);ctx.arcTo(x+w,y+h,x,y+h,r);ctx.arcTo(x,y+h,x,y,r);ctx.arcTo(x,y,x+w,y,r);ctx.closePath();}
+const lerp=(a,b,k)=>a+(b-a)*k;
+
+// ---- mechanic ----
+// Three values: hp (truth), main (the solid bar) and lag (the light damage chunk behind it).
+// Damage: main snaps to hp, lag stays put, waits, then drains.  Heal: hp jumps (preview), main fills up after a beat.
+const bar={hp:K.MAX_HP,main:K.MAX_HP,lag:K.MAX_HP,lagWait:0,healWait:0,shake:0,shakeAmp:0,flash:0,pulse:0};
+function damage(n){
+  if(bar.hp<=0)return;
+  const before=bar.main;
+  bar.hp=Math.max(0,bar.hp-n);
+  if(bar.hp<bar.main){                    // a hit that only eats an unfilled heal preview leaves main alone
+    bar.lag=Math.max(bar.lag,before);     // keep any chunk that hasn't drained yet: combos read as one chunk
+    bar.main=bar.hp;                      // main drops instantly
+  }
+  bar.lagWait=K.LAG_DELAY;
+  bar.shake=K.SHAKE_TIME;bar.shakeAmp=K.SHAKE*Math.min(1,n/K.SHAKE_FULL_DMG);bar.flash=K.FLASH_TIME;
+}
+function heal(n){bar.hp=Math.min(K.MAX_HP,bar.hp+n);bar.healWait=K.HEAL_DELAY;}
+function approachEase(v,target,ease,minSpeed,dt){   // exponential ease plus a minimum speed so it actually arrives
+  const d=target-v,step=Math.max(Math.abs(d)*(1-Math.exp(-ease*dt)),minSpeed*dt);
+  return Math.abs(d)<=step?target:v+Math.sign(d)*step;
+}
+function updateBar(dt){
+  if(bar.main<bar.hp){bar.healWait-=dt;if(bar.healWait<=0)bar.main=approachEase(bar.main,bar.hp,K.FILL_EASE,K.FILL_MIN,dt);}
+  if(bar.lag>bar.main){bar.lagWait-=dt;if(bar.lagWait<=0)bar.lag=approachEase(bar.lag,bar.main,K.DRAIN_EASE,K.DRAIN_MIN,dt);}
+  else bar.lag=bar.main;                  // healed past the chunk: nothing left to show
+  const f=bar.main/K.MAX_HP;
+  if(f<K.LOW_HP&&bar.hp>0)bar.pulse+=dt*lerp(K.PULSE_HZ_MAX,K.PULSE_HZ_MIN,f/K.LOW_HP);  // lower hp = faster pulse
+  else bar.pulse=0;
+  bar.shake=Math.max(0,bar.shake-dt);bar.flash=Math.max(0,bar.flash-dt);
+}
+function drawBar(x,y,w,h,time){
+  const px=v=>w*v/K.MAX_HP;
+  const low=bar.pulse>0?0.5-0.5*Math.cos(bar.pulse*6.283):0;        // 0..1 heartbeat, only below LOW_HP
+  const k=bar.shake/K.SHAKE_TIME;x+=Math.sin(time*90)*bar.shakeAmp*k*k;
+  if(low>0){ctx.globalAlpha=low;ctx.strokeStyle=C.a;ctx.lineWidth=1.5;rr(x-3-low*2,y-3-low*2,w+6+low*4,h+6+low*4,6);ctx.stroke();ctx.globalAlpha=1;}
+  ctx.save();rr(x,y,w,h,4);ctx.fillStyle='#17171C';ctx.fill();ctx.clip();
+  if(bar.lag>bar.main){ctx.globalAlpha=0.85;ctx.fillStyle=C.ink;ctx.fillRect(x+px(bar.main),y,px(bar.lag-bar.main),h);ctx.globalAlpha=1;}  // recent damage
+  if(bar.hp>bar.main){ctx.globalAlpha=0.8;ctx.fillStyle=C.y;ctx.fillRect(x+px(bar.main),y,px(bar.hp-bar.main),h);ctx.globalAlpha=1;}    // incoming heal
+  ctx.fillStyle=C.a;ctx.fillRect(x,y,px(bar.main),h);
+  if(low>0){ctx.globalAlpha=0.3*low;ctx.fillStyle=C.ink;ctx.fillRect(x,y,px(bar.main),h);ctx.globalAlpha=1;}
+  ctx.fillStyle='rgba(255,255,255,0.12)';ctx.fillRect(x,y,w,h*0.4);                         // flat top highlight
+  ctx.fillStyle=C.bg;ctx.globalAlpha=0.5;for(let v=10;v<K.MAX_HP;v+=10)ctx.fillRect(x+px(v)-0.5,y,1,h);ctx.globalAlpha=1;
+  if(bar.flash>0){ctx.globalAlpha=bar.flash/K.FLASH_TIME;ctx.fillStyle='#fff';ctx.fillRect(x+px(bar.main)-3,y,5,h);ctx.globalAlpha=1;}  // fresh edge
+  ctx.restore();
+  rr(x,y,w,h,4);ctx.strokeStyle=C.mu;ctx.lineWidth=1;ctx.stroke();
+}
+
+// ---- demo ----
+const SCRIPT=[[0.2,'full'],[0.3,'hit',14],[0.25,'hit',9],[1.1,'hit',22],[1.2,'heal',25],[0.9,'hit',18],[0.18,'hit',12],[0.18,'hit',10],[1.2,'hit',16],[2.0,'heal',45],[1.3,'heal',40],[1.0,'wait']];
+let step=0,stepT=SCRIPT[0][0],userT=0,time=0,pops=[],btn={hit:{},heal:{}};
+function layout(){const bw=120,y=VH/2+34;btn.hit={x:VW/2-bw-8,y,w:bw,h:30,t:0};btn.heal={x:VW/2+8,y,w:bw,h:30,t:0};}
+function resize(){
+  D=Math.min(2,window.devicePixelRatio||1);W=Math.max(40,innerWidth||300);H=Math.max(40,innerHeight||200);
+  cv.width=Math.round(W*D);cv.height=Math.round(H*D);S=Math.min(W/440,H/280);VW=W/S;VH=H/S;layout();
+}
+addEventListener('resize',resize);resize();
+function doHit(n){if(bar.hp<=0)return;damage(n);btn.hit.t=1;pops.push({txt:'−'+n,col:C.ink,t:0,x:VW/2-150+300*bar.hp/K.MAX_HP});}
+function doHeal(n){const g=Math.min(n,K.MAX_HP-bar.hp);if(g<=0)return;heal(g);btn.heal.t=1;pops.push({txt:'+'+Math.round(g),col:C.y,t:0,x:VW/2-150+300*bar.hp/K.MAX_HP});}
+function update(dt){
+  time+=dt;
+  if(userT>0)userT-=dt;
+  else{stepT-=dt;if(stepT<=0){const s=SCRIPT[step];
+    if(s[1]==='hit')doHit(s[2]);else if(s[1]==='heal')doHeal(s[2]);else if(s[1]==='full')doHeal(K.MAX_HP);
+    step=(step+1)%SCRIPT.length;stepT=SCRIPT[step][0];}}
+  updateBar(dt);
+  for(const p of pops)p.t+=dt;pops=pops.filter(p=>p.t<0.8);if(pops.length>6)pops.shift();
+  btn.hit.t=Math.max(0,btn.hit.t-dt*6);btn.heal.t=Math.max(0,btn.heal.t-dt*6);
+}
+function button(b,label,col){
+  const s=1-b.t*0.06;ctx.save();ctx.translate(b.x+b.w/2,b.y+b.h/2);ctx.scale(s,s);
+  rr(-b.w/2,-b.h/2,b.w,b.h,7);ctx.fillStyle='#17171C';ctx.fill();ctx.strokeStyle=b.t>0?col:C.mu;ctx.lineWidth=1.2;ctx.stroke();
+  ctx.fillStyle=col;ctx.textAlign='center';ctx.fillText(label,0,4);ctx.restore();
+}
+function draw(){
+  ctx.setTransform(1,0,0,1,0,0);ctx.fillStyle=C.bg;ctx.fillRect(0,0,cv.width,cv.height);
+  ctx.setTransform(D*S,0,0,D*S,0,0);
+  ctx.fillStyle=C.dot;for(let x=10;x<VW;x+=20)for(let y=10;y<VH;y+=20)ctx.fillRect(x-0.75,y-0.75,1.5,1.5);
+  const bx=VW/2-150,by=VH/2-24;
+  const f='ui-sans-serif,system-ui,-apple-system,Helvetica,Arial,sans-serif';
+  ctx.font='bold 11px '+f;ctx.textAlign='left';ctx.fillStyle=C.mu;ctx.fillText('HP',bx,by-9);
+  ctx.textAlign='right';ctx.fillStyle=bar.hp<=0?C.a:C.ink;ctx.fillText(Math.ceil(bar.hp)+' / '+K.MAX_HP,bx+300,by-9);
+  drawBar(bx,by,300,18,time);
+  ctx.font='bold 11px '+f;ctx.textAlign='center';
+  for(const p of pops){const k=p.t/0.8;ctx.globalAlpha=1-k*k;ctx.fillStyle=p.col;ctx.fillText(p.txt,Math.max(bx+10,Math.min(bx+290,p.x)),by+34+k*10);}
+  ctx.globalAlpha=1;
+  ctx.font='bold 11px '+f;button(btn.hit,'HIT',C.a);button(btn.heal,'HEAL',C.y);
+  ctx.font='10px '+f;ctx.textAlign='center';ctx.fillStyle=C.mu;ctx.fillText('Tap HIT / HEAL · Space or X to hit · H to heal',VW/2,VH-12);
+}
+let last=0;
+function frame(t){
+  requestAnimationFrame(frame);if(document.hidden){last=0;return;}
+  let dt=last?(t-last)/1000:0.016;last=t;if(!(dt>0))dt=0.016;dt=Math.min(dt,0.033);
+  update(dt);draw();
+}
+const rnd=(a,b)=>Math.round(a+Math.random()*(b-a));
+function wake(){userT=3.5;step=0;stepT=1.2;}
+cv.addEventListener('pointerdown',e=>{
+  const r=cv.getBoundingClientRect(),x=(e.clientX-r.left)/S,y=(e.clientY-r.top)/S,b=btn.heal;
+  wake();if(x>=b.x&&x<=b.x+b.w&&y>=b.y-6&&y<=b.y+b.h+6)doHeal(rnd(15,30));else doHit(rnd(6,22));e.preventDefault();
+});
+addEventListener('keydown',e=>{
+  if([' ','ArrowLeft','ArrowRight','ArrowUp','ArrowDown'].includes(e.key))e.preventDefault();
+  if(e.repeat)return;const k=e.key.toLowerCase();
+  if(k===' '||k==='x'||k==='enter'){wake();doHit(rnd(6,22));}else if(k==='h'||k==='z'){wake();doHeal(rnd(15,30));}
+});
+requestAnimationFrame(frame);
+})();
+</script></body></html>

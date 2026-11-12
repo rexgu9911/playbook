@@ -1,0 +1,189 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Charge Shot</title>
+<style>html,body{margin:0;height:100%;background:#0D0D10;overflow:hidden}canvas{display:block;width:100%;height:100%;touch-action:none}</style>
+</head><body><canvas id="c"></canvas><script>
+(()=>{
+const K={
+  STAGE1_TIME: 0.35,     // s held to reach stage 1 (anything shorter fires the weak shot)
+  STAGE2_TIME: 0.80,     // s held to reach stage 2
+  FULL_TIME: 1.30,       // s held to reach full charge
+  WEAK_RADIUS: 3,        // px shot radius, early release
+  STAGE1_RADIUS: 5,      // px shot radius, stage 1
+  STAGE2_RADIUS: 8,      // px shot radius, stage 2
+  FULL_RADIUS: 13,       // px shot radius, full charge
+  WEAK_DAMAGE: 1,        // damage, early release
+  STAGE1_DAMAGE: 3,      // damage, stage 1
+  STAGE2_DAMAGE: 6,      // damage, stage 2
+  FULL_DAMAGE: 12,       // damage, full charge
+  FULL_PIERCE: 1,        // extra targets a full-charge shot passes through
+  SHOT_SPEED: 480,       // px/s projectile speed
+  RECOIL: 10,            // px gun kick on a full shot (scaled down for weaker stages)
+  INTAKE_RATE: 45,       // particles/s pulled in at full charge (ramps up from 0)
+  INTAKE_RADIUS: 36,     // px from the muzzle where pulled-in particles spawn
+  READY_FLASH: 0.16,     // s of the white flash when full charge is reached
+  MAX_PARTICLES: 80,     // particle cap
+};
+const C={bg:'#0D0D10',dot:'#1A1A20',a:'#FF4D2E',y:'#F5E663',ink:'#F4F1EA',mu:'#6B6B76'};
+const cv=document.getElementById('c'),ctx=cv.getContext('2d');
+let W=300,H=200,D=1,S=1,VW=440,VH=280,GY=236,GX=70;
+const targets=[{dx:70},{dx:130}].map(t=>({...t,x:0,hp:20,max:20,flash:0,kx:0,kv:0,dead:0}));
+function layout(){GY=VH-50;GX=VW/2-150;for(const t of targets)t.x=VW/2+t.dx;}
+function resize(){
+  D=Math.min(2,window.devicePixelRatio||1);W=Math.max(40,innerWidth||300);H=Math.max(40,innerHeight||200);
+  cv.width=Math.round(W*D);cv.height=Math.round(H*D);S=Math.min(W/440,H/280);VW=W/S;VH=H/S;layout();
+}
+addEventListener('resize',resize);resize();
+function rr(x,y,w,h,r){r=Math.min(r,w/2,h/2);ctx.beginPath();ctx.moveTo(x+r,y);ctx.arcTo(x+w,y,x+w,y+h,r);ctx.arcTo(x+w,y+h,x,y+h,r);ctx.arcTo(x,y+h,x,y,r);ctx.arcTo(x,y,x+w,y,r);ctx.closePath();}
+
+// ---- mechanic ----
+const STAGES=[ // per charge stage: shot size, damage, orb colour
+  {r:K.WEAK_RADIUS,dmg:K.WEAK_DAMAGE,col:C.mu},
+  {r:K.STAGE1_RADIUS,dmg:K.STAGE1_DAMAGE,col:C.ink},
+  {r:K.STAGE2_RADIUS,dmg:K.STAGE2_DAMAGE,col:C.y},
+  {r:K.FULL_RADIUS,dmg:K.FULL_DAMAGE,col:C.a},
+];
+const charge={holding:false,t:0,stage:0,ready:0,pulse:0,recoil:0,intakeAcc:0};
+let shots=[],intake=[],rings=[];
+const stageOf=t=>t>=K.FULL_TIME?3:t>=K.STAGE2_TIME?2:t>=K.STAGE1_TIME?1:0;
+const muzzleX=()=>GX+30-charge.recoil,muzzleY=()=>GY-26;
+
+function chargeUpdate(dt,held){
+  if(held){
+    if(!charge.holding){charge.holding=true;charge.t=0;charge.stage=0;}
+    charge.t+=dt;
+    const s=stageOf(charge.t);
+    if(s>charge.stage){charge.stage=s;rings.push({x:muzzleX(),y:muzzleY(),t:0,big:s===3});sfx(260+s*120,0.04);
+      if(s===3)charge.ready=K.READY_FLASH;}                       // ready flash at full
+    // particles drawn in: rate ramps with charge progress
+    charge.intakeAcc+=K.INTAKE_RATE*Math.min(1,charge.t/K.FULL_TIME)*dt;
+    while(charge.intakeAcc>=1){charge.intakeAcc--;if(intake.length<K.MAX_PARTICLES){const a=Math.random()*6.283;
+      intake.push({a,d:K.INTAKE_RADIUS*(0.8+Math.random()*0.4),v:0});}}
+  }else if(charge.holding){release();}
+  charge.ready=Math.max(0,charge.ready-dt);charge.pulse+=dt;
+  charge.recoil*=Math.exp(-14*dt);
+  for(const p of intake){p.v+=500*dt;p.d-=p.v*dt;p.a+=dt*2;}       // accelerate inward with a slight swirl
+  intake=intake.filter(p=>p.d>2);
+  for(const r of rings)r.t+=dt;rings=rings.filter(r=>r.t<0.35);
+}
+function release(){
+  const stage=charge.stage,st=STAGES[stage];
+  shots.push({x:muzzleX()+st.r,y:muzzleY(),r:st.r,dmg:st.dmg,col:st.col,pierce:stage===3?K.FULL_PIERCE:0,hit:new Set()});
+  charge.recoil=K.RECOIL*(0.25+0.75*stage/3);
+  charge.holding=false;charge.t=0;charge.stage=0;intake=[];
+  sfx(stage===3?110:200,0.06);
+}
+function shotsUpdate(dt){
+  for(const s of shots){s.x+=K.SHOT_SPEED*dt;
+    for(const t of targets){if(t.dead>0||s.hit.has(t))continue;
+      if(Math.abs(s.x-(t.x+t.kx))<12+s.r){s.hit.add(t);onHit(t,s);if(s.pierce-->0)continue;s.gone=true;break;}}}
+  shots=shots.filter(s=>!s.gone&&s.x<VW+30);
+}
+function drawCharge(){
+  const mx=muzzleX(),my=muzzleY(),k=Math.min(1,charge.t/K.FULL_TIME);
+  ctx.fillStyle=C.mu;for(const p of intake){ctx.globalAlpha=Math.min(1,p.d/12);ctx.fillRect(mx+Math.cos(p.a)*p.d-1,my+Math.sin(p.a)*p.d-1,2,2);}
+  ctx.globalAlpha=1;
+  if(charge.holding){ // orb grows with charge; at full it pulses
+    const st=STAGES[charge.stage],r=2+k*(K.FULL_RADIUS-2)+(charge.stage===3?Math.sin(charge.pulse*30)*1.2:0);
+    ctx.fillStyle=st.col;ctx.beginPath();ctx.arc(mx+r*0.6,my,r,0,6.283);ctx.fill();
+    if(charge.stage>0){ctx.fillStyle=C.bg;ctx.beginPath();ctx.arc(mx+r*0.6,my,r*0.35,0,6.283);ctx.fill();}
+  }
+  for(const r of rings){const q=r.t/0.35;ctx.globalAlpha=1-q;ctx.strokeStyle=r.big?C.a:C.ink;ctx.lineWidth=1.5;
+    ctx.beginPath();ctx.arc(r.x+6,r.y,8+q*(r.big?34:18),0,6.283);ctx.stroke();}
+  ctx.globalAlpha=1;
+  if(charge.ready>0){ctx.globalAlpha=charge.ready/K.READY_FLASH;ctx.fillStyle=C.ink;ctx.beginPath();ctx.arc(mx+8,my,22,0,6.283);ctx.fill();ctx.globalAlpha=1;}
+  // segmented meter under the gun
+  const bx=GX-20,by=GY+12,bw=70;
+  rr(bx,by,bw,5,2);ctx.fillStyle=C.dot;ctx.fill();
+  ctx.fillStyle=charge.holding?STAGES[charge.stage].col:C.mu;ctx.fillRect(bx,by,bw*k,5);
+  ctx.fillStyle=C.bg;for(const t of [K.STAGE1_TIME,K.STAGE2_TIME])ctx.fillRect(bx+bw*t/K.FULL_TIME-1,by,2,5);
+}
+function drawShots(){
+  for(const s of shots){ctx.fillStyle=s.col;ctx.globalAlpha=0.35;ctx.beginPath();ctx.ellipse(s.x-s.r*1.4,s.y,s.r*1.6,s.r*0.6,0,0,6.283);ctx.fill();
+    ctx.globalAlpha=1;ctx.beginPath();ctx.arc(s.x,s.y,s.r,0,6.283);ctx.fill();}
+}
+
+// ---- demo ----
+let time=0,userT=0,AC=null,pops=[],sparks=[],held=false;
+const HOLDS=[0.15,0.55,1.0,1.8];
+const ai={i:0,hold:-1,wait:0.3};
+function onHit(t,s){
+  t.hp-=s.dmg;t.flash=1;t.kv+=40+s.dmg*14;
+  pops.push({x:t.x,y:GY-60,txt:String(s.dmg),big:s.dmg>=K.FULL_DAMAGE,t:0});
+  for(let i=0;i<4+s.dmg&&sparks.length<60;i++){const a=Math.PI+(Math.random()-0.5)*2,v=60+Math.random()*(80+s.dmg*15);
+    sparks.push({x:t.x-12,y:s.y,vx:Math.cos(a)*v,vy:Math.sin(a)*v,life:0,max:0.25+Math.random()*0.2,col:s.col===C.mu?C.ink:s.col});}
+  if(t.hp<=0){t.dead=1.0;}
+  sfx(160+s.dmg*10,0.05);
+}
+function sfx(f,v){
+  if(!AC||userT<=0)return;
+  const t=AC.currentTime,o=AC.createOscillator(),g=AC.createGain();
+  o.type='triangle';o.frequency.setValueAtTime(f,t);o.frequency.exponentialRampToValueAtTime(f*0.6,t+0.1);
+  g.gain.setValueAtTime(v,t);g.gain.exponentialRampToValueAtTime(0.0001,t+0.12);o.connect(g).connect(AC.destination);o.start(t);o.stop(t+0.13);
+}
+function autopilot(dt){ // cycle through short, medium, long and full holds
+  if(ai.hold<0){ai.wait-=dt;if(ai.wait<=0){ai.hold=HOLDS[ai.i++%HOLDS.length];}return false;}
+  ai.hold-=dt;if(ai.hold<=0){ai.hold=-1;ai.wait=0.7;return false;}
+  return true;
+}
+function update(dt){
+  time+=dt;
+  let h;if(userT>0){userT-=dt;h=held;if(held)userT=Math.max(userT,3);}else h=autopilot(dt);
+  chargeUpdate(dt,h);shotsUpdate(dt);
+  for(const t of targets){t.flash=Math.max(0,t.flash-dt*8);t.kv+=(-90*t.kx-10*t.kv)*dt;t.kx+=t.kv*dt;
+    if(t.dead>0){t.dead-=dt;if(t.dead<=0){t.hp=t.max;t.dead=0;}}}
+  for(const p of pops)p.t+=dt;pops=pops.filter(p=>p.t<0.7);
+  for(const s of sparks){s.life+=dt;s.x+=s.vx*dt;s.y+=s.vy*dt;s.vy+=300*dt;}
+  sparks=sparks.filter(s=>s.life<s.max);
+}
+function draw(){
+  ctx.setTransform(1,0,0,1,0,0);ctx.fillStyle=C.bg;ctx.fillRect(0,0,cv.width,cv.height);
+  ctx.setTransform(D*S,0,0,D*S,0,0);
+  ctx.fillStyle=C.dot;for(let x=10;x<VW;x+=20)for(let y=10;y<VH;y+=20)ctx.fillRect(x-0.75,y-0.75,1.5,1.5);
+  ctx.fillStyle='#131317';ctx.fillRect(0,GY,VW,VH-GY);
+  ctx.strokeStyle=C.ink;ctx.lineWidth=1.5;ctx.beginPath();ctx.moveTo(0,GY);ctx.lineTo(VW,GY);ctx.stroke();
+  // targets
+  for(const t of targets){
+    const x=t.x+t.kx,al=t.dead>0?Math.max(0,t.dead-0.6)/0.4:1;ctx.globalAlpha=al;
+    rr(x-12,GY-42,24,42,6);ctx.fillStyle='#17171C';ctx.fill();ctx.strokeStyle=C.ink;ctx.lineWidth=1.5;ctx.stroke();
+    ctx.strokeStyle=C.mu;ctx.beginPath();ctx.moveTo(x-12,GY-18);ctx.lineTo(x+12,GY-18);ctx.stroke();
+    if(t.flash>0){ctx.globalAlpha=al*t.flash;rr(x-13,GY-43,26,44,7);ctx.fillStyle=C.ink;ctx.fill();}
+    ctx.globalAlpha=al;rr(x-14,GY-52,28,3,1.5);ctx.fillStyle=C.dot;ctx.fill();
+    ctx.fillStyle=C.a;ctx.fillRect(x-14,GY-52,28*Math.max(0,t.hp)/t.max,3);ctx.globalAlpha=1;
+  }
+  // gun
+  ctx.save();ctx.translate(GX-charge.recoil,GY);
+  rr(-14,-40,30,28,6);ctx.fillStyle='#17171C';ctx.fill();ctx.strokeStyle=C.ink;ctx.lineWidth=1.5;ctx.stroke();
+  rr(14,-31,18,10,3);ctx.fillStyle=C.ink;ctx.fill();
+  ctx.fillStyle=C.mu;rr(-6,-12,12,12,2);ctx.fill();
+  ctx.restore();
+  drawShots();drawCharge();
+  ctx.lineWidth=1.5;ctx.lineCap='round';
+  for(const s of sparks){ctx.globalAlpha=1-s.life/s.max;ctx.strokeStyle=s.col;ctx.beginPath();ctx.moveTo(s.x,s.y);ctx.lineTo(s.x-s.vx*0.03,s.y-s.vy*0.03);ctx.stroke();}
+  ctx.globalAlpha=1;ctx.lineCap='butt';ctx.textAlign='center';
+  for(const p of pops){const k=p.t/0.7;ctx.globalAlpha=1-k*k;ctx.font=(p.big?'bold 15px ':'bold 11px ')+'ui-sans-serif,system-ui,-apple-system,Helvetica,Arial,sans-serif';
+    ctx.fillStyle=p.big?C.a:C.ink;ctx.fillText(p.txt,p.x,p.y-k*18);}
+  ctx.globalAlpha=1;
+  ctx.font='10px ui-sans-serif,system-ui,-apple-system,Helvetica,Arial,sans-serif';ctx.fillStyle=C.mu;
+  ctx.fillText('Hold mouse or Space to charge · release to fire',VW/2,VH-12);
+}
+let last=0;
+function frame(t){
+  requestAnimationFrame(frame);if(document.hidden){last=0;return;}
+  let dt=last?(t-last)/1000:0.016;last=t;if(!(dt>0))dt=0.016;dt=Math.min(dt,0.033);
+  update(dt);draw();
+}
+function down(){
+  if(userT<=0){charge.holding=false;charge.t=0;charge.stage=0;intake=[];}   // drop any auto-charge in progress
+  userT=3.5;held=true;ai.hold=-1;ai.wait=0.6;
+  if(!AC){try{AC=new(window.AudioContext||window.webkitAudioContext)();}catch(e){AC=null;}}
+  if(AC&&AC.state==='suspended')AC.resume();
+}
+cv.addEventListener('pointerdown',e=>{down();e.preventDefault();});
+addEventListener('pointerup',()=>{held=false;});addEventListener('pointercancel',()=>{held=false;});
+addEventListener('keydown',e=>{if([' ','ArrowUp','ArrowDown'].includes(e.key))e.preventDefault();if(e.key===' '&&!e.repeat)down();});
+addEventListener('keyup',e=>{if(e.key===' ')held=false;});
+addEventListener('blur',()=>{held=false;});
+requestAnimationFrame(frame);
+})();
+</script></body></html>

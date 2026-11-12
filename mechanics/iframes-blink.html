@@ -1,0 +1,182 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>I-Frames &amp; Blink</title>
+<style>html,body{margin:0;height:100%;background:#0D0D10;overflow:hidden}canvas{display:block;width:100%;height:100%;touch-action:none}</style>
+</head><body><canvas id="c"></canvas><script>
+(()=>{
+const K={
+  IFRAME_TIME: 1.0,         // s of invincibility after taking a hit
+  BLINK_HZ: 12,             // blink cycles per second while invincible
+  BLINK_ALPHA: 0.2,         // 0–1 body opacity on the "off" half of each blink
+  FLASH_TIME: 0.12,         // s the body is tinted solid red right after the hit
+  SCREEN_FLASH: 0.12,       // 0–1 peak opacity of the full-screen red tint
+  SCREEN_FLASH_DECAY: 1.0,  // opacity/s the screen tint fades
+  KNOCKBACK_X: 200,         // px/s horizontal push away from the hazard
+  KNOCKBACK_Y: 170,         // px/s upward pop
+  KNOCKBACK_FRICTION: 900,  // px/s² ground braking that ends the slide
+  HITSTUN: 0.25,            // s movement input is ignored after a hit
+  GRAVITY: 1200,            // px/s² pull on the character (and bounced hazards)
+  MAX_HP: 5,                // hits the character can take (the demo refills it)
+  DEFLECT_KEEP: 0.55,       // 0–1 share of speed a hazard keeps when it bounces off during i-frames
+  DEFLECT_UP: 180,          // px/s upward pop given to a deflected hazard
+};
+const C={bg:'#0D0D10',dot:'#1A1A20',a:'#FF4D2E',y:'#F5E663',ink:'#F4F1EA',mu:'#6B6B76'};
+const cv=document.getElementById('c'),ctx=cv.getContext('2d');
+let W=300,H=200,D=1,S=1,VW=440,VH=280,GY=230;
+function layout(){GY=VH-50;}
+function resize(){
+  D=Math.min(2,window.devicePixelRatio||1);W=Math.max(40,innerWidth||300);H=Math.max(40,innerHeight||200);
+  cv.width=Math.round(W*D);cv.height=Math.round(H*D);S=Math.min(W/440,H/280);VW=W/S;VH=H/S;layout();
+}
+addEventListener('resize',resize);resize();
+function rr(x,y,w,h,r){r=Math.min(r,w/2,h/2);ctx.beginPath();ctx.moveTo(x+r,y);ctx.arcTo(x+w,y,x+w,y+h,r);ctx.arcTo(x+w,y+h,x,y+h,r);ctx.arcTo(x,y+h,x,y,r);ctx.arcTo(x,y,x+w,y,r);ctx.closePath();}
+const approach=(v,t,s)=>v<t?Math.min(v+s,t):Math.max(v-s,t);
+
+// ---- mechanic ----
+const BW=16,BH=22;   // body size, px
+const hero={x:VW/2,y:GY,vx:0,vy:0,ground:true,hp:K.MAX_HP,iframes:0,flash:0,stun:0,face:1,walk:0};
+let screenFlash=0;
+
+// returns true if the hit landed, false if it was ignored because we're invincible
+function hurt(fromX){
+  if(hero.iframes>0)return false;
+  hero.hp=Math.max(0,hero.hp-1);
+  hero.iframes=K.IFRAME_TIME;hero.flash=K.FLASH_TIME;hero.stun=K.HITSTUN;screenFlash=K.SCREEN_FLASH;
+  const dir=Math.sign(hero.x-fromX)||1;           // pushed away from whatever hit us
+  hero.vx=dir*K.KNOCKBACK_X;hero.vy=-K.KNOCKBACK_Y;hero.ground=false;hero.face=-dir;
+  return true;
+}
+function heroUpdate(dt,walkSpeed){
+  hero.iframes=Math.max(0,hero.iframes-dt);hero.flash=Math.max(0,hero.flash-dt);hero.stun=Math.max(0,hero.stun-dt);
+  screenFlash=Math.max(0,screenFlash-dt*K.SCREEN_FLASH_DECAY);
+  if(hero.stun<=0&&hero.ground){hero.vx=walkSpeed;if(walkSpeed)hero.face=Math.sign(walkSpeed);}   // control returns after hitstun
+  else if(hero.ground)hero.vx=approach(hero.vx,0,K.KNOCKBACK_FRICTION*dt);                          // knockback slide
+  hero.vy+=K.GRAVITY*dt;hero.x+=hero.vx*dt;hero.y+=hero.vy*dt;
+  if(hero.y>=GY){hero.y=GY;hero.vy=0;hero.ground=true;}
+  hero.x=Math.max(30,Math.min(VW-30,hero.x));
+  if(!isFinite(hero.x+hero.y)){hero.x=VW/2;hero.y=GY;hero.vx=hero.vy=0;}
+}
+function drawHero(){
+  // blink is decided at draw time: alternate full / faint opacity while invincible
+  const on=hero.iframes<=0||Math.floor((K.IFRAME_TIME-hero.iframes)*K.BLINK_HZ*2)%2===0;
+  ctx.save();ctx.translate(hero.x,hero.y);
+  ctx.globalAlpha=0.45;ctx.fillStyle='#000';ctx.beginPath();ctx.ellipse(0,2,11,2.4,0,0,6.283);ctx.fill();
+  ctx.globalAlpha=on?1:K.BLINK_ALPHA;
+  const bob=hero.ground&&hero.vx&&hero.stun<=0?Math.abs(Math.sin(time*14))*2:0;
+  rr(-BW/2,-BH-bob,BW,BH,6);ctx.fillStyle=hero.flash>0?C.a:C.ink;ctx.fill();   // solid red while flashing
+  ctx.fillStyle=C.bg;const ex=hero.face*2.5;
+  if(hero.flash>0||hero.stun>0){ctx.strokeStyle=C.bg;ctx.lineWidth=1.3;ctx.beginPath();   // hurt eyes: ><
+    ctx.moveTo(ex-5,-BH+6-bob);ctx.lineTo(ex-2,-BH+8.5-bob);ctx.lineTo(ex-5,-BH+11-bob);ctx.moveTo(ex+5,-BH+6-bob);ctx.lineTo(ex+2,-BH+8.5-bob);ctx.lineTo(ex+5,-BH+11-bob);ctx.stroke();}
+  else{rr(ex-5,-BH+6-bob,3,4.5,1.5);ctx.fill();rr(ex+2,-BH+6-bob,3,4.5,1.5);ctx.fill();}
+  ctx.globalAlpha=1;
+  if(hero.iframes>0){const w=24*hero.iframes/K.IFRAME_TIME;ctx.fillStyle=C.y;ctx.fillRect(-w/2,-BH-10,w,2);}  // i-frame timer
+  ctx.restore();
+}
+
+// ---- demo ----
+let hazards=[],sparks=[],rings=[],time=0,userT=0,AC=null,refill=0;
+const keys={};
+const ai={t:0.4,queue:[]};
+function spawn(side,y,lob){
+  if(hazards.length>=14)return;
+  const x=side<0?-12:VW+12,sp=lob?150:230;
+  hazards.push({x,y,vx:-side*sp,vy:lob?-260:0,lob,r:6,spin:0,state:'fly',life:0});
+}
+function sfx(f,v,type){
+  if(!AC||userT<=0)return;
+  const t=AC.currentTime,o=AC.createOscillator(),g=AC.createGain();
+  o.type=type||'triangle';o.frequency.setValueAtTime(f,t);o.frequency.exponentialRampToValueAtTime(f*0.6,t+0.1);
+  g.gain.setValueAtTime(v,t);g.gain.exponentialRampToValueAtTime(0.0001,t+0.12);o.connect(g).connect(AC.destination);o.start(t);o.stop(t+0.13);
+}
+function autopilot(dt){
+  ai.t-=dt;
+  if(ai.t<=0&&!ai.queue.length){       // a volley: the first hazard hits, the rest arrive during i-frames
+    const side=Math.random()<0.5?-1:1,n=2+Math.floor(Math.random()*2),mixed=Math.random()<0.35;
+    for(let i=0;i<n;i++)ai.queue.push({d:i*0.24,side:mixed&&i%2?-side:side,lob:Math.random()<0.25});
+    ai.t=1.9+Math.random()*0.6;
+  }
+}
+function update(dt){
+  time+=dt;
+  if(userT>0)userT-=dt;else autopilot(dt);
+  for(const q of ai.queue)q.d-=dt;
+  while(ai.queue.length&&ai.queue[0].d<=0){const q=ai.queue.shift();spawn(q.side,q.lob?GY-30:GY-12-Math.random()*6,q.lob);}
+  // walking: player keys, otherwise drift back home
+  let walk=((keys.ArrowRight||keys.d)?1:0)-((keys.ArrowLeft||keys.a)?1:0);
+  if(!walk&&userT<=0&&Math.abs(hero.x-VW/2)>4)walk=Math.sign(VW/2-hero.x);
+  heroUpdate(dt,walk*70);
+  if(hero.hp<=0){refill+=dt;if(refill>0.8){hero.hp=K.MAX_HP;refill=0;}}
+  for(const h of hazards){
+    h.life+=dt;h.spin+=dt*(h.state==='fly'?12:-8);
+    if(h.lob||h.state==='bounce')h.vy+=K.GRAVITY*0.6*dt;
+    h.x+=h.vx*dt;h.y+=h.vy*dt;
+    if(h.y>GY-h.r){h.y=GY-h.r;if(h.state==='bounce'){h.vy*=-0.45;h.vx*=0.7;}else h.vy=0;}
+    if(h.state!=='fly')continue;
+    const nx=Math.max(hero.x-BW/2,Math.min(hero.x+BW/2,h.x)),ny=Math.max(hero.y-BH,Math.min(hero.y,h.y));
+    if((h.x-nx)**2+(h.y-ny)**2<h.r*h.r){
+      if(hurt(h.x)){h.state='dead';sfx(150,0.07,'square');
+        for(let i=0;i<12&&sparks.length<60;i++){const a=Math.random()*6.283,s=80+Math.random()*180;sparks.push({x:h.x,y:h.y,vx:Math.cos(a)*s,vy:Math.sin(a)*s,life:0,max:0.3+Math.random()*0.2,col:i%2?C.a:C.ink});}}
+      else{ // ignored hit: bounce off the invincible body
+        const dir=Math.sign(h.x-hero.x)||1;h.state='bounce';h.vx=dir*Math.abs(h.vx)*K.DEFLECT_KEEP;h.vy=-K.DEFLECT_UP;h.life=0;
+        rings.push({x:h.x,y:h.y,t:0});sfx(900,0.03,'sine');}
+    }
+  }
+  hazards=hazards.filter(h=>h.state!=='dead'&&h.x>-40&&h.x<VW+40&&!(h.state==='bounce'&&h.life>1.1));
+  for(const s of sparks){s.life+=dt;s.x+=s.vx*dt;s.y+=s.vy*dt;s.vy+=400*dt;}
+  sparks=sparks.filter(s=>s.life<s.max);
+  for(const r of rings)r.t+=dt;rings=rings.filter(r=>r.t<0.3);
+}
+function drawHazard(h){
+  ctx.save();ctx.translate(h.x,h.y);ctx.rotate(h.spin);
+  ctx.globalAlpha=h.state==='bounce'?Math.max(0,1-h.life/1.1):1;
+  ctx.fillStyle=h.state==='bounce'?C.mu:C.ink;ctx.beginPath();
+  for(let i=0;i<16;i++){const a=i*Math.PI/8,r=i%2?h.r*0.7:h.r*1.35;ctx.lineTo(Math.cos(a)*r,Math.sin(a)*r);}
+  ctx.closePath();ctx.fill();ctx.fillStyle=C.bg;ctx.beginPath();ctx.arc(0,0,h.r*0.35,0,6.283);ctx.fill();
+  ctx.restore();ctx.globalAlpha=1;
+}
+function draw(){
+  ctx.setTransform(1,0,0,1,0,0);ctx.fillStyle=C.bg;ctx.fillRect(0,0,cv.width,cv.height);
+  ctx.setTransform(D*S,0,0,D*S,0,0);
+  ctx.fillStyle=C.dot;for(let x=10;x<VW;x+=20)for(let y=10;y<VH;y+=20)ctx.fillRect(x-0.75,y-0.75,1.5,1.5);
+  ctx.fillStyle='#131317';ctx.fillRect(0,GY,VW,VH-GY);
+  ctx.strokeStyle=C.ink;ctx.lineWidth=1.5;ctx.beginPath();ctx.moveTo(0,GY);ctx.lineTo(VW,GY);ctx.stroke();
+  for(const h of hazards)drawHazard(h);
+  drawHero();
+  for(const r of rings){const k=r.t/0.3;ctx.globalAlpha=1-k;ctx.strokeStyle=C.y;ctx.lineWidth=1.5;ctx.beginPath();ctx.arc(r.x,r.y,6+k*14,0,6.283);ctx.stroke();}
+  ctx.lineWidth=2;ctx.lineCap='round';
+  for(const s of sparks){ctx.globalAlpha=1-s.life/s.max;ctx.strokeStyle=s.col;ctx.beginPath();ctx.moveTo(s.x,s.y);ctx.lineTo(s.x-s.vx*0.03,s.y-s.vy*0.03);ctx.stroke();}
+  ctx.globalAlpha=1;ctx.lineCap='butt';
+  // HP pips
+  for(let i=0;i<K.MAX_HP;i++){rr(VW/2-K.MAX_HP*7+i*14+2,18,10,10,3);ctx.fillStyle=i<hero.hp?C.a:C.dot;ctx.fill();}
+  ctx.font='9px ui-sans-serif,system-ui,-apple-system,Helvetica,Arial,sans-serif';ctx.textAlign='center';ctx.fillStyle=hero.iframes>0?C.y:C.mu;
+  ctx.fillText(hero.iframes>0?'invincible':'vulnerable',VW/2,42);
+  if(screenFlash>0){ctx.globalAlpha=screenFlash;ctx.fillStyle=C.a;ctx.fillRect(0,0,VW,VH);ctx.globalAlpha=1;}   // brief red flash
+  ctx.font='10px ui-sans-serif,system-ui,-apple-system,Helvetica,Arial,sans-serif';ctx.fillStyle=C.mu;
+  ctx.fillText('Click to throw a hazard · Space for a volley · ←/→ move',VW/2,VH-12);
+}
+let last=0;
+function frame(t){
+  requestAnimationFrame(frame);if(document.hidden){last=0;return;}
+  let dt=last?(t-last)/1000:0.016;last=t;if(!(dt>0))dt=0.016;dt=Math.min(dt,0.033);
+  update(dt);draw();
+}
+function wake(){
+  userT=3.5;ai.t=0.8;
+  if(!AC){try{AC=new(window.AudioContext||window.webkitAudioContext)();}catch(e){AC=null;}}
+  if(AC&&AC.state==='suspended')AC.resume();
+}
+cv.addEventListener('pointerdown',e=>{
+  const r=cv.getBoundingClientRect(),x=(e.clientX-r.left)/S,y=(e.clientY-r.top)/S;wake();
+  spawn(x<hero.x?-1:1,Math.max(GY-60,Math.min(GY-8,y)),y<GY-60);e.preventDefault();
+});
+addEventListener('keydown',e=>{
+  const k=e.key.length===1?e.key.toLowerCase():e.key;
+  if([' ','ArrowLeft','ArrowRight','ArrowUp','ArrowDown'].includes(k))e.preventDefault();
+  if(['ArrowLeft','ArrowRight','a','d'].includes(k)){keys[k]=true;wake();}
+  if((k===' '||k==='Enter')&&!e.repeat){wake();const s=Math.random()<0.5?-1:1;for(let i=0;i<3;i++)ai.queue.push({d:i*0.24,side:s,lob:false});}
+});
+addEventListener('keyup',e=>{const k=e.key.length===1?e.key.toLowerCase():e.key;keys[k]=false;});
+addEventListener('blur',()=>{for(const k in keys)keys[k]=false;});
+requestAnimationFrame(frame);
+})();
+</script></body></html>

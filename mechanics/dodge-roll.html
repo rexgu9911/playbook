@@ -1,0 +1,198 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Dodge Roll</title>
+<style>html,body{margin:0;height:100%;background:#0D0D10;overflow:hidden}canvas{display:block;width:100%;height:100%;touch-action:none}</style>
+</head><body><canvas id="c"></canvas><script>
+(()=>{
+const K={
+  WALK_SPEED: 110,        // px/s normal movement speed
+  WALK_ACCEL: 1200,       // px/s² walk accel/brake
+  ROLL_TIME: 0.40,        // s total roll duration
+  ROLL_SPEED: 420,        // px/s speed at the start of the roll (the burst)
+  ROLL_END_SPEED: 60,     // px/s speed at the end of the roll
+  ROLL_CURVE: 2,          // ease-out exponent: speed = end + (start-end)·(1-t)^curve
+  IFRAME_START: 0.02,     // s into the roll when invincibility begins
+  IFRAME_END: 0.30,       // s into the roll when invincibility ends (the tail is vulnerable)
+  RECOVERY_TIME: 0.14,    // s of post-roll lag: no rolling, slowed movement
+  RECOVERY_SPEED: 0.3,    // × walk speed during recovery
+  COOLDOWN: 0.40,         // s after recovery before the next roll is allowed
+  ROLL_BUFFER: 0.15,      // s a roll press is remembered while still busy
+  HIT_KNOCKBACK: 170,     // px/s shove when hit outside the i-frames
+  HIT_STUN: 0.25,         // s of no control after a hit
+  BODY_W: 18,             // px body width (hitbox)
+  BODY_H: 22,             // px body height standing
+};
+const C={bg:'#0D0D10',dot:'#1A1A20',a:'#FF4D2E',y:'#F5E663',ink:'#F4F1EA',mu:'#6B6B76'};
+const cv=document.getElementById('c'),ctx=cv.getContext('2d');
+let W=300,H=200,D=1,S=1,VW=440,VH=280,GY=244,HOME=150,GUN=405;
+function layout(){GY=VH-36;HOME=VW/2-110;GUN=Math.min(VW-24,VW/2+190);}
+function resize(){
+  D=Math.min(2,window.devicePixelRatio||1);W=Math.max(40,innerWidth||300);H=Math.max(40,innerHeight||200);
+  cv.width=Math.round(W*D);cv.height=Math.round(H*D);S=Math.min(W/440,H/280);VW=W/S;VH=H/S;layout();
+}
+addEventListener('resize',resize);resize();
+function rr(x,y,w,h,r){r=Math.min(r,w/2,h/2);ctx.beginPath();ctx.moveTo(x+r,y);ctx.arcTo(x+w,y,x+w,y+h,r);ctx.arcTo(x+w,y+h,x,y+h,r);ctx.arcTo(x,y+h,x,y,r);ctx.arcTo(x,y,x+w,y,r);ctx.closePath();}
+const approach=(v,target,step)=>v<target?Math.min(v+step,target):Math.max(v-step,target);
+
+// ---- mechanic ----
+// state: 'free' (walk) → 'roll' → 'recover' → 'free' (+ cooldown timer) ; 'stun' after a hit
+const p={x:HOME,vx:0,face:1,state:'free',t:0,dir:1,cooldown:0,buffer:0,bufferDir:0,flash:0,ghosts:[],ghostT:0,since:9};
+const input={dir:0,rollPressed:false,rollDir:0};   // rollDir 0 = use move input / facing
+
+const invulnerable=()=>p.state==='roll'&&p.t>=K.IFRAME_START&&p.t<K.IFRAME_END;
+function startRoll(dir){
+  p.state='roll';p.t=0;p.dir=dir;p.face=dir;p.buffer=0;p.since=0;p.ghosts=[];sfx(240,0.12);
+}
+function step(dt){
+  p.t+=dt;p.since+=dt;p.cooldown=Math.max(0,p.cooldown-dt);p.flash=Math.max(0,p.flash-dt);
+  if(input.rollPressed){p.buffer=K.ROLL_BUFFER;p.bufferDir=input.rollDir;}else p.buffer=Math.max(0,p.buffer-dt);
+  input.rollPressed=false;
+  if(p.state==='free'){
+    if(input.dir)p.face=input.dir;
+    p.vx=approach(p.vx,input.dir*K.WALK_SPEED,K.WALK_ACCEL*dt);
+    if(p.buffer>0&&p.cooldown<=0)startRoll(p.bufferDir||input.dir||p.face);
+  }else if(p.state==='roll'){
+    const k=Math.min(1,p.t/K.ROLL_TIME);
+    p.vx=p.dir*(K.ROLL_END_SPEED+(K.ROLL_SPEED-K.ROLL_END_SPEED)*Math.pow(1-k,K.ROLL_CURVE));   // burst, then ease out
+    p.ghostT+=dt;if(p.ghostT>0.035){p.ghostT=0;p.ghosts.push({x:p.x,a:k,t:0});}
+    if(p.t>=K.ROLL_TIME){p.state='recover';p.t=0;}
+  }else if(p.state==='recover'){
+    p.vx=approach(p.vx,input.dir*K.WALK_SPEED*K.RECOVERY_SPEED,K.WALK_ACCEL*dt);
+    if(p.t>=K.RECOVERY_TIME){p.state='free';p.t=0;p.cooldown=K.COOLDOWN;}
+  }else if(p.state==='stun'){
+    p.vx=approach(p.vx,0,K.WALK_ACCEL*0.6*dt);
+    if(p.t>=K.HIT_STUN){p.state='free';p.t=0;}
+  }
+  p.x+=p.vx*dt;
+  if(p.x<K.BODY_W){p.x=K.BODY_W;p.vx=0;}if(p.x>GUN-24){p.x=GUN-24;p.vx=0;}
+  if(!isFinite(p.x+p.vx)){p.x=HOME;p.vx=0;p.state='free';}
+  for(const g of p.ghosts)g.t+=dt;p.ghosts=p.ghosts.filter(g=>g.t<0.25);
+}
+// call for each projectile overlapping the body; returns true if it should be destroyed
+function takeHit(fromDir){
+  if(invulnerable())return false;                                    // passes through harmlessly
+  p.state='stun';p.t=0;p.vx=fromDir*K.HIT_KNOCKBACK;p.flash=0.12;p.buffer=0;
+  return true;
+}
+function drawPlayer(){
+  for(const g of p.ghosts){ctx.globalAlpha=(1-g.t/0.25)*0.35;ctx.strokeStyle=C.mu;ctx.lineWidth=1.5;ctx.beginPath();ctx.arc(g.x,GY-10,10,0,6.283);ctx.stroke();}
+  ctx.globalAlpha=1;
+  ctx.fillStyle='rgba(0,0,0,.45)';ctx.beginPath();ctx.ellipse(p.x,GY+2,11,2.4,0,0,6.283);ctx.fill();
+  const lit=p.flash>0?'#fff':C.a;
+  ctx.save();
+  if(p.state==='roll'){
+    // curled into a ball, spinning once per roll; hollow + yellow outline = invincible right now
+    const k=Math.min(1,p.t/K.ROLL_TIME);ctx.translate(p.x,GY-10);ctx.rotate(p.dir*k*6.283);
+    const inv=invulnerable();
+    ctx.beginPath();ctx.arc(0,0,10,0,6.283);ctx.globalAlpha=inv?0.35:1;ctx.fillStyle=lit;ctx.fill();ctx.globalAlpha=1;
+    if(inv){ctx.strokeStyle=C.y;ctx.lineWidth=1.8;ctx.stroke();}
+    ctx.strokeStyle=C.ink;ctx.lineWidth=2;ctx.beginPath();ctx.arc(0,0,5,-0.6,0.6);ctx.stroke();
+  }else{
+    const crouch=p.state==='recover'?0.82:p.state==='stun'?0.9:1;      // recovery reads as a low crouch
+    ctx.translate(p.x,GY);if(p.state==='stun')ctx.rotate(-Math.sign(p.vx||1)*0.15);
+    ctx.scale(2-crouch,crouch);
+    rr(-K.BODY_W/2,-K.BODY_H,K.BODY_W,K.BODY_H,6);ctx.fillStyle=lit;ctx.fill();
+    ctx.fillStyle=C.ink;const ex=p.face*2.5,eh=p.state==='stun'?1:4.5;
+    rr(ex-5,-K.BODY_H+6,3,eh,1.2);ctx.fill();rr(ex+2,-K.BODY_H+6,3,eh,1.2);ctx.fill();
+  }
+  ctx.restore();
+}
+function drawTimeline(x,y,w){
+  // one bar for roll → recovery → cooldown, with the i-frame slice in yellow and a playhead
+  const total=K.ROLL_TIME+K.RECOVERY_TIME+K.COOLDOWN,sx=w/total;
+  const seg=(t0,t1,col)=>{ctx.fillStyle=col;ctx.fillRect(x+t0*sx,y,(t1-t0)*sx,5);};
+  seg(0,K.ROLL_TIME,'#3A3A44');seg(K.IFRAME_START,K.IFRAME_END,C.y);
+  seg(K.ROLL_TIME,K.ROLL_TIME+K.RECOVERY_TIME,'#2A2A32');seg(K.ROLL_TIME+K.RECOVERY_TIME,total,'#1E1E25');
+  ctx.font='9px ui-sans-serif,system-ui,-apple-system,Helvetica,Arial,sans-serif';ctx.fillStyle=C.mu;ctx.textAlign='left';
+  ctx.fillText('i-frames',x+K.IFRAME_START*sx,y+15);ctx.textAlign='center';
+  ctx.fillText('recover',x+(K.ROLL_TIME+K.RECOVERY_TIME/2)*sx,y+15);ctx.fillText('cooldown',x+(total-K.COOLDOWN/2)*sx,y+15);
+  if(p.since<total&&p.state!=='stun'){ctx.fillStyle=C.ink;ctx.fillRect(x+p.since*sx-0.75,y-3,1.5,11);}
+}
+
+// ---- demo ----
+const keys={},BULLET_SPEED=230,BR=4;
+let userT=0,AC=null,bullets=[],pops=[],pairNext=false,fireT=0.15,dodged=0,hits=0,muzzle=0;
+function sfx(f,d){
+  if(!AC||userT<=0)return;
+  const t=AC.currentTime,o=AC.createOscillator(),g=AC.createGain();
+  o.type='triangle';o.frequency.setValueAtTime(f,t);o.frequency.exponentialRampToValueAtTime(f*0.5,t+d);
+  g.gain.setValueAtTime(0.045,t);g.gain.exponentialRampToValueAtTime(0.0001,t+d);
+  o.connect(g).connect(AC.destination);o.start(t);o.stop(t+d+0.02);
+}
+function fire(){if(bullets.length<12){bullets.push({x:GUN-14,y:GY-11,vx:-BULLET_SPEED,passed:false});muzzle=0.08;}}
+function autopilot(){
+  input.dir=0;
+  // roll into the nearest incoming bullet just before contact, so it meets the i-frames
+  let near=null;for(const b of bullets)if(!b.passed&&b.x>p.x&&(!near||b.x<near.x))near=b;
+  if(near){const gap=near.x-p.x-(K.BODY_W/2+BR);if(gap<BULLET_SPEED*0.11&&p.state==='free'&&p.cooldown<=0){input.rollPressed=true;input.rollDir=1;}}
+  if(p.state==='free'&&(!near||near.x-p.x>80)&&Math.abs(p.x-HOME)>6)input.dir=Math.sign(HOME-p.x);   // stroll back
+}
+function update(dt){
+  if(userT>0){userT-=dt;input.dir=(keys.ArrowRight||keys.d?1:0)-(keys.ArrowLeft||keys.a?1:0);if(input.dir)userT=Math.max(userT,3.5);}
+  else autopilot();
+  step(dt);
+  // turret: singles, or tight pairs that one roll clears
+  fireT-=dt;
+  if(fireT<=0){fire();
+    if(!pairNext&&Math.random()<0.4){pairNext=true;fireT=0.22;}else{pairNext=false;fireT=1.3+Math.random()*0.6;}}
+  muzzle=Math.max(0,muzzle-dt);
+  for(const b of bullets){
+    b.x+=b.vx*dt;
+    const overlap=Math.abs(b.x-p.x)<K.BODY_W/2+BR;
+    if(overlap&&!b.dead){
+      if(takeHit(Math.sign(b.vx))){b.dead=true;hits++;pops.push({x:p.x,y:GY-40,t:0,txt:'HIT',col:C.a});sfx(110,0.2);}
+      else if(!b.passed){b.passed=true;dodged++;pops.push({x:p.x,y:GY-40,t:0,txt:'DODGE',col:C.y});sfx(880,0.06);}
+    }
+    if(b.x<p.x-K.BODY_W)b.passed=true;
+  }
+  bullets=bullets.filter(b=>!b.dead&&b.x>-20);
+  for(const q of pops){q.t+=dt;q.y-=28*dt;}pops=pops.filter(q=>q.t<0.6);
+}
+function draw(){
+  ctx.setTransform(1,0,0,1,0,0);ctx.fillStyle=C.bg;ctx.fillRect(0,0,cv.width,cv.height);
+  ctx.setTransform(D*S,0,0,D*S,0,0);
+  ctx.fillStyle=C.dot;for(let x=10;x<VW;x+=20)for(let y=10;y<VH;y+=20)ctx.fillRect(x-0.75,y-0.75,1.5,1.5);
+  ctx.fillStyle='#131317';ctx.fillRect(0,GY,VW,VH-GY);
+  ctx.strokeStyle=C.ink;ctx.lineWidth=1.5;ctx.beginPath();ctx.moveTo(0,GY);ctx.lineTo(VW,GY);ctx.stroke();
+  // turret
+  rr(GUN-12,GY-22,24,22,4);ctx.fillStyle='#17171C';ctx.fill();ctx.strokeStyle=C.ink;ctx.stroke();
+  ctx.fillStyle=muzzle>0?C.ink:C.mu;ctx.fillRect(GUN-20,GY-14,8,6);
+  drawPlayer();
+  for(const b of bullets){
+    ctx.strokeStyle=C.mu;ctx.lineWidth=2;ctx.globalAlpha=0.5;ctx.beginPath();ctx.moveTo(b.x,b.y);ctx.lineTo(b.x+18,b.y);ctx.stroke();ctx.globalAlpha=1;
+    ctx.fillStyle=b.passed?C.mu:C.ink;ctx.beginPath();ctx.arc(b.x,b.y,BR,0,6.283);ctx.fill();
+  }
+  ctx.font='700 10px ui-sans-serif,system-ui,-apple-system,Helvetica,Arial,sans-serif';ctx.textAlign='center';
+  for(const q of pops){ctx.globalAlpha=1-q.t/0.6;ctx.fillStyle=q.col;ctx.fillText(q.txt,q.x,q.y);}
+  ctx.globalAlpha=1;
+  drawTimeline(VW/2-100,22,200);
+  ctx.font='10px ui-sans-serif,system-ui,-apple-system,Helvetica,Arial,sans-serif';ctx.fillStyle=C.mu;ctx.textAlign='center';
+  ctx.fillText('dodged '+dodged+' · hit '+hits,VW/2,62);
+  ctx.fillText('←/→ move · Space / Shift or click to roll',VW/2,VH-12);
+}
+let last=0;
+function frame(t){
+  requestAnimationFrame(frame);if(document.hidden){last=0;return;}
+  let dt=last?(t-last)/1000:0.016;last=t;if(!(dt>0))dt=0.016;dt=Math.min(dt,0.033);
+  update(dt);draw();
+}
+function wake(){
+  userT=3.5;
+  if(!AC){try{AC=new(window.AudioContext||window.webkitAudioContext)();}catch(e){AC=null;}}
+  if(AC&&AC.state==='suspended')AC.resume();
+}
+addEventListener('keydown',e=>{
+  const k=e.key.length===1?e.key.toLowerCase():e.key;
+  if(['ArrowLeft','ArrowRight','ArrowUp','ArrowDown',' '].includes(k))e.preventDefault();
+  if(['ArrowLeft','ArrowRight','a','d'].includes(k)){keys[k]=true;wake();}
+  if([' ','Shift','x'].includes(k)&&!e.repeat){input.rollPressed=true;input.rollDir=0;wake();}
+});
+addEventListener('keyup',e=>{const k=e.key.length===1?e.key.toLowerCase():e.key;keys[k]=false;});
+addEventListener('blur',()=>{for(const k in keys)keys[k]=false;});
+cv.addEventListener('pointerdown',e=>{
+  const r=cv.getBoundingClientRect(),x=(e.clientX-r.left)/S;
+  input.rollPressed=true;input.rollDir=x<p.x?-1:1;wake();e.preventDefault();
+});
+requestAnimationFrame(frame);
+})();
+</script></body></html>

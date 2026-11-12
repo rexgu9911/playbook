@@ -449,6 +449,7 @@
             <h2>Install <span class="chip">${esc(m.cat)}</span></h2>
             <p class="lead">${esc(m.desc)}</p>
             <div class="cmd" style="margin-top:0"><code><b>›</b> ${cmd}</code><button class="copy" data-copy="${cmd}">Copy</button></div>
+            ${m.keys?.length ? `<div class="rsec" style="margin-top:18px"><label>Key numbers</label><div class="keys">${m.keys.map(k => `<div><code>${esc(k.name)}</code><b>${esc(String(k.value))}${k.unit ? ` <span>${esc(k.unit)}</span>` : ''}</b><p>${esc(k.note)}</p></div>`).join('')}</div></div>` : ''}
             <div class="rsec" style="margin-top:18px"><label>Or paste into your agent</label><div class="prompt">${esc(m.prompt)}</div><div class="prompt-row"><button class="copy" data-copy="${esc(m.prompt)}">Copy prompt</button></div></div>
             <div class="rsec"><label>Works with</label><div class="mchips"><span class="mchip">Canvas 2D</span><span class="mchip">Three.js</span><span class="mchip">Phaser</span></div></div>
             <p class="note">The first line works once <a class="link" href="#/mcp">Playbook MCP</a> is installed; the prompt works in any coding agent as is.</p>

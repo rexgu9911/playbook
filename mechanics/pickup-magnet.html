@@ -1,0 +1,152 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Pickup Magnet</title>
+<style>html,body{margin:0;height:100%;background:#0D0D10;overflow:hidden}canvas{display:block;width:100%;height:100%;touch-action:none}</style>
+</head><body><canvas id="c"></canvas><script>
+(()=>{
+const K={
+  MAGNET_RADIUS: 64,     // px: a resting gem wakes up when the player is this close
+  KICK_BACK: 70,         // px/s little hop away from the player on wake (anticipation)
+  ORBIT_SPEED: 90,       // px/s sideways speed on wake: gives the slight orbit
+  ACCEL: 1300,           // px/s² pull toward the player (speed ramps up = ease-in)
+  MAX_SPEED: 620,        // px/s top homing speed
+  STEER: 6,              // 1/s how fast the velocity turns to face the player (unwinds the orbit)
+  COLLECT_RADIUS: 9,     // px distance at which a gem is collected
+  POP_TIME: 0.22,        // s collect pop (ring + flash)
+  CHIME_BASE: 660,       // Hz pitch of the first pickup in a chain
+  CHIME_STEP: 1,         // semitones added per pickup while the chain lasts
+  CHAIN_WINDOW: 0.4,     // s max gap between pickups to keep the chain going
+  CHAIN_MAX: 12,         // pickups after which the pitch stops rising
+  CHIME_VOL: 0.035,      // 0–1 chime gain
+};
+const C={bg:'#0D0D10',dot:'#1A1A20',a:'#FF4D2E',y:'#F5E663',ink:'#F4F1EA',mu:'#6B6B76'};
+const cv=document.getElementById('c'),ctx=cv.getContext('2d');
+let W=300,H=200,D=1,S=1,VW=440,VH=280;
+function rr(x,y,w,h,r){ctx.beginPath();ctx.moveTo(x+r,y);ctx.arcTo(x+w,y,x+w,y+h,r);ctx.arcTo(x+w,y+h,x,y+h,r);ctx.arcTo(x,y+h,x,y,r);ctx.arcTo(x,y,x+w,y,r);ctx.closePath();}
+const lerp=(a,b,k)=>a+(b-a)*k;
+
+// ---- mechanic ----
+const player={x:220,y:140,sq:0};
+let gems=[],pops=[],chain=0,lastPickup=-9,now=0,xp=0,AC=null,soundOn=false,lastChime=0;  // AC/soundOn: set by the game after a user gesture
+// Returns true when the gem should be collected this frame.
+function updateGem(g,dt){
+  const dx=player.x-g.x,dy=player.y-g.y,d=Math.hypot(dx,dy)||1,nx=dx/d,ny=dy/d;
+  if(!g.homing){                                       // asleep until the player is inside the radius
+    if(d<K.MAGNET_RADIUS){
+      g.homing=true;const side=Math.random()<0.5?-1:1;
+      g.vx=-nx*K.KICK_BACK-ny*side*K.ORBIT_SPEED;      // hop back + sideways: (-n) and the perpendicular (-ny, nx)
+      g.vy=-ny*K.KICK_BACK+nx*side*K.ORBIT_SPEED;
+    }
+    return false;
+  }
+  // once awake it never gives up, even if the player runs out of range
+  g.vx+=nx*K.ACCEL*dt;g.vy+=ny*K.ACCEL*dt;             // constant pull = speed eases up
+  const sp=Math.hypot(g.vx,g.vy),s=1-Math.exp(-K.STEER*dt);
+  g.vx=lerp(g.vx,nx*sp,s);g.vy=lerp(g.vy,ny*sp,s);     // turn toward the player: the orbit spirals in
+  const sp2=Math.hypot(g.vx,g.vy);if(sp2>K.MAX_SPEED){g.vx*=K.MAX_SPEED/sp2;g.vy*=K.MAX_SPEED/sp2;}
+  if(d<K.COLLECT_RADIUS||Math.min(sp2,K.MAX_SPEED)*dt>=d)return true;   // close, or would pass through this frame
+  g.x+=g.vx*dt;g.y+=g.vy*dt;
+  return false;
+}
+function collect(g){
+  chain=now-lastPickup<K.CHAIN_WINDOW?chain+1:0;lastPickup=now;   // fast pickups climb the scale
+  chime(K.CHIME_BASE*Math.pow(2,Math.min(chain,K.CHAIN_MAX)*K.CHIME_STEP/12));
+  xp+=g.val;player.sq=Math.min(0.25,player.sq+0.08);
+  if(pops.length<30)pops.push({x:g.x,y:g.y,t:0,big:g.val>1});
+}
+function chime(f){
+  if(!AC||!soundOn)return;                             // audio only after a user gesture
+  const t=AC.currentTime;if(t-lastChime<0.025)return;lastChime=t;   // avoid stacking clicks
+  const g=AC.createGain();g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(K.CHIME_VOL,t+0.005);
+  g.gain.exponentialRampToValueAtTime(0.0001,t+0.22);g.connect(AC.destination);
+  [[1,1],[2,0.3]].forEach(([m,v])=>{const o=AC.createOscillator(),og=AC.createGain();o.type='sine';o.frequency.setValueAtTime(f*m,t);
+    og.gain.value=v;o.connect(og).connect(g);o.start(t);o.stop(t+0.24);});
+}
+function updatePickups(dt){
+  now+=dt;
+  for(const g of gems){g.born=Math.min(1,g.born+dt*4);if(updateGem(g,dt)){g.dead=true;collect(g);}}
+  gems=gems.filter(g=>!g.dead);
+  for(const p of pops)p.t+=dt;pops=pops.filter(p=>p.t<K.POP_TIME);
+  player.sq=Math.max(0,player.sq-dt*1.5);
+}
+
+// ---- demo ----
+let userT=0,autoT=0,ptr=null;const keys={};
+function resize(){
+  D=Math.min(2,window.devicePixelRatio||1);W=Math.max(40,innerWidth||300);H=Math.max(40,innerHeight||200);
+  cv.width=Math.round(W*D);cv.height=Math.round(H*D);S=Math.min(W/440,H/280);VW=W/S;VH=H/S;
+}
+addEventListener('resize',resize);resize();
+function addGem(x,y){gems.push({x,y,vx:0,vy:0,homing:false,born:0,val:Math.random()<0.15?5:1,ph:Math.random()*6});}
+function seed(){for(let x=30;x<VW-20;x+=26)for(let y=40;y<VH-40;y+=26)if(Math.random()<0.6)addGem(x+(Math.random()-0.5)*10,y+(Math.random()-0.5)*10);}
+seed();player.x=40;player.y=VH/2;
+function refill(){  // keep the field stocked, away from the player
+  if(gems.length>=60)return;
+  for(let i=0;i<4;i++){const x=24+Math.random()*(VW-48),y=36+Math.random()*(VH-80);
+    if(Math.hypot(x-player.x,y-player.y)>110){addGem(x,y);return;}}
+}
+function update(dt){
+  let tx,ty,speed=200;
+  if(userT>0){userT-=dt;
+    const kx=(keys.ArrowRight||keys.d?1:0)-(keys.ArrowLeft||keys.a?1:0),ky=(keys.ArrowDown||keys.s?1:0)-(keys.ArrowUp||keys.w?1:0);
+    if(kx||ky){userT=3.5;tx=player.x+kx*50;ty=player.y+ky*50;}else if(ptr){tx=ptr.x;ty=ptr.y;speed=320;}
+  }else{autoT+=dt;tx=VW/2+Math.sin(autoT*0.62)*VW*0.4;ty=VH/2-6+Math.sin(autoT*1.07+1.2)*(VH*0.5-46);}  // lissajous sweep
+  if(tx!==undefined){const dx=tx-player.x,dy=ty-player.y,d=Math.hypot(dx,dy);
+    if(d>0.5){const st=Math.min(d,speed*dt);player.x+=dx/d*st;player.y+=dy/d*st;}}
+  player.x=Math.max(10,Math.min(VW-10,player.x));player.y=Math.max(14,Math.min(VH-28,player.y));
+  soundOn=userT>0;                                    // chime only while someone is actually playing
+  updatePickups(dt);
+  if(Math.random()<dt*6)refill();
+}
+function draw(){
+  ctx.setTransform(1,0,0,1,0,0);ctx.fillStyle=C.bg;ctx.fillRect(0,0,cv.width,cv.height);
+  ctx.setTransform(D*S,0,0,D*S,0,0);
+  ctx.fillStyle=C.dot;for(let x=10;x<VW;x+=20)for(let y=10;y<VH;y+=20)ctx.fillRect(x-0.75,y-0.75,1.5,1.5);
+  // magnet radius
+  ctx.setLineDash([3,5]);ctx.strokeStyle=C.mu;ctx.globalAlpha=0.5;ctx.lineWidth=1;
+  ctx.beginPath();ctx.arc(player.x,player.y,K.MAGNET_RADIUS,0,6.283);ctx.stroke();ctx.setLineDash([]);ctx.globalAlpha=1;
+  // gems: idle ones bob, homing ones get a short speed streak
+  for(const g of gems){
+    const r=(g.val>1?5:3.5)*(1-Math.pow(1-g.born,3)),y=g.homing?g.y:g.y+Math.sin(now*3+g.ph)*1.2;
+    if(g.homing){ctx.strokeStyle=g.val>1?C.y:C.ink;ctx.globalAlpha=0.35;ctx.lineWidth=r;ctx.lineCap='round';
+      ctx.beginPath();ctx.moveTo(g.x,y);ctx.lineTo(g.x-g.vx*0.03,y-g.vy*0.03);ctx.stroke();ctx.globalAlpha=1;ctx.lineCap='butt';}
+    ctx.fillStyle=g.val>1?C.y:C.ink;ctx.beginPath();ctx.moveTo(g.x,y-r*1.3);ctx.lineTo(g.x+r,y);ctx.lineTo(g.x,y+r*1.3);ctx.lineTo(g.x-r,y);ctx.closePath();ctx.fill();
+  }
+  // player
+  const s=player.sq;ctx.save();ctx.translate(player.x,player.y);ctx.scale(1+s,1-s*0.6);
+  rr(-10,-10,20,20,7);ctx.fillStyle=C.a;ctx.fill();ctx.fillStyle=C.ink;rr(-5,-5,3,4.5,1.5);ctx.fill();rr(2,-5,3,4.5,1.5);ctx.fill();ctx.restore();
+  // collect pops
+  for(const p of pops){const k=p.t/K.POP_TIME,e=1-Math.pow(1-k,2);ctx.globalAlpha=1-k;ctx.strokeStyle=p.big?C.y:C.ink;ctx.lineWidth=1.5;
+    ctx.beginPath();ctx.arc(p.x,p.y,4+e*(p.big?16:10),0,6.283);ctx.stroke();}
+  ctx.globalAlpha=1;
+  // HUD
+  const f='ui-sans-serif,system-ui,-apple-system,Helvetica,Arial,sans-serif';
+  ctx.font='bold 11px '+f;ctx.textAlign='left';ctx.fillStyle=C.mu;ctx.fillText('XP',16,22);ctx.fillStyle=C.ink;ctx.fillText(xp,36,22);
+  if(chain>=2&&now-lastPickup<K.CHAIN_WINDOW+0.3){ctx.fillStyle=C.y;ctx.fillText('chain ×'+(chain+1),80,22);}
+  ctx.font='10px '+f;ctx.textAlign='center';ctx.fillStyle=C.mu;ctx.fillText('Move the pointer or WASD/arrows to sweep · sound on after a click',VW/2,VH-12);
+}
+let last=0;
+function frame(t){
+  requestAnimationFrame(frame);if(document.hidden){last=0;return;}
+  let dt=last?(t-last)/1000:0.016;last=t;if(!(dt>0))dt=0.016;dt=Math.min(dt,0.033);
+  update(dt);draw();
+}
+function wake(sound){
+  userT=3.5;if(!sound)return;
+  if(!AC){try{AC=new(window.AudioContext||window.webkitAudioContext)();}catch(e){AC=null;}}
+  if(AC&&AC.state==='suspended')AC.resume();
+}
+function pp(e){const r=cv.getBoundingClientRect();ptr={x:(e.clientX-r.left)/S,y:(e.clientY-r.top)/S};}
+cv.addEventListener('pointerdown',e=>{pp(e);wake(true);e.preventDefault();});
+cv.addEventListener('pointermove',e=>{pp(e);wake(false);});
+cv.addEventListener('pointerleave',()=>{ptr=null;});
+addEventListener('keydown',e=>{
+  const k=e.key.length===1?e.key.toLowerCase():e.key;
+  if(['ArrowLeft','ArrowRight','ArrowUp','ArrowDown',' '].includes(k))e.preventDefault();
+  if(['ArrowLeft','ArrowRight','ArrowUp','ArrowDown','w','a','s','d'].includes(k)){keys[k]=true;wake(true);}
+});
+addEventListener('keyup',e=>{const k=e.key.length===1?e.key.toLowerCase():e.key;keys[k]=false;});
+addEventListener('blur',()=>{for(const k in keys)keys[k]=false;ptr=null;});
+requestAnimationFrame(frame);
+})();
+</script></body></html>

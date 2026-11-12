@@ -1,0 +1,157 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Homing Missile</title>
+<style>html,body{margin:0;height:100%;background:#0D0D10;overflow:hidden}canvas{display:block;width:100%;height:100%;touch-action:none}</style>
+</head><body><canvas id="c"></canvas><script>
+(()=>{
+const K={
+  SALVO_COUNT: 4,         // missiles per salvo
+  SALVO_INTERVAL: 0.12,   // s between missiles in a salvo
+  SALVO_PAUSE: 1.6,       // s between automatic salvos
+  LAUNCH_SPEED: 170,      // px/s speed out of the tube
+  LAUNCH_SPREAD: 0.9,     // rad total fan of launch angles around straight up
+  LAUNCH_GRAVITY: 320,    // px/s² pull during the unguided launch arc
+  ARM_TIME: 0.28,         // s of unguided coasting before the seeker turns on
+  ACCEL: 520,             // px/s² thrust once armed
+  MAX_SPEED: 380,         // px/s top speed
+  TURN_RATE: 3.2,         // rad/s max steering rate (lower = wider, lazier curves)
+  LIFETIME: 3.2,          // s before an unspent missile fizzles out
+  HIT_RADIUS: 12,         // px distance to the target that counts as a hit
+  SMOKE_INTERVAL: 0.018,  // s between smoke puffs from each missile
+  SMOKE_LIFE: 0.7,        // s a smoke puff lasts
+  SMOKE_GROW: 9,          // px a puff's radius grows over its life
+  MAX_SMOKE: 220,         // smoke puff cap
+};
+const C={bg:'#0D0D10',dot:'#1A1A20',a:'#FF4D2E',y:'#F5E663',ink:'#F4F1EA',mu:'#6B6B76'};
+const cv=document.getElementById('c'),ctx=cv.getContext('2d');
+let W=300,H=200,D=1,S=1,VW=440,VH=280,GY=244,LX=60;
+const target={x:300,y:100,gx:300,gy:100,flash:0,kx:0,ky:0};
+function layout(){GY=VH-36;LX=VW/2-170;}
+function resize(){
+  D=Math.min(2,window.devicePixelRatio||1);W=Math.max(40,innerWidth||300);H=Math.max(40,innerHeight||200);
+  cv.width=Math.round(W*D);cv.height=Math.round(H*D);S=Math.min(W/440,H/280);VW=W/S;VH=H/S;layout();
+}
+addEventListener('resize',resize);resize();
+target.x=target.gx=VW/2+90;target.y=target.gy=VH*0.38;
+function rr(x,y,w,h,r){r=Math.min(r,w/2,h/2);ctx.beginPath();ctx.moveTo(x+r,y);ctx.arcTo(x+w,y,x+w,y+h,r);ctx.arcTo(x+w,y+h,x,y+h,r);ctx.arcTo(x,y+h,x,y,r);ctx.arcTo(x,y,x+w,y,r);ctx.closePath();}
+const wrapAngle=a=>Math.atan2(Math.sin(a),Math.cos(a));   // to -PI..PI
+
+// ---- mechanic ----
+let missiles=[],smoke=[],booms=[];
+function launch(i,n){
+  const fan=n>1?i/(n-1)-0.5:0,a=-Math.PI/2+fan*K.LAUNCH_SPREAD;    // spread the salvo into a fan
+  missiles.push({x:LX+fan*10,y:GY-18,vx:Math.cos(a)*K.LAUNCH_SPEED,vy:Math.sin(a)*K.LAUNCH_SPEED,heading:a,t:0,smokeAcc:0});
+  sfx(140,0.035);
+}
+function missileUpdate(m,dt){
+  m.t+=dt;
+  if(m.t<K.ARM_TIME){                                // launch arc: unguided, gravity bends it
+    m.vy+=K.LAUNCH_GRAVITY*dt;m.heading=Math.atan2(m.vy,m.vx);
+  }else{                                             // seeker on: turn toward the target, but no faster than TURN_RATE
+    const want=Math.atan2(target.y-m.y,target.x-m.x),diff=wrapAngle(want-m.heading),maxTurn=K.TURN_RATE*dt;
+    m.heading+=Math.max(-maxTurn,Math.min(maxTurn,diff));
+    const speed=Math.min(K.MAX_SPEED,Math.hypot(m.vx,m.vy)+K.ACCEL*dt);   // accelerate up to top speed
+    m.vx=Math.cos(m.heading)*speed;m.vy=Math.sin(m.heading)*speed;
+  }
+  m.x+=m.vx*dt;m.y+=m.vy*dt;
+  m.smokeAcc+=dt;                                    // trail: fixed-interval puffs from the tail
+  while(m.smokeAcc>=K.SMOKE_INTERVAL){m.smokeAcc-=K.SMOKE_INTERVAL;
+    if(smoke.length<K.MAX_SMOKE)smoke.push({x:m.x-Math.cos(m.heading)*6+(Math.random()-0.5)*2,y:m.y-Math.sin(m.heading)*6+(Math.random()-0.5)*2,t:0,r:1.5+Math.random()});}
+  if(Math.hypot(target.x-m.x,target.y-m.y)<K.HIT_RADIUS){explode(m,true);return false;}
+  if(m.t>K.LIFETIME||m.y>GY){explode(m,false);return false;}      // fizzles out
+  return true;
+}
+function missilesUpdate(dt){
+  missiles=missiles.filter(m=>missileUpdate(m,dt));
+  for(const s of smoke)s.t+=dt;smoke=smoke.filter(s=>s.t<K.SMOKE_LIFE);
+}
+function drawMissiles(){
+  for(const s of smoke){const k=s.t/K.SMOKE_LIFE;ctx.globalAlpha=(1-k)*0.55;ctx.fillStyle=k<0.08?C.y:C.mu;   // starts hot, turns to smoke
+    ctx.beginPath();ctx.arc(s.x,s.y-k*6,s.r+k*K.SMOKE_GROW,0,6.283);ctx.fill();}
+  ctx.globalAlpha=1;
+  for(const m of missiles){ctx.save();ctx.translate(m.x,m.y);ctx.rotate(m.heading);
+    if(m.t>=K.ARM_TIME){ctx.fillStyle=C.a;const f=5+Math.random()*4;ctx.beginPath();ctx.moveTo(-5,-2);ctx.lineTo(-5-f,0);ctx.lineTo(-5,2);ctx.fill();}  // thrust flame once armed
+    rr(-5,-2,11,4,2);ctx.fillStyle=C.ink;ctx.fill();
+    ctx.fillStyle=C.mu;ctx.beginPath();ctx.moveTo(-5,-2);ctx.lineTo(-7,-4);ctx.lineTo(-2,-2);ctx.moveTo(-5,2);ctx.lineTo(-7,4);ctx.lineTo(-2,2);ctx.fill();
+    ctx.restore();}
+}
+
+// ---- demo ----
+let time=0,userT=0,AC=null,debris=[],queue=[];
+const ai={t:0.3,goalT:0};
+function salvo(){for(let i=0;i<K.SALVO_COUNT;i++)queue.push({d:i*K.SALVO_INTERVAL,i,n:K.SALVO_COUNT});}
+function explode(m,hit){
+  booms.push({x:m.x,y:m.y,t:0,big:hit});
+  if(hit){target.flash=1;target.kx+=m.vx*0.03;target.ky+=m.vy*0.03;sfx(90,0.06);
+    for(let i=0;i<8&&debris.length<60;i++){const a=Math.random()*6.283,s=60+Math.random()*140;debris.push({x:m.x,y:m.y,vx:Math.cos(a)*s,vy:Math.sin(a)*s,life:0,max:0.3+Math.random()*0.3});}}
+}
+function sfx(f,v){
+  if(!AC||userT<=0)return;
+  const t=AC.currentTime,o=AC.createOscillator(),g=AC.createGain();
+  o.type='triangle';o.frequency.setValueAtTime(f,t);o.frequency.exponentialRampToValueAtTime(f*0.5,t+0.14);
+  g.gain.setValueAtTime(v,t);g.gain.exponentialRampToValueAtTime(0.0001,t+0.16);o.connect(g).connect(AC.destination);o.start(t);o.stop(t+0.17);
+}
+function update(dt){
+  time+=dt;
+  if(userT>0)userT-=dt;
+  else{ai.goalT-=dt;if(ai.goalT<=0){target.gx=VW/2-40+Math.random()*190;target.gy=40+Math.random()*(GY-130);ai.goalT=1.2+Math.random()*1.2;}}  // drift around
+  ai.t-=dt;if(ai.t<=0){salvo();ai.t=K.SALVO_PAUSE+K.SALVO_COUNT*K.SALVO_INTERVAL;}
+  for(const q of queue)q.d-=dt;
+  while(queue.length&&queue[0].d<=0){const q=queue.shift();launch(q.i,q.n);}
+  // target glides to its goal (plus a little bob), knock offset springs back
+  const e=Math.min(1,dt*1.8);target.x+=(target.gx-target.x)*e;target.y+=(target.gy+Math.sin(time*2)*6-target.y)*e;
+  target.kx*=Math.exp(-6*dt);target.ky*=Math.exp(-6*dt);target.flash=Math.max(0,target.flash-dt*6);
+  missilesUpdate(dt);
+  for(const b of booms)b.t+=dt;booms=booms.filter(b=>b.t<0.4);
+  for(const d of debris){d.life+=dt;d.x+=d.vx*dt;d.y+=d.vy*dt;d.vy+=300*dt;}
+  debris=debris.filter(d=>d.life<d.max);
+}
+function draw(){
+  ctx.setTransform(1,0,0,1,0,0);ctx.fillStyle=C.bg;ctx.fillRect(0,0,cv.width,cv.height);
+  ctx.setTransform(D*S,0,0,D*S,0,0);
+  ctx.fillStyle=C.dot;for(let x=10;x<VW;x+=20)for(let y=10;y<VH;y+=20)ctx.fillRect(x-0.75,y-0.75,1.5,1.5);
+  ctx.fillStyle='#131317';ctx.fillRect(0,GY,VW,VH-GY);
+  ctx.strokeStyle=C.ink;ctx.lineWidth=1.5;ctx.beginPath();ctx.moveTo(0,GY);ctx.lineTo(VW,GY);ctx.stroke();
+  // target: brackets + ring; dashed line to its goal while it is moving there
+  const tx=target.x+target.kx,ty=target.y+target.ky;
+  if(Math.hypot(target.gx-target.x,target.gy-target.y)>6){ctx.strokeStyle=C.dot;ctx.setLineDash([3,4]);ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(tx,ty);ctx.lineTo(target.gx,target.gy);ctx.stroke();ctx.setLineDash([]);}
+  ctx.strokeStyle=C.ink;ctx.lineWidth=1.5;ctx.beginPath();ctx.arc(tx,ty,9,0,6.283);ctx.stroke();
+  ctx.fillStyle=C.a;ctx.beginPath();ctx.arc(tx,ty,2.5,0,6.283);ctx.fill();
+  ctx.strokeStyle=C.mu;ctx.beginPath();
+  for(let i=0;i<4;i++){const sx=i%2?1:-1,sy=i<2?1:-1;ctx.moveTo(tx+sx*17,ty+sy*11);ctx.lineTo(tx+sx*17,ty+sy*17);ctx.lineTo(tx+sx*11,ty+sy*17);}
+  ctx.stroke();
+  if(target.flash>0){ctx.globalAlpha=target.flash;ctx.fillStyle=C.ink;ctx.beginPath();ctx.arc(tx,ty,11,0,6.283);ctx.fill();ctx.globalAlpha=1;}
+  drawMissiles();
+  // launcher
+  ctx.save();ctx.translate(LX,GY);
+  rr(-20,-14,40,14,4);ctx.fillStyle='#17171C';ctx.fill();ctx.strokeStyle=C.ink;ctx.lineWidth=1.5;ctx.stroke();
+  for(let i=-1;i<=1;i++){rr(i*10-3.5,-22,7,10,2);ctx.fillStyle=C.mu;ctx.fill();}
+  ctx.restore();
+  for(const b of booms){const k=b.t/0.4,r=(b.big?6:3)+k*(b.big?26:10);ctx.globalAlpha=1-k;ctx.strokeStyle=b.big?C.a:C.mu;ctx.lineWidth=2*(1-k)+0.5;ctx.beginPath();ctx.arc(b.x,b.y,r,0,6.283);ctx.stroke();
+    if(b.big&&k<0.3){ctx.fillStyle=C.y;ctx.beginPath();ctx.arc(b.x,b.y,8*(1-k/0.3),0,6.283);ctx.fill();}}
+  ctx.globalAlpha=1;ctx.lineWidth=1.5;ctx.lineCap='round';
+  for(const d of debris){ctx.globalAlpha=1-d.life/d.max;ctx.strokeStyle=C.ink;ctx.beginPath();ctx.moveTo(d.x,d.y);ctx.lineTo(d.x-d.vx*0.03,d.y-d.vy*0.03);ctx.stroke();}
+  ctx.globalAlpha=1;ctx.lineCap='butt';
+  ctx.font='10px ui-sans-serif,system-ui,-apple-system,Helvetica,Arial,sans-serif';ctx.textAlign='center';ctx.fillStyle=C.mu;
+  ctx.fillText('Click to move the target · Space to fire a salvo',VW/2,VH-12);
+}
+let last=0;
+function frame(t){
+  requestAnimationFrame(frame);if(document.hidden){last=0;return;}
+  let dt=last?(t-last)/1000:0.016;last=t;if(!(dt>0))dt=0.016;dt=Math.min(dt,0.033);
+  update(dt);draw();
+}
+function wake(){
+  userT=3.5;
+  if(!AC){try{AC=new(window.AudioContext||window.webkitAudioContext)();}catch(e){AC=null;}}
+  if(AC&&AC.state==='suspended')AC.resume();
+}
+cv.addEventListener('pointerdown',e=>{
+  const r=cv.getBoundingClientRect();wake();
+  target.gx=Math.max(20,Math.min(VW-20,(e.clientX-r.left)/S));target.gy=Math.max(20,Math.min(GY-30,(e.clientY-r.top)/S));e.preventDefault();
+});
+addEventListener('keydown',e=>{if([' ','ArrowUp','ArrowDown'].includes(e.key))e.preventDefault();
+  if(e.key===' '&&!e.repeat){wake();if(queue.length<K.SALVO_COUNT*2)salvo();ai.t=K.SALVO_PAUSE+K.SALVO_COUNT*K.SALVO_INTERVAL;}});
+requestAnimationFrame(frame);
+})();
+</script></body></html>

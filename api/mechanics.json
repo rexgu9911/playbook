@@ -5,6 +5,26 @@
   "category": "Movement",
   "description": "Acceleration, variable jump height, coyote time and jump buffering, with squash and stretch.",
   "prompt": "Add a platformer controller with acceleration curves, variable jump height, 100ms coyote time, 120ms jump buffer, squash & stretch and landing dust.",
+  "key_numbers": [
+   {
+    "name": "COYOTE_TIME",
+    "value": 0.1,
+    "unit": "s",
+    "note": "jump still works this long after leaving a ledge"
+   },
+   {
+    "name": "JUMP_BUFFER",
+    "value": 0.12,
+    "unit": "s",
+    "note": "a jump press is remembered this long before landing"
+   },
+   {
+    "name": "ACC",
+    "value": 1900,
+    "unit": "px/s²",
+    "note": "horizontal acceleration"
+   }
+  ],
   "demo_url": "https://rexgu9911.github.io/playbook/mechanics/platformer-controller.html",
   "page_url": "https://rexgu9911.github.io/playbook/#/mechanic/platformer-controller",
   "source_url": "https://rexgu9911.github.io/playbook/mechanics/platformer-controller.html",
@@ -25,6 +45,26 @@
   "category": "Feel",
   "description": "Trauma-based camera shake that stacks and decays, instead of random jitter.",
   "prompt": "Add trauma-based screen shake: impacts add trauma (0–1), shake = trauma², decay over time, rotate slightly as well as translate.",
+  "key_numbers": [
+   {
+    "name": "TRAUMA_PER_HIT",
+    "value": 0.38,
+    "unit": "0–1 per unit power",
+    "note": "trauma added by an impact, scaled by hit power"
+   },
+   {
+    "name": "TRAUMA_DECAY",
+    "value": 1.15,
+    "unit": "/s",
+    "note": "trauma lost per second (linear)"
+   },
+   {
+    "name": "SHAKE_CURVE",
+    "value": 2,
+    "unit": "exponent",
+    "note": "shake amount = trauma²"
+   }
+  ],
   "demo_url": "https://rexgu9911.github.io/playbook/mechanics/screen-shake.html",
   "page_url": "https://rexgu9911.github.io/playbook/#/mechanic/screen-shake",
   "source_url": "https://rexgu9911.github.io/playbook/mechanics/screen-shake.html",
@@ -48,6 +88,32 @@
   "category": "Feel",
   "description": "Freeze frames, white flash and knockback so every hit lands.",
   "prompt": "Add hit-stop on impact: freeze the whole world for 70ms + 75ms × hit power (about 120–180ms), keep the target fully white for the whole freeze, then apply knockback to the target and recoil to the attacker when the freeze ends.",
+  "key_numbers": [
+   {
+    "name": "HITSTOP_BASE",
+    "value": 0.07,
+    "unit": "s",
+    "note": "freeze for any hit"
+   },
+   {
+    "name": "HITSTOP_PER_POWER",
+    "value": 0.075,
+    "unit": "s per unit power",
+    "note": "extra freeze for harder hits"
+   },
+   {
+    "name": "FLASH_DECAY",
+    "value": 9,
+    "unit": "/s",
+    "note": "white flash fade after the freeze"
+   },
+   {
+    "name": "FREEZE_JITTER",
+    "value": 2.2,
+    "unit": "px",
+    "note": "target shake while frozen"
+   }
+  ],
   "demo_url": "https://rexgu9911.github.io/playbook/mechanics/hit-stop.html",
   "page_url": "https://rexgu9911.github.io/playbook/#/mechanic/hit-stop",
   "source_url": "https://rexgu9911.github.io/playbook/mechanics/hit-stop.html",
@@ -69,6 +135,14 @@
   "category": "Feel",
   "description": "Sparks, smoke, shockwave ring and debris in one call.",
   "prompt": "Add a burst(x, y, power) effect with four layers: fast sparks, slow smoke, an expanding shockwave ring and debris with gravity. Cap total particles.",
+  "key_numbers": [
+   {
+    "name": "MAX_PARTICLES",
+    "value": 200,
+    "unit": "count",
+    "note": "hard cap across all layers"
+   }
+  ],
   "demo_url": "https://rexgu9911.github.io/playbook/mechanics/particle-burst.html",
   "page_url": "https://rexgu9911.github.io/playbook/#/mechanic/particle-burst",
   "source_url": "https://rexgu9911.github.io/playbook/mechanics/particle-burst.html",
@@ -94,6 +168,14 @@
   "category": "Movement",
   "description": "Pendulum rope physics with a release fling.",
   "prompt": "Add a grappling hook: fire at the nearest anchor, constrain to rope length, simulate pendulum swing, keep momentum on release.",
+  "key_numbers": [
+   {
+    "name": "GRAVITY",
+    "value": 900,
+    "unit": "px/s²",
+    "note": "gravity while swinging"
+   }
+  ],
   "demo_url": "https://rexgu9911.github.io/playbook/mechanics/grapple-hook.html",
   "page_url": "https://rexgu9911.github.io/playbook/#/mechanic/grapple-hook",
   "source_url": "https://rexgu9911.github.io/playbook/mechanics/grapple-hook.html",
@@ -114,6 +196,14 @@
   "category": "Movement",
   "description": "A snappy dash with afterimages, speed lines and a cooldown ring.",
   "prompt": "Add a dash toward the pointer with eased burst speed, fading afterimages, speed lines and a visible cooldown ring.",
+  "key_numbers": [
+   {
+    "name": "DASH_TIME",
+    "value": 0.15,
+    "unit": "s",
+    "note": "length of the dash burst"
+   }
+  ],
   "demo_url": "https://rexgu9911.github.io/playbook/mechanics/dash-trail.html",
   "page_url": "https://rexgu9911.github.io/playbook/#/mechanic/dash-trail",
   "source_url": "https://rexgu9911.github.io/playbook/mechanics/dash-trail.html",
@@ -135,6 +225,7 @@
   "category": "Progression",
   "description": "Level-up cards that deal in, tilt on hover and confirm with a burst.",
   "prompt": "Add a level-up screen that pauses the game and deals three upgrade cards with stagger, 3D tilt on hover and a confirm burst.",
+  "key_numbers": [],
   "demo_url": "https://rexgu9911.github.io/playbook/mechanics/upgrade-cards.html",
   "page_url": "https://rexgu9911.github.io/playbook/#/mechanic/upgrade-cards",
   "source_url": "https://rexgu9911.github.io/playbook/mechanics/upgrade-cards.html",
@@ -155,6 +246,7 @@
   "category": "Progression",
   "description": "Shake, crack, rarity beam, confetti.",
   "prompt": "Add a loot reveal: the capsule shakes with rising intensity, cracks open, shows the item with a rarity-coloured beam and confetti.",
+  "key_numbers": [],
   "demo_url": "https://rexgu9911.github.io/playbook/mechanics/loot-reveal.html",
   "page_url": "https://rexgu9911.github.io/playbook/#/mechanic/loot-reveal",
   "source_url": "https://rexgu9911.github.io/playbook/mechanics/loot-reveal.html",
@@ -175,6 +267,7 @@
   "category": "Feedback",
   "description": "Pop, arc and fade, with crits that look like crits.",
   "prompt": "Add floating damage numbers: pop-scale in, arc sideways, fade out; crits are larger, coloured and shake; nearby numbers stack.",
+  "key_numbers": [],
   "demo_url": "https://rexgu9911.github.io/playbook/mechanics/damage-numbers.html",
   "page_url": "https://rexgu9911.github.io/playbook/#/mechanic/damage-numbers",
   "source_url": "https://rexgu9911.github.io/playbook/mechanics/damage-numbers.html",
@@ -197,6 +290,7 @@
   "category": "Camera",
   "description": "Smooth-damped follow with look-ahead and a dead zone.",
   "prompt": "Add a camera that follows with critically damped smoothing, look-ahead in the movement direction and a small dead zone.",
+  "key_numbers": [],
   "demo_url": "https://rexgu9911.github.io/playbook/mechanics/camera-follow.html",
   "page_url": "https://rexgu9911.github.io/playbook/#/mechanic/camera-follow",
   "source_url": "https://rexgu9911.github.io/playbook/mechanics/camera-follow.html",
@@ -211,6 +305,1548 @@
    "sky-hop",
    "grapple-rush"
   ],
+  "license": "MIT"
+ },
+ {
+  "slug": "wall-jump",
+  "name": "Wall Slide & Jump",
+  "category": "Movement",
+  "description": "Grip walls to slide at a capped speed, then kick off with a short input lock.",
+  "prompt": "While airborne, falling and touching a wall, cap fall speed at WALL_SLIDE_SPEED 90 px/s (brake at 1800 px/s², spawn dust at the hand); a jump on or within WALL_COYOTE 0.08 s of a wall sets vx = 230 px/s away and vy = -440 px/s, then ignores horizontal input for WALL_JUMP_LOCK 0.14 s.",
+  "key_numbers": [
+   {
+    "name": "GRAVITY",
+    "value": 1400,
+    "unit": "px/s²",
+    "note": "downward acceleration"
+   },
+   {
+    "name": "MAX_FALL",
+    "value": 620,
+    "unit": "px/s",
+    "note": "terminal fall speed in open air"
+   },
+   {
+    "name": "RUN_SPEED",
+    "value": 150,
+    "unit": "px/s",
+    "note": "top horizontal speed from input"
+   },
+   {
+    "name": "GROUND_ACCEL",
+    "value": 1800,
+    "unit": "px/s²",
+    "note": "horizontal accel/brake on the ground"
+   },
+   {
+    "name": "AIR_ACCEL",
+    "value": 1000,
+    "unit": "px/s²",
+    "note": "horizontal accel in the air"
+   },
+   {
+    "name": "AIR_DRAG",
+    "value": 120,
+    "unit": "px/s²",
+    "note": "horizontal slowdown in the air with no input"
+   },
+   {
+    "name": "JUMP_SPEED",
+    "value": 430,
+    "unit": "px/s",
+    "note": "upward launch of a normal ground jump"
+   },
+   {
+    "name": "WALL_SLIDE_SPEED",
+    "value": 90,
+    "unit": "px/s",
+    "note": "max fall speed while touching a wall"
+   },
+   {
+    "name": "WALL_FRICTION",
+    "value": 1800,
+    "unit": "px/s²",
+    "note": "braking when hitting a wall faster than the slide cap (no hard snap)"
+   },
+   {
+    "name": "WALL_JUMP_X",
+    "value": 230,
+    "unit": "px/s",
+    "note": "horizontal kick away from the wall"
+   },
+   {
+    "name": "WALL_JUMP_Y",
+    "value": 440,
+    "unit": "px/s",
+    "note": "upward speed of a wall jump"
+   },
+   {
+    "name": "WALL_JUMP_LOCK",
+    "value": 0.14,
+    "unit": "s",
+    "note": "time horizontal input is ignored after a wall jump"
+   },
+   {
+    "name": "WALL_COYOTE",
+    "value": 0.08,
+    "unit": "s",
+    "note": "grace time after leaving a wall when a wall jump still works"
+   },
+   {
+    "name": "JUMP_BUFFER",
+    "value": 0.1,
+    "unit": "s",
+    "note": "how long a jump press is remembered before it can fire"
+   },
+   {
+    "name": "DUST_RATE",
+    "value": 28,
+    "unit": "particles/s",
+    "note": "dust spawned at the hand while sliding"
+   },
+   {
+    "name": "MAX_PARTICLES",
+    "value": 60,
+    "unit": "count",
+    "note": "particle cap"
+   },
+   {
+    "name": "BODY_W",
+    "value": 16,
+    "unit": "px",
+    "note": "collision width"
+   },
+   {
+    "name": "BODY_H",
+    "value": 20,
+    "unit": "px",
+    "note": "collision height"
+   }
+  ],
+  "demo_url": "https://rexgu9911.github.io/playbook/mechanics/wall-jump.html",
+  "page_url": "https://rexgu9911.github.io/playbook/#/mechanic/wall-jump",
+  "source_url": "https://rexgu9911.github.io/playbook/mechanics/wall-jump.html",
+  "source_raw": "https://raw.githubusercontent.com/rexgu9911/playbook/main/mechanics/wall-jump.html",
+  "works_with": [
+   "Canvas 2D",
+   "Three.js",
+   "Phaser"
+  ],
+  "used_by": [],
+  "license": "MIT"
+ },
+ {
+  "slug": "double-jump",
+  "name": "Double Jump",
+  "category": "Movement",
+  "description": "A smaller second jump in mid-air with a flip and ring puff; hold longer to jump higher.",
+  "prompt": "Allow AIR_JUMPS 1 extra jump, refilled on landing: the ground jump launches at 470 px/s, the air jump at a smaller 420 px/s with a 0.32 s flip, a ring puff and vx snapped 70% toward input; releasing jump while rising multiplies vy by JUMP_CUT 0.45 (with 0.08 s coyote, 0.10 s buffer, 1.3x fall gravity).",
+  "key_numbers": [
+   {
+    "name": "GRAVITY",
+    "value": 1500,
+    "unit": "px/s²",
+    "note": "downward acceleration while rising"
+   },
+   {
+    "name": "FALL_MULT",
+    "value": 1.3,
+    "unit": "multiplier",
+    "note": "× gravity while falling (snappier descent)"
+   },
+   {
+    "name": "MAX_FALL",
+    "value": 650,
+    "unit": "px/s",
+    "note": "terminal fall speed"
+   },
+   {
+    "name": "RUN_SPEED",
+    "value": 150,
+    "unit": "px/s",
+    "note": "top horizontal speed"
+   },
+   {
+    "name": "GROUND_ACCEL",
+    "value": 1500,
+    "unit": "px/s²",
+    "note": "horizontal accel on the ground"
+   },
+   {
+    "name": "AIR_ACCEL",
+    "value": 1100,
+    "unit": "px/s²",
+    "note": "horizontal accel in the air"
+   },
+   {
+    "name": "FRICTION",
+    "value": 2000,
+    "unit": "px/s²",
+    "note": "braking on the ground with no input"
+   },
+   {
+    "name": "JUMP_SPEED",
+    "value": 470,
+    "unit": "px/s",
+    "note": "launch speed of the ground jump"
+   },
+   {
+    "name": "AIR_JUMP_SPEED",
+    "value": 420,
+    "unit": "px/s",
+    "note": "launch speed of the air jump (smaller than the first)"
+   },
+   {
+    "name": "AIR_JUMPS",
+    "value": 1,
+    "unit": "count",
+    "note": "extra jumps allowed before landing"
+   },
+   {
+    "name": "AIR_JUMP_REDIRECT",
+    "value": 0.7,
+    "unit": "0–1",
+    "note": "how much horizontal speed snaps to the held direction on an air jump"
+   },
+   {
+    "name": "JUMP_CUT",
+    "value": 0.45,
+    "unit": "multiplier",
+    "note": "× upward speed when jump is released early (variable height)"
+   },
+   {
+    "name": "COYOTE_TIME",
+    "value": 0.08,
+    "unit": "s",
+    "note": "grace time after leaving a ledge when the ground jump still works"
+   },
+   {
+    "name": "JUMP_BUFFER",
+    "value": 0.1,
+    "unit": "s",
+    "note": "how long a jump press is remembered before it can fire"
+   },
+   {
+    "name": "FLIP_TIME",
+    "value": 0.32,
+    "unit": "s",
+    "note": "duration of the forward flip on the air jump"
+   },
+   {
+    "name": "RING_TIME",
+    "value": 0.35,
+    "unit": "s",
+    "note": "lifetime of the ring puff under the air jump"
+   },
+   {
+    "name": "RING_RADIUS",
+    "value": 20,
+    "unit": "px",
+    "note": "final radius of the ring puff"
+   },
+   {
+    "name": "BODY_W",
+    "value": 18,
+    "unit": "px",
+    "note": "collision width"
+   },
+   {
+    "name": "BODY_H",
+    "value": 22,
+    "unit": "px",
+    "note": "collision height"
+   }
+  ],
+  "demo_url": "https://rexgu9911.github.io/playbook/mechanics/double-jump.html",
+  "page_url": "https://rexgu9911.github.io/playbook/#/mechanic/double-jump",
+  "source_url": "https://rexgu9911.github.io/playbook/mechanics/double-jump.html",
+  "source_raw": "https://raw.githubusercontent.com/rexgu9911/playbook/main/mechanics/double-jump.html",
+  "works_with": [
+   "Canvas 2D",
+   "Three.js",
+   "Phaser"
+  ],
+  "used_by": [],
+  "license": "MIT"
+ },
+ {
+  "slug": "topdown-movement",
+  "name": "Top-Down Movement",
+  "category": "Movement",
+  "description": "8-way movement with acceleration, friction, even diagonals and a lean into turns.",
+  "prompt": "Normalise the input vector (length > 1 → divide by length, < 0.15 → zero), then move velocity toward input × MAX_SPEED 160 px/s by at most ACCEL 900 px/s² (×1.8 when reversing) or FRICTION 700 px/s² with no input; ease facing toward input at 10/s and lean by 0.09 × turn rate (rad/s), capped at 0.4 rad and scaled by speed.",
+  "key_numbers": [
+   {
+    "name": "MAX_SPEED",
+    "value": 160,
+    "unit": "px/s",
+    "note": "top speed (same in all 8 directions)"
+   },
+   {
+    "name": "ACCEL",
+    "value": 900,
+    "unit": "px/s²",
+    "note": "how fast velocity moves toward the input direction"
+   },
+   {
+    "name": "FRICTION",
+    "value": 700,
+    "unit": "px/s²",
+    "note": "braking when there is no input"
+   },
+   {
+    "name": "TURN_BOOST",
+    "value": 1.8,
+    "unit": "multiplier",
+    "note": "× accel when input points against current velocity (snappy reversals)"
+   },
+   {
+    "name": "DEADZONE",
+    "value": 0.15,
+    "unit": "0–1",
+    "note": "analog input below this length counts as no input"
+   },
+   {
+    "name": "TURN_RATE",
+    "value": 10,
+    "unit": "1/s",
+    "note": "how fast the facing angle eases toward the input direction"
+   },
+   {
+    "name": "LEAN_GAIN",
+    "value": 0.09,
+    "unit": "rad per rad/s",
+    "note": "lean per unit of turning speed"
+   },
+   {
+    "name": "LEAN_MAX",
+    "value": 0.4,
+    "unit": "rad",
+    "note": "maximum lean/bank into a turn"
+   },
+   {
+    "name": "LEAN_SMOOTH",
+    "value": 12,
+    "unit": "1/s",
+    "note": "how fast the lean follows its target"
+   },
+   {
+    "name": "RADIUS",
+    "value": 9,
+    "unit": "px",
+    "note": "collision radius of the ship"
+   }
+  ],
+  "demo_url": "https://rexgu9911.github.io/playbook/mechanics/topdown-movement.html",
+  "page_url": "https://rexgu9911.github.io/playbook/#/mechanic/topdown-movement",
+  "source_url": "https://rexgu9911.github.io/playbook/mechanics/topdown-movement.html",
+  "source_raw": "https://raw.githubusercontent.com/rexgu9911/playbook/main/mechanics/topdown-movement.html",
+  "works_with": [
+   "Canvas 2D",
+   "Three.js",
+   "Phaser"
+  ],
+  "used_by": [],
+  "license": "MIT"
+ },
+ {
+  "slug": "dodge-roll",
+  "name": "Dodge Roll",
+  "category": "Movement",
+  "description": "A burst-speed roll with i-frames, a short recovery and a cooldown so timing matters.",
+  "prompt": "On roll, move for ROLL_TIME 0.40 s at speed 60 + (420 - 60)·(1-t)² px/s, invincible from 0.02 s to 0.30 s into the roll; then 0.14 s recovery at 0.3x walk speed with no roll, then a 0.40 s cooldown, buffering roll presses for 0.15 s.",
+  "key_numbers": [
+   {
+    "name": "WALK_SPEED",
+    "value": 110,
+    "unit": "px/s",
+    "note": "normal movement speed"
+   },
+   {
+    "name": "WALK_ACCEL",
+    "value": 1200,
+    "unit": "px/s²",
+    "note": "walk accel/brake"
+   },
+   {
+    "name": "ROLL_TIME",
+    "value": 0.4,
+    "unit": "s",
+    "note": "total roll duration"
+   },
+   {
+    "name": "ROLL_SPEED",
+    "value": 420,
+    "unit": "px/s",
+    "note": "speed at the start of the roll (the burst)"
+   },
+   {
+    "name": "ROLL_END_SPEED",
+    "value": 60,
+    "unit": "px/s",
+    "note": "speed at the end of the roll"
+   },
+   {
+    "name": "ROLL_CURVE",
+    "value": 2,
+    "unit": "exponent",
+    "note": "ease-out exponent: speed = end + (start-end)·(1-t)^curve"
+   },
+   {
+    "name": "IFRAME_START",
+    "value": 0.02,
+    "unit": "s",
+    "note": "time into the roll when invincibility begins"
+   },
+   {
+    "name": "IFRAME_END",
+    "value": 0.3,
+    "unit": "s",
+    "note": "time into the roll when invincibility ends (the tail is vulnerable)"
+   },
+   {
+    "name": "RECOVERY_TIME",
+    "value": 0.14,
+    "unit": "s",
+    "note": "post-roll lag: no rolling, slowed movement"
+   },
+   {
+    "name": "RECOVERY_SPEED",
+    "value": 0.3,
+    "unit": "multiplier",
+    "note": "× walk speed during recovery"
+   },
+   {
+    "name": "COOLDOWN",
+    "value": 0.4,
+    "unit": "s",
+    "note": "after recovery before the next roll is allowed"
+   },
+   {
+    "name": "ROLL_BUFFER",
+    "value": 0.15,
+    "unit": "s",
+    "note": "how long a roll press is remembered while still busy"
+   },
+   {
+    "name": "HIT_KNOCKBACK",
+    "value": 170,
+    "unit": "px/s",
+    "note": "shove when hit outside the i-frames"
+   },
+   {
+    "name": "HIT_STUN",
+    "value": 0.25,
+    "unit": "s",
+    "note": "time with no control after a hit"
+   },
+   {
+    "name": "BODY_W",
+    "value": 18,
+    "unit": "px",
+    "note": "body width (hitbox)"
+   },
+   {
+    "name": "BODY_H",
+    "value": 22,
+    "unit": "px",
+    "note": "body height standing"
+   }
+  ],
+  "demo_url": "https://rexgu9911.github.io/playbook/mechanics/dodge-roll.html",
+  "page_url": "https://rexgu9911.github.io/playbook/#/mechanic/dodge-roll",
+  "source_url": "https://rexgu9911.github.io/playbook/mechanics/dodge-roll.html",
+  "source_raw": "https://raw.githubusercontent.com/rexgu9911/playbook/main/mechanics/dodge-roll.html",
+  "works_with": [
+   "Canvas 2D",
+   "Three.js",
+   "Phaser"
+  ],
+  "used_by": [],
+  "license": "MIT"
+ },
+ {
+  "slug": "squash-stretch",
+  "name": "Squash & Stretch",
+  "category": "Feel",
+  "description": "Area-preserving squash on landing and stretch with speed, sprung back with damping.",
+  "prompt": "Scale sprites by (1/(1+s), 1+s) along the velocity axis: in the air spring s toward min(0.35, speed × 0.0006); on landing set s = -min(0.55, impact × 0.0009 × mass), on takeoff s = 0.3 after a 0.10 s crouch at -0.22; spring with stiffness 380 and damping 11, both divided by mass.",
+  "key_numbers": [
+   {
+    "name": "GRAVITY",
+    "value": 1300,
+    "unit": "px/s²",
+    "note": "downward acceleration"
+   },
+   {
+    "name": "STRETCH_PER_SPEED",
+    "value": 0.0006,
+    "unit": "per px/s",
+    "note": "stretch per px/s of speed while airborne (along the velocity)"
+   },
+   {
+    "name": "STRETCH_MAX",
+    "value": 0.35,
+    "unit": "0–1",
+    "note": "max stretch (0.35 = 35% longer, and thinner to keep the area)"
+   },
+   {
+    "name": "SQUASH_PER_SPEED",
+    "value": 0.0009,
+    "unit": "per px/s",
+    "note": "squash per px/s of landing speed, × blob mass"
+   },
+   {
+    "name": "SQUASH_MAX",
+    "value": 0.55,
+    "unit": "0–1",
+    "note": "max squash on landing"
+   },
+   {
+    "name": "TAKEOFF_STRETCH",
+    "value": 0.3,
+    "unit": "0–1",
+    "note": "stretch snapped in at the moment of takeoff"
+   },
+   {
+    "name": "ANTICIPATION_TIME",
+    "value": 0.1,
+    "unit": "s",
+    "note": "crouch duration before a jump"
+   },
+   {
+    "name": "ANTICIPATION_SQUASH",
+    "value": 0.22,
+    "unit": "0–1",
+    "note": "squash amount of that crouch"
+   },
+   {
+    "name": "SPRING_STIFFNESS",
+    "value": 380,
+    "unit": "1/s²",
+    "note": "pull back to the rest shape (divided by mass)"
+   },
+   {
+    "name": "SPRING_DAMPING",
+    "value": 11,
+    "unit": "1/s",
+    "note": "how quickly the wobble dies (divided by mass)"
+   },
+   {
+    "name": "AXIS_EASE",
+    "value": 14,
+    "unit": "1/s",
+    "note": "how fast the deform axis turns back upright on the ground"
+   },
+   {
+    "name": "REST_SPEED",
+    "value": 60,
+    "unit": "px/s",
+    "note": "bounces slower than this stop and the blob settles"
+   }
+  ],
+  "demo_url": "https://rexgu9911.github.io/playbook/mechanics/squash-stretch.html",
+  "page_url": "https://rexgu9911.github.io/playbook/#/mechanic/squash-stretch",
+  "source_url": "https://rexgu9911.github.io/playbook/mechanics/squash-stretch.html",
+  "source_raw": "https://raw.githubusercontent.com/rexgu9911/playbook/main/mechanics/squash-stretch.html",
+  "works_with": [
+   "Canvas 2D",
+   "Three.js",
+   "Phaser"
+  ],
+  "used_by": [],
+  "license": "MIT"
+ },
+ {
+  "slug": "combo-window",
+  "name": "Combo Window",
+  "category": "Combat",
+  "description": "A 3-hit melee string with an input buffer and a late-swing cancel window to chain hits.",
+  "prompt": "Split each attack into windup (0.07 s), active (0.06 s) and recovery (0.32 s; 0.50 s on hit 3); presses are buffered for 0.25 s and chain into the next, different swing as soon as recovery passes 45% (CANCEL_START 0.45), with a 0.30 s grace after recovery before the combo resets to hit 1. Hit 3 is a finisher with no cancel, a bigger lunge and knockback.",
+  "key_numbers": [
+   {
+    "name": "WINDUP",
+    "value": 0.07,
+    "unit": "s",
+    "note": "anticipation before the blade moves"
+   },
+   {
+    "name": "ACTIVE",
+    "value": 0.06,
+    "unit": "s",
+    "note": "the blade sweeps; the hit lands at the end"
+   },
+   {
+    "name": "RECOVER",
+    "value": 0.32,
+    "unit": "s",
+    "note": "follow-through after hits 1 and 2"
+   },
+   {
+    "name": "FINISHER_RECOVER",
+    "value": 0.5,
+    "unit": "s",
+    "note": "follow-through after hit 3 (no cancel: the combo ends here)"
+   },
+   {
+    "name": "CANCEL_START",
+    "value": 0.45,
+    "unit": "0–1",
+    "note": "point in RECOVER where the cancel window opens (a press chains instantly)"
+   },
+   {
+    "name": "INPUT_BUFFER",
+    "value": 0.25,
+    "unit": "s",
+    "note": "an early press is remembered and fires the moment the window opens"
+   },
+   {
+    "name": "RESET_TIME",
+    "value": 0.3,
+    "unit": "s",
+    "note": "of idle after recovery before the chain drops back to hit 1"
+   },
+   {
+    "name": "LUNGE",
+    "value": 12,
+    "unit": "px",
+    "note": "forward step on hits 1 and 2"
+   },
+   {
+    "name": "FINISHER_LUNGE",
+    "value": 28,
+    "unit": "px",
+    "note": "forward step on hit 3"
+   },
+   {
+    "name": "KNOCKBACK",
+    "value": 120,
+    "unit": "px/s",
+    "note": "dummy push on hits 1 and 2"
+   },
+   {
+    "name": "FINISHER_KNOCKBACK",
+    "value": 300,
+    "unit": "px/s",
+    "note": "dummy push on hit 3"
+   },
+   {
+    "name": "FINISHER_SHAKE",
+    "value": 0.45,
+    "unit": "0–1",
+    "note": "screen trauma added by hit 3"
+   }
+  ],
+  "demo_url": "https://rexgu9911.github.io/playbook/mechanics/combo-window.html",
+  "page_url": "https://rexgu9911.github.io/playbook/#/mechanic/combo-window",
+  "source_url": "https://rexgu9911.github.io/playbook/mechanics/combo-window.html",
+  "source_raw": "https://raw.githubusercontent.com/rexgu9911/playbook/main/mechanics/combo-window.html",
+  "works_with": [
+   "Canvas 2D",
+   "Three.js",
+   "Phaser"
+  ],
+  "used_by": [],
+  "license": "MIT"
+ },
+ {
+  "slug": "iframes-blink",
+  "name": "I-Frames & Blink",
+  "category": "Combat",
+  "description": "After a hit you blink, get knocked back and flash red; further hits bounce off.",
+  "prompt": "On damage set 1.0 s of invincibility (blink at 12 Hz between full and 0.2 opacity), tint the body solid red for 0.12 s plus a 0.12-opacity screen flash, knock back 200 px/s away and 170 px/s up with 0.25 s of hitstun; while invincible, ignore hits and deflect the hazard at 55% speed with a 180 px/s upward pop.",
+  "key_numbers": [
+   {
+    "name": "IFRAME_TIME",
+    "value": 1,
+    "unit": "s",
+    "note": "of invincibility after taking a hit"
+   },
+   {
+    "name": "BLINK_HZ",
+    "value": 12,
+    "unit": "Hz",
+    "note": "blink cycles per second while invincible"
+   },
+   {
+    "name": "BLINK_ALPHA",
+    "value": 0.2,
+    "unit": "0–1",
+    "note": "body opacity on the \"off\" half of each blink"
+   },
+   {
+    "name": "FLASH_TIME",
+    "value": 0.12,
+    "unit": "s",
+    "note": "the body is tinted solid red right after the hit"
+   },
+   {
+    "name": "SCREEN_FLASH",
+    "value": 0.12,
+    "unit": "0–1",
+    "note": "peak opacity of the full-screen red tint"
+   },
+   {
+    "name": "SCREEN_FLASH_DECAY",
+    "value": 1,
+    "unit": "opacity/s",
+    "note": "the screen tint fades"
+   },
+   {
+    "name": "KNOCKBACK_X",
+    "value": 200,
+    "unit": "px/s",
+    "note": "horizontal push away from the hazard"
+   },
+   {
+    "name": "KNOCKBACK_Y",
+    "value": 170,
+    "unit": "px/s",
+    "note": "upward pop"
+   },
+   {
+    "name": "KNOCKBACK_FRICTION",
+    "value": 900,
+    "unit": "px/s²",
+    "note": "ground braking that ends the slide"
+   },
+   {
+    "name": "HITSTUN",
+    "value": 0.25,
+    "unit": "s",
+    "note": "movement input is ignored after a hit"
+   },
+   {
+    "name": "GRAVITY",
+    "value": 1200,
+    "unit": "px/s²",
+    "note": "pull on the character (and bounced hazards)"
+   },
+   {
+    "name": "MAX_HP",
+    "value": 5,
+    "unit": "hits",
+    "note": "hits the character can take (the demo refills it)"
+   },
+   {
+    "name": "DEFLECT_KEEP",
+    "value": 0.55,
+    "unit": "0–1",
+    "note": "share of speed a hazard keeps when it bounces off during i-frames"
+   },
+   {
+    "name": "DEFLECT_UP",
+    "value": 180,
+    "unit": "px/s",
+    "note": "upward pop given to a deflected hazard"
+   }
+  ],
+  "demo_url": "https://rexgu9911.github.io/playbook/mechanics/iframes-blink.html",
+  "page_url": "https://rexgu9911.github.io/playbook/#/mechanic/iframes-blink",
+  "source_url": "https://rexgu9911.github.io/playbook/mechanics/iframes-blink.html",
+  "source_raw": "https://raw.githubusercontent.com/rexgu9911/playbook/main/mechanics/iframes-blink.html",
+  "works_with": [
+   "Canvas 2D",
+   "Three.js",
+   "Phaser"
+  ],
+  "used_by": [],
+  "license": "MIT"
+ },
+ {
+  "slug": "muzzle-flash",
+  "name": "Muzzle Flash & Recoil",
+  "category": "Combat",
+  "description": "Every shot sells itself: flash, tracer, bouncing shell casings and a recoil kick.",
+  "prompt": "Per shot (every 0.09 s): show a varying muzzle-flash sprite for 0.04 s, draw a hitscan tracer as a 44 px streak moving at 2600 px/s, eject a casing back and up (70/170 px/s, 900 px/s² gravity, 0.45 bounce, 0.6 friction, 2.5 s life), and kick the gun back 6 px and up 0.07 rad, decaying at 16/s.",
+  "key_numbers": [
+   {
+    "name": "FIRE_INTERVAL",
+    "value": 0.09,
+    "unit": "s",
+    "note": "between shots while the trigger is held"
+   },
+   {
+    "name": "BURST_COUNT",
+    "value": 5,
+    "unit": "shots",
+    "note": "shots per automatic burst"
+   },
+   {
+    "name": "BURST_PAUSE",
+    "value": 0.8,
+    "unit": "s",
+    "note": "between automatic bursts"
+   },
+   {
+    "name": "FLASH_TIME",
+    "value": 0.04,
+    "unit": "s",
+    "note": "the muzzle flash sprite stays up (~2 frames)"
+   },
+   {
+    "name": "FLASH_SIZE",
+    "value": 16,
+    "unit": "px",
+    "note": "length of the muzzle flash"
+   },
+   {
+    "name": "TRACER_SPEED",
+    "value": 2600,
+    "unit": "px/s",
+    "note": "travel speed of the bullet tracer"
+   },
+   {
+    "name": "TRACER_LEN",
+    "value": 44,
+    "unit": "px",
+    "note": "length of the tracer streak"
+   },
+   {
+    "name": "SPREAD",
+    "value": 0.035,
+    "unit": "rad",
+    "note": "random aim deviation per shot (±)"
+   },
+   {
+    "name": "RECOIL_KICK",
+    "value": 6,
+    "unit": "px",
+    "note": "the gun slides back per shot"
+   },
+   {
+    "name": "RECOIL_ANGLE",
+    "value": 0.07,
+    "unit": "rad",
+    "note": "the muzzle climbs per shot"
+   },
+   {
+    "name": "RECOIL_RETURN",
+    "value": 16,
+    "unit": "1/s",
+    "note": "how fast the gun settles back (exponential)"
+   },
+   {
+    "name": "SHELL_SPEED_X",
+    "value": 70,
+    "unit": "px/s",
+    "note": "backward ejection speed of a casing"
+   },
+   {
+    "name": "SHELL_SPEED_Y",
+    "value": 170,
+    "unit": "px/s",
+    "note": "upward ejection speed of a casing"
+   },
+   {
+    "name": "SHELL_SPIN",
+    "value": 22,
+    "unit": "rad/s",
+    "note": "max casing spin"
+   },
+   {
+    "name": "SHELL_GRAVITY",
+    "value": 900,
+    "unit": "px/s²",
+    "note": "pull on casings"
+   },
+   {
+    "name": "SHELL_BOUNCE",
+    "value": 0.45,
+    "unit": "0–1",
+    "note": "vertical speed kept on each floor bounce"
+   },
+   {
+    "name": "SHELL_FRICTION",
+    "value": 0.6,
+    "unit": "0–1",
+    "note": "horizontal speed kept on each floor bounce"
+   },
+   {
+    "name": "SHELL_LIFE",
+    "value": 2.5,
+    "unit": "s",
+    "note": "before a casing fades out"
+   },
+   {
+    "name": "MAX_SHELLS",
+    "value": 40,
+    "unit": "count",
+    "note": "casing cap (oldest removed first)"
+   },
+   {
+    "name": "AIM_SPEED",
+    "value": 12,
+    "unit": "1/s",
+    "note": "how fast the gun turns toward its aim point"
+   }
+  ],
+  "demo_url": "https://rexgu9911.github.io/playbook/mechanics/muzzle-flash.html",
+  "page_url": "https://rexgu9911.github.io/playbook/#/mechanic/muzzle-flash",
+  "source_url": "https://rexgu9911.github.io/playbook/mechanics/muzzle-flash.html",
+  "source_raw": "https://raw.githubusercontent.com/rexgu9911/playbook/main/mechanics/muzzle-flash.html",
+  "works_with": [
+   "Canvas 2D",
+   "Three.js",
+   "Phaser"
+  ],
+  "used_by": [],
+  "license": "MIT"
+ },
+ {
+  "slug": "charge-shot",
+  "name": "Charge Shot",
+  "category": "Combat",
+  "description": "Hold to charge through visible stages, release for a shot that scales with the charge.",
+  "prompt": "While held, advance stages at 0.35 s, 0.80 s and 1.30 s (ring pulse on each, white ready flash for 0.16 s at full) while particles spawn 36 px out and get pulled into a growing orb; on release fire a shot at 480 px/s with radius 3/5/8/13 px and damage 1/3/6/12 by stage, the full one piercing 1 extra target. Releasing before 0.35 s fires the weak shot.",
+  "key_numbers": [
+   {
+    "name": "STAGE1_TIME",
+    "value": 0.35,
+    "unit": "s",
+    "note": "held to reach stage 1 (anything shorter fires the weak shot)"
+   },
+   {
+    "name": "STAGE2_TIME",
+    "value": 0.8,
+    "unit": "s",
+    "note": "held to reach stage 2"
+   },
+   {
+    "name": "FULL_TIME",
+    "value": 1.3,
+    "unit": "s",
+    "note": "held to reach full charge"
+   },
+   {
+    "name": "WEAK_RADIUS",
+    "value": 3,
+    "unit": "px",
+    "note": "shot radius, early release"
+   },
+   {
+    "name": "STAGE1_RADIUS",
+    "value": 5,
+    "unit": "px",
+    "note": "shot radius, stage 1"
+   },
+   {
+    "name": "STAGE2_RADIUS",
+    "value": 8,
+    "unit": "px",
+    "note": "shot radius, stage 2"
+   },
+   {
+    "name": "FULL_RADIUS",
+    "value": 13,
+    "unit": "px",
+    "note": "shot radius, full charge"
+   },
+   {
+    "name": "WEAK_DAMAGE",
+    "value": 1,
+    "unit": "dmg",
+    "note": "damage, early release"
+   },
+   {
+    "name": "STAGE1_DAMAGE",
+    "value": 3,
+    "unit": "dmg",
+    "note": "damage, stage 1"
+   },
+   {
+    "name": "STAGE2_DAMAGE",
+    "value": 6,
+    "unit": "dmg",
+    "note": "damage, stage 2"
+   },
+   {
+    "name": "FULL_DAMAGE",
+    "value": 12,
+    "unit": "dmg",
+    "note": "damage, full charge"
+   },
+   {
+    "name": "FULL_PIERCE",
+    "value": 1,
+    "unit": "targets",
+    "note": "extra targets a full-charge shot passes through"
+   },
+   {
+    "name": "SHOT_SPEED",
+    "value": 480,
+    "unit": "px/s",
+    "note": "projectile speed"
+   },
+   {
+    "name": "RECOIL",
+    "value": 10,
+    "unit": "px",
+    "note": "gun kick on a full shot (scaled down for weaker stages)"
+   },
+   {
+    "name": "INTAKE_RATE",
+    "value": 45,
+    "unit": "particles/s",
+    "note": "pulled in at full charge (ramps up from 0)"
+   },
+   {
+    "name": "INTAKE_RADIUS",
+    "value": 36,
+    "unit": "px",
+    "note": "from the muzzle where pulled-in particles spawn"
+   },
+   {
+    "name": "READY_FLASH",
+    "value": 0.16,
+    "unit": "s",
+    "note": "of the white flash when full charge is reached"
+   },
+   {
+    "name": "MAX_PARTICLES",
+    "value": 80,
+    "unit": "count",
+    "note": "particle cap"
+   }
+  ],
+  "demo_url": "https://rexgu9911.github.io/playbook/mechanics/charge-shot.html",
+  "page_url": "https://rexgu9911.github.io/playbook/#/mechanic/charge-shot",
+  "source_url": "https://rexgu9911.github.io/playbook/mechanics/charge-shot.html",
+  "source_raw": "https://raw.githubusercontent.com/rexgu9911/playbook/main/mechanics/charge-shot.html",
+  "works_with": [
+   "Canvas 2D",
+   "Three.js",
+   "Phaser"
+  ],
+  "used_by": [],
+  "license": "MIT"
+ },
+ {
+  "slug": "homing-missile",
+  "name": "Homing Missile",
+  "category": "Combat",
+  "description": "Salvos of missiles arc out of the tube, then curve, accelerate and smoke toward a target.",
+  "prompt": "Fire 4 missiles 0.12 s apart in a 0.9 rad fan at 170 px/s; for the first 0.28 s let gravity (320 px/s²) bend them, then steer toward the target at most 3.2 rad/s while accelerating 520 px/s² to 380 px/s, emit a smoke puff every 0.018 s (0.7 s life), hit within 12 px and fizzle after 3.2 s.",
+  "key_numbers": [
+   {
+    "name": "SALVO_COUNT",
+    "value": 4,
+    "unit": "missiles",
+    "note": "missiles per salvo"
+   },
+   {
+    "name": "SALVO_INTERVAL",
+    "value": 0.12,
+    "unit": "s",
+    "note": "between missiles in a salvo"
+   },
+   {
+    "name": "SALVO_PAUSE",
+    "value": 1.6,
+    "unit": "s",
+    "note": "between automatic salvos"
+   },
+   {
+    "name": "LAUNCH_SPEED",
+    "value": 170,
+    "unit": "px/s",
+    "note": "speed out of the tube"
+   },
+   {
+    "name": "LAUNCH_SPREAD",
+    "value": 0.9,
+    "unit": "rad",
+    "note": "total fan of launch angles around straight up"
+   },
+   {
+    "name": "LAUNCH_GRAVITY",
+    "value": 320,
+    "unit": "px/s²",
+    "note": "pull during the unguided launch arc"
+   },
+   {
+    "name": "ARM_TIME",
+    "value": 0.28,
+    "unit": "s",
+    "note": "of unguided coasting before the seeker turns on"
+   },
+   {
+    "name": "ACCEL",
+    "value": 520,
+    "unit": "px/s²",
+    "note": "thrust once armed"
+   },
+   {
+    "name": "MAX_SPEED",
+    "value": 380,
+    "unit": "px/s",
+    "note": "top speed"
+   },
+   {
+    "name": "TURN_RATE",
+    "value": 3.2,
+    "unit": "rad/s",
+    "note": "max steering rate (lower = wider, lazier curves)"
+   },
+   {
+    "name": "LIFETIME",
+    "value": 3.2,
+    "unit": "s",
+    "note": "before an unspent missile fizzles out"
+   },
+   {
+    "name": "HIT_RADIUS",
+    "value": 12,
+    "unit": "px",
+    "note": "distance to the target that counts as a hit"
+   },
+   {
+    "name": "SMOKE_INTERVAL",
+    "value": 0.018,
+    "unit": "s",
+    "note": "between smoke puffs from each missile"
+   },
+   {
+    "name": "SMOKE_LIFE",
+    "value": 0.7,
+    "unit": "s",
+    "note": "a smoke puff lasts"
+   },
+   {
+    "name": "SMOKE_GROW",
+    "value": 9,
+    "unit": "px",
+    "note": "a puff's radius grows over its life"
+   },
+   {
+    "name": "MAX_SMOKE",
+    "value": 220,
+    "unit": "count",
+    "note": "smoke puff cap"
+   }
+  ],
+  "demo_url": "https://rexgu9911.github.io/playbook/mechanics/homing-missile.html",
+  "page_url": "https://rexgu9911.github.io/playbook/#/mechanic/homing-missile",
+  "source_url": "https://rexgu9911.github.io/playbook/mechanics/homing-missile.html",
+  "source_raw": "https://raw.githubusercontent.com/rexgu9911/playbook/main/mechanics/homing-missile.html",
+  "works_with": [
+   "Canvas 2D",
+   "Three.js",
+   "Phaser"
+  ],
+  "used_by": [],
+  "license": "MIT"
+ },
+ {
+  "slug": "impact-zoom",
+  "name": "Impact Zoom",
+  "category": "Camera",
+  "description": "A quick camera punch toward big hits, with a touch of roll, that stacks without popping.",
+  "prompt": "On a big hit, ease the camera's extra scale up by ZOOM_PER_HIT=0.09 (capped at ZOOM_MAX=0.2) and roll by ROLL_PER_HIT=0.022 rad (cap ROLL_MAX=0.045, random side) over PUNCH_IN=0.05 s, hold HOLD=0.04 s, then ease-in-out back to rest over RETURN=0.38 s, sliding the view centre FOCUS_PULL=0.35 toward the impact; start each new punch from the camera's current values so overlapping hits stack.",
+  "key_numbers": [
+   {
+    "name": "ZOOM_PER_HIT",
+    "value": 0.09,
+    "unit": "scale",
+    "note": "extra scale one full-power hit adds (0.09 = 9% closer)"
+   },
+   {
+    "name": "ZOOM_MAX",
+    "value": 0.2,
+    "unit": "scale",
+    "note": "cap on the total extra scale when hits stack"
+   },
+   {
+    "name": "ROLL_PER_HIT",
+    "value": 0.022,
+    "unit": "rad",
+    "note": "of camera roll one hit adds (random side)"
+   },
+   {
+    "name": "ROLL_MAX",
+    "value": 0.045,
+    "unit": "rad",
+    "note": "cap on stacked roll"
+   },
+   {
+    "name": "PUNCH_IN",
+    "value": 0.05,
+    "unit": "s",
+    "note": "to reach the peak (fast ease-out)"
+   },
+   {
+    "name": "HOLD",
+    "value": 0.04,
+    "unit": "s",
+    "note": "held at the peak"
+   },
+   {
+    "name": "RETURN",
+    "value": 0.38,
+    "unit": "s",
+    "note": "to ease back to rest (ease-in-out)"
+   },
+   {
+    "name": "FOCUS_PULL",
+    "value": 0.35,
+    "unit": "0–1",
+    "note": "how far the view centre slides toward the impact point"
+   }
+  ],
+  "demo_url": "https://rexgu9911.github.io/playbook/mechanics/impact-zoom.html",
+  "page_url": "https://rexgu9911.github.io/playbook/#/mechanic/impact-zoom",
+  "source_url": "https://rexgu9911.github.io/playbook/mechanics/impact-zoom.html",
+  "source_raw": "https://raw.githubusercontent.com/rexgu9911/playbook/main/mechanics/impact-zoom.html",
+  "works_with": [
+   "Canvas 2D",
+   "Three.js",
+   "Phaser"
+  ],
+  "used_by": [],
+  "license": "MIT"
+ },
+ {
+  "slug": "slow-motion",
+  "name": "Slow Motion",
+  "category": "Camera",
+  "description": "Bullet time on the final hit: the world brakes to 10% speed, holds, then snaps back.",
+  "prompt": "On the trigger event, ease a global time scale from its current value to MIN_SCALE=0.1 over EASE_IN=0.15 s, hold for HOLD=1.1 s, then ease-in back to 1 over EASE_OUT=0.7 s (all real time); feed realDt*scale to gameplay, physics and world particles while UI, HUD and juice particles keep realDt, and fade in BARS=14 px letterbox bars plus a WASH=0.35 dark wash with the slow-mo amount.",
+  "key_numbers": [
+   {
+    "name": "MIN_SCALE",
+    "value": 0.1,
+    "unit": "0–1",
+    "note": "world time scale at the bottom of the slow-mo"
+   },
+   {
+    "name": "EASE_IN",
+    "value": 0.15,
+    "unit": "s (real time)",
+    "note": "to brake from the current speed down to MIN_SCALE"
+   },
+   {
+    "name": "HOLD",
+    "value": 1.1,
+    "unit": "s (real time)",
+    "note": "held at MIN_SCALE"
+   },
+   {
+    "name": "EASE_OUT",
+    "value": 0.7,
+    "unit": "s (real time)",
+    "note": "to ramp back up to 1"
+   },
+   {
+    "name": "BARS",
+    "value": 14,
+    "unit": "px",
+    "note": "letterbox bar height at full slow-mo (0 = off)"
+   },
+   {
+    "name": "WASH",
+    "value": 0.35,
+    "unit": "0–1",
+    "note": "opacity of the dark wash over the world at full slow-mo"
+   }
+  ],
+  "demo_url": "https://rexgu9911.github.io/playbook/mechanics/slow-motion.html",
+  "page_url": "https://rexgu9911.github.io/playbook/#/mechanic/slow-motion",
+  "source_url": "https://rexgu9911.github.io/playbook/mechanics/slow-motion.html",
+  "source_raw": "https://raw.githubusercontent.com/rexgu9911/playbook/main/mechanics/slow-motion.html",
+  "works_with": [
+   "Canvas 2D",
+   "Three.js",
+   "Phaser"
+  ],
+  "used_by": [],
+  "license": "MIT"
+ },
+ {
+  "slug": "health-bar-lag",
+  "name": "Health Bar Lag",
+  "category": "Feedback",
+  "description": "Hits snap the bar down while a light chunk lingers then drains; heals preview, then fill.",
+  "prompt": "Track hp, main and lag: on damage set main=hp instantly and keep lag at the old value, wait LAG_DELAY=0.45 s (re-armed per hit) then drain lag to main with exponential ease DRAIN_EASE=5/s (min DRAIN_MIN=12 hp/s); on heal show the gained hp as a yellow preview and fill main into it after HEAL_DELAY=0.18 s (FILL_EASE=6/s, min FILL_MIN=15 hp/s); below LOW_HP=0.3 pulse the bar at 1.4–3.2 Hz, and jolt it up to SHAKE=4 px for 0.25 s on hits.",
+  "key_numbers": [
+   {
+    "name": "MAX_HP",
+    "value": 100,
+    "unit": "hp",
+    "note": "of a full bar"
+   },
+   {
+    "name": "LAG_DELAY",
+    "value": 0.45,
+    "unit": "s",
+    "note": "the light \"recent damage\" chunk hangs before draining (each hit re-arms it)"
+   },
+   {
+    "name": "DRAIN_EASE",
+    "value": 5,
+    "unit": "1/s",
+    "note": "exponential drain rate of the chunk (higher = snappier)"
+   },
+   {
+    "name": "DRAIN_MIN",
+    "value": 12,
+    "unit": "hp/s",
+    "note": "minimum drain speed so the tail never crawls"
+   },
+   {
+    "name": "HEAL_DELAY",
+    "value": 0.18,
+    "unit": "s",
+    "note": "the heal preview shows before the main bar fills into it"
+   },
+   {
+    "name": "FILL_EASE",
+    "value": 6,
+    "unit": "1/s",
+    "note": "exponential fill rate of a heal"
+   },
+   {
+    "name": "FILL_MIN",
+    "value": 15,
+    "unit": "hp/s",
+    "note": "minimum fill speed"
+   },
+   {
+    "name": "LOW_HP",
+    "value": 0.3,
+    "unit": "0–1",
+    "note": "fraction of max below which the bar pulses"
+   },
+   {
+    "name": "PULSE_HZ_MIN",
+    "value": 1.4,
+    "unit": "pulses/s",
+    "note": "at the LOW_HP threshold"
+   },
+   {
+    "name": "PULSE_HZ_MAX",
+    "value": 3.2,
+    "unit": "pulses/s",
+    "note": "near 0 hp"
+   },
+   {
+    "name": "SHAKE",
+    "value": 4,
+    "unit": "px",
+    "note": "horizontal jolt of the bar on a full-strength hit"
+   },
+   {
+    "name": "SHAKE_FULL_DMG",
+    "value": 20,
+    "unit": "hp",
+    "note": "of damage that gives the full SHAKE (smaller hits scale down)"
+   },
+   {
+    "name": "SHAKE_TIME",
+    "value": 0.25,
+    "unit": "s",
+    "note": "for the jolt to settle"
+   },
+   {
+    "name": "FLASH_TIME",
+    "value": 0.12,
+    "unit": "s",
+    "note": "the bar's new edge flashes white on a hit"
+   }
+  ],
+  "demo_url": "https://rexgu9911.github.io/playbook/mechanics/health-bar-lag.html",
+  "page_url": "https://rexgu9911.github.io/playbook/#/mechanic/health-bar-lag",
+  "source_url": "https://rexgu9911.github.io/playbook/mechanics/health-bar-lag.html",
+  "source_raw": "https://raw.githubusercontent.com/rexgu9911/playbook/main/mechanics/health-bar-lag.html",
+  "works_with": [
+   "Canvas 2D",
+   "Three.js",
+   "Phaser"
+  ],
+  "used_by": [],
+  "license": "MIT"
+ },
+ {
+  "slug": "number-roll",
+  "name": "Number Roll",
+  "category": "Feedback",
+  "description": "A score counter that odometer-rolls to new values, pops on gain and floats a +N.",
+  "prompt": "On each gain, ease the displayed value from what's on screen to the new total with a cubic ease-out over min(ROLL_MAX=1.1, ROLL_BASE=0.35 + ROLL_PER_DECADE=0.22*log10(remaining)) s so big gains roll faster per unit; pop the counter by POP_SCALE=0.28 settling in 0.22 s, bump TICK_POP=0.04 on each ones-digit tick, and show a +N floater that rises 22 px over 0.8 s, merging gains that arrive within FLOAT_MERGE=0.3 s.",
+  "key_numbers": [
+   {
+    "name": "ROLL_BASE",
+    "value": 0.35,
+    "unit": "s",
+    "note": "roll time for a gain of 1–9"
+   },
+   {
+    "name": "ROLL_PER_DECADE",
+    "value": 0.22,
+    "unit": "s",
+    "note": "added per ×10 of the gain (so big gains cover far more units per second)"
+   },
+   {
+    "name": "ROLL_MAX",
+    "value": 1.1,
+    "unit": "s",
+    "note": "cap on any roll"
+   },
+   {
+    "name": "POP_SCALE",
+    "value": 0.28,
+    "unit": "scale",
+    "note": "extra scale when a gain lands (0.28 = 128%)"
+   },
+   {
+    "name": "POP_TIME",
+    "value": 0.22,
+    "unit": "s",
+    "note": "for the pop to settle"
+   },
+   {
+    "name": "TICK_POP",
+    "value": 0.04,
+    "unit": "scale",
+    "note": "extra scale each time the ones digit ticks over"
+   },
+   {
+    "name": "TICK_TIME",
+    "value": 0.08,
+    "unit": "s",
+    "note": "for a tick bump to settle"
+   },
+   {
+    "name": "FLOAT_RISE",
+    "value": 22,
+    "unit": "px",
+    "note": "a +N floater drifts up"
+   },
+   {
+    "name": "FLOAT_TIME",
+    "value": 0.8,
+    "unit": "s",
+    "note": "a +N floater lives"
+   },
+   {
+    "name": "FLOAT_MERGE",
+    "value": 0.3,
+    "unit": "s",
+    "note": "window in which new gains add into the latest floater instead of a new one"
+   },
+   {
+    "name": "MIN_DIGITS",
+    "value": 5,
+    "unit": "digits",
+    "note": "digit columns always shown (leading zeros dimmed)"
+   }
+  ],
+  "demo_url": "https://rexgu9911.github.io/playbook/mechanics/number-roll.html",
+  "page_url": "https://rexgu9911.github.io/playbook/#/mechanic/number-roll",
+  "source_url": "https://rexgu9911.github.io/playbook/mechanics/number-roll.html",
+  "source_raw": "https://raw.githubusercontent.com/rexgu9911/playbook/main/mechanics/number-roll.html",
+  "works_with": [
+   "Canvas 2D",
+   "Three.js",
+   "Phaser"
+  ],
+  "used_by": [],
+  "license": "MIT"
+ },
+ {
+  "slug": "pickup-magnet",
+  "name": "Pickup Magnet",
+  "category": "Feedback",
+  "description": "Gems wake when you get close, hop back, then spiral in and chime higher in fast chains.",
+  "prompt": "When the player comes within MAGNET_RADIUS=64 px, give the gem a KICK_BACK=70 px/s hop away plus ORBIT_SPEED=90 px/s sideways, then pull it toward the player at ACCEL=1300 px/s² (MAX_SPEED=620 px/s), steering its velocity toward the player at STEER=6/s so the orbit spirals in; collect within 9 px with a 0.22 s pop ring and a sine chime at CHIME_BASE=660 Hz rising CHIME_STEP=1 semitone per pickup made within CHAIN_WINDOW=0.4 s of the last (capped at CHAIN_MAX=12 steps).",
+  "key_numbers": [
+   {
+    "name": "MAGNET_RADIUS",
+    "value": 64,
+    "unit": "px",
+    "note": "a resting gem wakes up when the player is this close"
+   },
+   {
+    "name": "KICK_BACK",
+    "value": 70,
+    "unit": "px/s",
+    "note": "little hop away from the player on wake (anticipation)"
+   },
+   {
+    "name": "ORBIT_SPEED",
+    "value": 90,
+    "unit": "px/s",
+    "note": "sideways speed on wake: gives the slight orbit"
+   },
+   {
+    "name": "ACCEL",
+    "value": 1300,
+    "unit": "px/s²",
+    "note": "pull toward the player (speed ramps up = ease-in)"
+   },
+   {
+    "name": "MAX_SPEED",
+    "value": 620,
+    "unit": "px/s",
+    "note": "top homing speed"
+   },
+   {
+    "name": "STEER",
+    "value": 6,
+    "unit": "1/s",
+    "note": "how fast the velocity turns to face the player (unwinds the orbit)"
+   },
+   {
+    "name": "COLLECT_RADIUS",
+    "value": 9,
+    "unit": "px",
+    "note": "distance at which a gem is collected"
+   },
+   {
+    "name": "POP_TIME",
+    "value": 0.22,
+    "unit": "s",
+    "note": "collect pop (ring + flash)"
+   },
+   {
+    "name": "CHIME_BASE",
+    "value": 660,
+    "unit": "Hz",
+    "note": "pitch of the first pickup in a chain"
+   },
+   {
+    "name": "CHIME_STEP",
+    "value": 1,
+    "unit": "semitones",
+    "note": "added per pickup while the chain lasts"
+   },
+   {
+    "name": "CHAIN_WINDOW",
+    "value": 0.4,
+    "unit": "s",
+    "note": "max gap between pickups to keep the chain going"
+   },
+   {
+    "name": "CHAIN_MAX",
+    "value": 12,
+    "unit": "pickups",
+    "note": "chain length after which the pitch stops rising"
+   },
+   {
+    "name": "CHIME_VOL",
+    "value": 0.035,
+    "unit": "0–1",
+    "note": "chime gain"
+   }
+  ],
+  "demo_url": "https://rexgu9911.github.io/playbook/mechanics/pickup-magnet.html",
+  "page_url": "https://rexgu9911.github.io/playbook/#/mechanic/pickup-magnet",
+  "source_url": "https://rexgu9911.github.io/playbook/mechanics/pickup-magnet.html",
+  "source_raw": "https://raw.githubusercontent.com/rexgu9911/playbook/main/mechanics/pickup-magnet.html",
+  "works_with": [
+   "Canvas 2D",
+   "Three.js",
+   "Phaser"
+  ],
+  "used_by": [],
   "license": "MIT"
  }
 ]

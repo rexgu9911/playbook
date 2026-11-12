@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Squash &amp; Stretch</title>
+<style>html,body{margin:0;height:100%;background:#0D0D10;overflow:hidden}canvas{display:block;width:100%;height:100%;touch-action:none}</style>
+</head><body><canvas id="c"></canvas><script>
+(()=>{
+const K={
+  GRAVITY: 1300,             // px/s² downward acceleration
+  STRETCH_PER_SPEED: 0.0006, // stretch per px/s of speed while airborne (along the velocity)
+  STRETCH_MAX: 0.35,         // max stretch (0.35 = 35% longer, and thinner to keep the area)
+  SQUASH_PER_SPEED: 0.0009,  // squash per px/s of landing speed, × blob mass
+  SQUASH_MAX: 0.55,          // max squash on landing
+  TAKEOFF_STRETCH: 0.3,      // stretch snapped in at the moment of takeoff
+  ANTICIPATION_TIME: 0.10,   // s crouch before a jump
+  ANTICIPATION_SQUASH: 0.22, // squash amount of that crouch
+  SPRING_STIFFNESS: 380,     // 1/s² pull back to the rest shape (divided by mass)
+  SPRING_DAMPING: 11,        // 1/s how quickly the wobble dies (divided by mass)
+  AXIS_EASE: 14,             // 1/s how fast the deform axis turns back upright on the ground
+  REST_SPEED: 60,            // px/s bounces slower than this stop and the blob settles
+};
+const C={bg:'#0D0D10',dot:'#1A1A20',a:'#FF4D2E',y:'#F5E663',ink:'#F4F1EA',mu:'#6B6B76'};
+const cv=document.getElementById('c'),ctx=cv.getContext('2d');
+let W=300,H=200,D=1,S=1,VW=440,VH=280,GY=244;
+function layout(){GY=VH-36;}
+function resize(){
+  D=Math.min(2,window.devicePixelRatio||1);W=Math.max(40,innerWidth||300);H=Math.max(40,innerHeight||200);
+  cv.width=Math.round(W*D);cv.height=Math.round(H*D);S=Math.min(W/440,H/280);VW=W/S;VH=H/S;layout();
+}
+addEventListener('resize',resize);resize();
+const wrap=a=>Math.atan2(Math.sin(a),Math.cos(a));
+
+// ---- mechanic ----
+// s = deformation along `axis`: +0.3 = 30% longer & 1/1.3 as wide (stretch), -0.3 = squash. Area is preserved.
+function makeBlob(o){return Object.assign({y:GY-o.r,vx:0,vy:0,ground:true,s:0,sv:0,axis:0,crouch:0,jumpV:0},o);}
+function jump(b,speed,vx){if(b.ground&&b.crouch<=0){b.crouch=K.ANTICIPATION_TIME;b.jumpV=speed;b.nextVx=vx;}}
+function stepBlob(b,dt){
+  // anticipation: hold a crouch, then launch with a snapped-in stretch
+  if(b.crouch>0){b.crouch-=dt;if(b.crouch<=0){b.vy=-b.jumpV;b.vx=b.nextVx;b.ground=false;b.s=K.TAKEOFF_STRETCH;b.sv=0;b.axis=0;}}
+  let target=0;
+  if(!b.ground){
+    b.vy+=K.GRAVITY*dt;b.x+=b.vx*dt;b.y+=b.vy*dt;
+    if(b.x<b.x0||b.x>b.x1){b.x=Math.max(b.x0,Math.min(b.x1,b.x));b.vx=-b.vx;}
+    const speed=Math.hypot(b.vx,b.vy);
+    target=Math.min(K.STRETCH_MAX,speed*K.STRETCH_PER_SPEED);          // stretch with speed...
+    if(speed>40)b.axis=wrap(Math.atan2(b.vy,b.vx)-Math.PI/2);           // ...along the direction of travel
+    if(b.y+b.r>=GY){                                                     // landing
+      const impact=b.vy;b.y=GY-b.r;b.axis=0;
+      b.s=-Math.min(K.SQUASH_MAX,impact*K.SQUASH_PER_SPEED*b.mass);b.sv=0;   // squash scales with impact × weight
+      if(impact*b.bounce>K.REST_SPEED){b.vy=-impact*b.bounce;}else{b.vy=0;b.ground=true;b.vx=0;}
+      sfx(b,impact);
+    }
+  }else{
+    if(b.crouch>0)target=-K.ANTICIPATION_SQUASH;
+    b.axis+=wrap(0-b.axis)*Math.min(1,K.AXIS_EASE*dt);
+  }
+  // damped spring toward the target shape; heavier blobs wobble slower and longer
+  b.sv+=((target-b.s)*K.SPRING_STIFFNESS-b.sv*K.SPRING_DAMPING)/b.mass*dt;
+  b.s+=b.sv*dt;
+  b.s=Math.max(-K.SQUASH_MAX,Math.min(K.STRETCH_MAX*1.5,b.s));
+  if(!isFinite(b.s+b.sv+b.y+b.x)){b.s=b.sv=0;b.y=GY-b.r;b.vy=0;b.ground=true;}
+}
+function drawBlob(b,deform){
+  const s=deform?b.s:0,len=1+s,wid=1/len;                              // volume (area) preserving
+  // on the ground keep the bottom planted: centre sits r·len above the floor
+  const cy=b.ground||b.y+b.r*len>GY?GY-b.r*len:b.y;
+  const h=Math.max(0,GY-b.r-b.y),k=Math.max(0.35,1-h/160);
+  ctx.fillStyle='rgba(0,0,0,.45)';ctx.beginPath();ctx.ellipse(b.x,GY+2,b.r*wid*k*1.05,2.6*k,0,0,6.283);ctx.fill();
+  ctx.save();ctx.translate(b.x,cy);
+  ctx.rotate(b.axis);ctx.scale(wid,len);ctx.rotate(-b.axis);           // deform along the axis without spinning the face
+  ctx.beginPath();ctx.arc(0,0,b.r,0,6.283);ctx.fillStyle=b.fill;ctx.fill();ctx.strokeStyle=C.ink;ctx.lineWidth=1.5/Math.min(wid,len);ctx.stroke();
+  const dir=Math.sign(b.vx)||b.face||1;b.face=dir;
+  ctx.fillStyle=b.eye;const e=b.r*0.32;
+  ctx.beginPath();ctx.ellipse(dir*e*0.6-e*0.55,-b.r*0.2,b.r*0.09,b.r*0.16,0,0,6.283);ctx.ellipse(dir*e*0.6+e*0.55,-b.r*0.2,b.r*0.09,b.r*0.16,0,0,6.283);ctx.fill();
+  ctx.restore();
+}
+
+// ---- demo ----
+let blobs=[],userT=0,AC=null,deform=true;
+function spawn(){
+  const cx=VW/2,span=70;
+  blobs=[ // light & springy → heavy & slow
+    {r:11,mass:0.6,jump:520,bounce:0.5,fill:C.ink,eye:C.bg,x:cx-120},
+    {r:16,mass:1.0,jump:440,bounce:0.35,fill:C.a,eye:C.ink,x:cx},
+    {r:23,mass:2.0,jump:330,bounce:0.15,fill:'#2A2A32',eye:C.ink,x:cx+120},
+  ].map(o=>makeBlob(Object.assign(o,{x0:o.x-span,x1:o.x+span,rest:0.15+Math.random()*0.3})));
+}
+spawn();
+function sfx(b,impact){
+  if(!AC||userT<=0||impact<120)return;
+  const t=AC.currentTime,o=AC.createOscillator(),g=AC.createGain(),f=260/b.mass;
+  o.type='sine';o.frequency.setValueAtTime(f*1.5,t);o.frequency.exponentialRampToValueAtTime(f*0.6,t+0.12);
+  g.gain.setValueAtTime(Math.min(0.06,impact/9000),t);g.gain.exponentialRampToValueAtTime(0.0001,t+0.14);
+  o.connect(g).connect(AC.destination);o.start(t);o.stop(t+0.16);
+}
+const hopVx=b=>(Math.random()<0.5?-1:1)*(30+Math.random()*50);
+function update(dt){
+  if(userT>0)userT-=dt;
+  for(const b of blobs){
+    if(userT<=0&&b.ground&&b.crouch<=0){b.rest-=dt;if(b.rest<=0){jump(b,b.jump*(0.8+Math.random()*0.3),hopVx(b));b.rest=0.35+Math.random()*0.7;}}
+    stepBlob(b,dt);
+  }
+}
+function draw(){
+  ctx.setTransform(1,0,0,1,0,0);ctx.fillStyle=C.bg;ctx.fillRect(0,0,cv.width,cv.height);
+  ctx.setTransform(D*S,0,0,D*S,0,0);
+  ctx.fillStyle=C.dot;for(let x=10;x<VW;x+=20)for(let y=10;y<VH;y+=20)ctx.fillRect(x-0.75,y-0.75,1.5,1.5);
+  ctx.fillStyle='#131317';ctx.fillRect(0,GY,VW,VH-GY);
+  ctx.strokeStyle=C.ink;ctx.lineWidth=1.5;ctx.beginPath();ctx.moveTo(0,GY);ctx.lineTo(VW,GY);ctx.stroke();
+  for(const b of blobs)drawBlob(b,deform);
+  ctx.font='10px ui-sans-serif,system-ui,-apple-system,Helvetica,Arial,sans-serif';ctx.fillStyle=C.mu;ctx.textAlign='center';
+  ctx.fillText('squash & stretch: '+(deform?'on':'off'),VW/2,24);
+  ctx.fillText('Click a blob to hop · Space: all hop · S: toggle squash',VW/2,VH-12);
+}
+let last=0;
+function frame(t){
+  requestAnimationFrame(frame);if(document.hidden){last=0;return;}
+  let dt=last?(t-last)/1000:0.016;last=t;if(!(dt>0))dt=0.016;dt=Math.min(dt,0.033);
+  update(dt);draw();
+}
+function wake(){
+  userT=3.5;
+  if(!AC){try{AC=new(window.AudioContext||window.webkitAudioContext)();}catch(e){AC=null;}}
+  if(AC&&AC.state==='suspended')AC.resume();
+}
+addEventListener('resize',spawn);
+addEventListener('keydown',e=>{
+  const k=e.key.length===1?e.key.toLowerCase():e.key;
+  if(k===' '||k==='ArrowUp'){e.preventDefault();if(!e.repeat){wake();for(const b of blobs)jump(b,b.jump*1.15,hopVx(b));}}
+  if(k==='s'&&!e.repeat){deform=!deform;wake();}
+});
+cv.addEventListener('pointerdown',e=>{
+  const r=cv.getBoundingClientRect(),x=(e.clientX-r.left)/S;let best=blobs[0];
+  for(const b of blobs)if(Math.abs(b.x-x)<Math.abs(best.x-x))best=b;
+  wake();jump(best,best.jump*1.25,hopVx(best));e.preventDefault();
+});
+requestAnimationFrame(frame);
+})();
+</script></body></html>
