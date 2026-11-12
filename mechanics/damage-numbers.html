@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Damage Numbers</title>
+<style>html,body{margin:0;height:100%;background:#0D0D10;overflow:hidden}canvas{display:block;width:100%;height:100%;touch-action:none;cursor:crosshair}</style>
+</head><body><canvas id="c"></canvas><script>
+(()=>{
+const C={bg:'#0D0D10',dot:'#1A1A20',a:'#FF4D2E',y:'#F5E663',ink:'#F4F1EA',mu:'#6B6B76'};
+const FONT='ui-sans-serif,system-ui,-apple-system,"Segoe UI",Helvetica,Arial,sans-serif';
+const cv=document.getElementById('c'),ctx=cv.getContext('2d');
+let W=300,H=200,D=1,S=1,VW=400,VH=250,GY=180;
+const foes=[];for(let i=0;i<3;i++)foes.push({x:0,hp:120,max:120,lag:120,flash:0,sq:0,sv:0,kx:0,kv:0,dead:0,sc:1,scv:0,blink:rnd(1,3),kind:i});
+function rnd(a,b){return a+Math.random()*(b-a);}
+const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
+function resize(){
+  D=Math.min(2,window.devicePixelRatio||1);W=Math.max(40,innerWidth||300);H=Math.max(40,innerHeight||200);
+  cv.width=Math.round(W*D);cv.height=Math.round(H*D);S=Math.min(W/400,H/250);VW=W/S;VH=H/S;
+  GY=VH/2+62;const gap=Math.min(120,VW/3.4);foes.forEach((f,i)=>f.x=VW/2+(i-1)*gap);
+}
+addEventListener('resize',resize);resize();
+function rr(x,y,w,h,r){ctx.beginPath();ctx.moveTo(x+r,y);ctx.arcTo(x+w,y,x+w,y+h,r);ctx.arcTo(x+w,y+h,x,y+h,r);ctx.arcTo(x,y+h,x,y,r);ctx.arcTo(x,y,x+w,y,r);ctx.closePath();}
+let nums=[],sparks=[],bits=[],userT=0,autoT=0.5,volley=0,time=0;
+
+function hit(i,forceCrit){
+  const f=foes[clamp(i,0,2)];if(f.dead>0)return;
+  const crit=forceCrit||Math.random()<0.22,dmg=Math.round(rnd(7,19)*(crit?rnd(2.4,3.4):1));
+  const side=Math.random()<0.5?-1:1,hx=f.x+rnd(-10,10),hy=GY-rnd(14,32);
+  f.hp=Math.max(0,f.hp-dmg);f.flash=1;f.sv-=crit?7:4;f.kv+=side*(crit?150:70);
+  // stacking: push this enemy's recent numbers upward so nothing overlaps
+  for(const n of nums)if(n.foe===f&&n.life<0.6)n.push+=crit?19:13;
+  if(nums.length>=26)nums.shift();
+  nums.push({foe:f,x:f.x+rnd(-8,8),y:GY-48,vx:side*rnd(14,46),vy:crit?-150:-105,life:0,max:crit?1.25:0.95,dmg,crit,push:0,oy:0,rot:side*rnd(0.02,0.12)});
+  const ns=crit?9:5;for(let k=0;k<ns&&sparks.length<50;k++){const a=rnd(0,6.283),sp=rnd(90,crit?330:210);
+    sparks.push({x:hx,y:hy,vx:Math.cos(a)*sp,vy:Math.sin(a)*sp,life:0,max:rnd(0.15,0.3),col:crit?C.y:C.ink});}
+  if(f.hp<=0){f.dead=0.7;for(let k=0;k<12&&bits.length<40;k++){const a=rnd(0,6.283),sp=rnd(80,260);
+    bits.push({x:f.x,y:GY-20,vx:Math.cos(a)*sp,vy:Math.sin(a)*sp-100,life:0,max:rnd(0.5,0.9),r:rnd(2,5),col:k%3?C.mu:C.ink});}}
+}
+function update(dt){
+  time+=dt;
+  if(userT>0)userT-=dt;
+  else{autoT-=dt;if(autoT<=0){hit(Math.floor(Math.random()*3));
+    if(volley>0){volley--;autoT=rnd(0.08,0.16);}else{volley=Math.random()<0.45?Math.floor(rnd(2,5)):0;autoT=volley?0.1:rnd(0.3,0.7);}}}
+  for(const f of foes){
+    f.flash=Math.max(0,f.flash-dt*8);
+    f.sv+=(-300*f.sq-16*f.sv)*dt;f.sq=clamp(f.sq+f.sv*dt,-0.4,0.4);
+    f.kv+=(-160*f.kx-13*f.kv)*dt;f.kx+=f.kv*dt;
+    f.lag+=(f.hp-f.lag)*Math.min(1,dt*3.5);
+    f.blink-=dt;if(f.blink<-0.12)f.blink=rnd(1.5,4);
+    if(f.dead>0){f.dead-=dt;f.sc=Math.max(0,f.sc-dt*9);if(f.dead<=0){f.dead=0;f.hp=f.lag=f.max;f.sc=0.01;f.scv=7;f.kx=f.kv=0;}}
+    else{f.scv+=((1-f.sc)*200-f.scv*14)*dt;f.sc+=f.scv*dt;}
+    if(!isFinite(f.sq+f.kx+f.sc)){f.sq=f.sv=f.kx=f.kv=0;f.sc=1;f.scv=0;}
+  }
+  for(const n of nums){n.life+=dt;n.vy+=250*dt;n.vx*=1-Math.min(1,dt*1.5);n.x+=n.vx*dt;n.y+=n.vy*dt;n.oy+=(-n.push-n.oy)*Math.min(1,dt*14);}
+  nums=nums.filter(n=>n.life<n.max);
+  for(const s of sparks){s.life+=dt;s.x+=s.vx*dt;s.y+=s.vy*dt;const dr=1-Math.min(1,dt*6);s.vx*=dr;s.vy*=dr;}sparks=sparks.filter(s=>s.life<s.max);
+  for(const b of bits){b.life+=dt;b.vy+=600*dt;b.x+=b.vx*dt;b.y+=b.vy*dt;if(b.y>GY-b.r&&b.vy>0){b.y=GY-b.r;b.vy*=-0.4;b.vx*=0.6;}}bits=bits.filter(b=>b.life<b.max);
+}
+function drawFoe(f){
+  const s=clamp(f.sc,0,1.4);if(s<0.02)return;
+  ctx.save();ctx.translate(f.x+f.kx,GY);ctx.rotate(f.kx*0.012);ctx.scale(s*(1-f.sq*0.6),s*(1+f.sq));
+  const w=f.kind===1?44:38,h=f.kind===2?44:f.kind===1?34:38,r=f.kind===1?17:f.kind===2?12:9;
+  rr(-w/2,-h,w,h,r);ctx.fillStyle='#17171C';ctx.fill();ctx.strokeStyle=C.ink;ctx.lineWidth=1.5;ctx.stroke();
+  const eh=f.blink<0||f.flash>0.3?1:5;ctx.fillStyle=C.ink;rr(-8,-h+11+(5-eh)/2,3.4,eh,0.5);ctx.fill();rr(4.6,-h+11+(5-eh)/2,3.4,eh,0.5);ctx.fill();
+  ctx.strokeStyle=C.mu;ctx.beginPath();ctx.moveTo(-5,-h+23);ctx.lineTo(5,-h+23);ctx.stroke();
+  if(f.flash>0){ctx.globalAlpha=f.flash;rr(-w/2-1,-h-1,w+2,h+2,r+1);ctx.fillStyle='#fff';ctx.fill();ctx.globalAlpha=1;}
+  ctx.restore();
+  // hp bar with lagging ghost segment
+  if(f.dead<=0){const bw=38,bx=f.x-bw/2,by=GY+9;ctx.fillStyle='#24242B';rr(bx,by,bw,4,2);ctx.fill();
+    const lw=bw*clamp(f.lag/f.max,0,1),hw=bw*clamp(f.hp/f.max,0,1);
+    if(lw>3){ctx.fillStyle=C.ink;rr(bx,by,lw,4,2);ctx.fill();}
+    if(hw>3){ctx.fillStyle=C.a;rr(bx,by,hw,4,2);ctx.fill();}}
+}
+function draw(){
+  ctx.setTransform(1,0,0,1,0,0);ctx.fillStyle=C.bg;ctx.fillRect(0,0,cv.width,cv.height);
+  ctx.setTransform(D*S,0,0,D*S,0,0);
+  ctx.fillStyle=C.dot;for(let x=10;x<VW;x+=20)for(let y=10;y<VH;y+=20)ctx.fillRect(x-0.75,y-0.75,1.5,1.5);
+  ctx.strokeStyle=C.mu;ctx.lineWidth=1.5;ctx.beginPath();ctx.moveTo(VW/2-170,GY);ctx.lineTo(VW/2+170,GY);ctx.stroke();
+  for(const f of foes)drawFoe(f);
+  for(const b of bits){const k=b.life/b.max;ctx.globalAlpha=1-k*k;ctx.fillStyle=b.col;ctx.beginPath();ctx.arc(b.x,b.y,b.r*(1-k*0.4),0,6.283);ctx.fill();}
+  ctx.lineCap='round';ctx.lineWidth=1.8;
+  for(const s of sparks){const k=s.life/s.max;ctx.globalAlpha=1-k;ctx.strokeStyle=s.col;ctx.beginPath();ctx.moveTo(s.x,s.y);ctx.lineTo(s.x-s.vx*0.04,s.y-s.vy*0.04);ctx.stroke();}
+  ctx.lineCap='butt';ctx.globalAlpha=1;
+  // damage numbers: pop scale -> arc -> fade
+  ctx.textAlign='center';ctx.textBaseline='middle';ctx.lineJoin='round';
+  for(const n of nums){
+    const k=n.life/n.max,pk=clamp(n.life/0.16,0,1),over=n.crit?2.6:1.9;
+    const pop=1+(over-1)*Math.pow(1-pk,2)*Math.sin(pk*Math.PI*0.5+0.4)*(pk<1?1:0)+(pk<0.25?-(1-pk/0.25)*0.7:0);
+    const al=k>0.68?(1-k)/0.32:1,size=n.crit?21:13.5,txt=n.dmg+(n.crit?'!':'');
+    ctx.save();ctx.translate(n.x,n.y+n.oy);ctx.rotate(n.rot*(n.crit?1:0.5));ctx.scale(pop,pop);ctx.globalAlpha=clamp(al,0,1);
+    ctx.font=(n.crit?'900 ':'800 ')+size+'px '+FONT;
+    ctx.strokeStyle=C.bg;ctx.lineWidth=n.crit?5:4;ctx.strokeText(txt,0,0);
+    if(n.crit){ctx.fillStyle=C.a;ctx.fillText(txt,1.4,1.6);ctx.fillStyle=pk<1?'#fff':C.y;}else ctx.fillStyle=pk<1?'#fff':C.ink;
+    ctx.fillText(txt,0,0);ctx.restore();
+  }
+  ctx.globalAlpha=1;
+}
+let last=0;
+function frame(t){
+  requestAnimationFrame(frame);if(document.hidden){last=0;return;}
+  let dt=last?(t-last)/1000:0.016;last=t;if(!(dt>0))dt=0.016;dt=Math.min(dt,0.033);
+  update(dt);draw();
+}
+cv.addEventListener('pointerdown',e=>{
+  const r=cv.getBoundingClientRect(),x=(e.clientX-r.left)/S;let bi=0,bd=1e9;
+  foes.forEach((f,i)=>{const d=Math.abs(f.x-x)+(f.dead>0?1e4:0);if(d<bd){bd=d;bi=i;}});
+  hit(bi,e.shiftKey);userT=3;volley=0;autoT=0.5;e.preventDefault();
+});
+addEventListener('keydown',e=>{
+  if([' ','ArrowLeft','ArrowRight','ArrowUp','ArrowDown'].includes(e.key))e.preventDefault();
+  if(e.key===' '||e.key==='Enter'){hit(Math.floor(Math.random()*3));userT=3;autoT=0.5;}
+  else if(e.key==='1'||e.key==='2'||e.key==='3'){hit(+e.key-1);userT=3;autoT=0.5;}
+});
+requestAnimationFrame(frame);
+})();
+</script></body></html>

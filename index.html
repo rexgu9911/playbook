@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Playbook — remake any web game in your own agent</title>
+<meta name="description" content="Recipes for AI-made web games. Play one, then remake it in Claude Code, Cursor or Codex with one sentence. The code lands in your repo.">
+<meta property="og:title" content="Playbook — remake any web game in your own agent">
+<meta property="og:description" content="Web games made with AI, each with an open recipe you can remake in Claude Code or Cursor.">
+<meta name="theme-color" content="#09090a" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#09090a" media="(prefers-color-scheme: dark)">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='9' fill='%231b1813'/%3E%3Crect x='9' y='9' width='6' height='6' rx='2' fill='%23f4f1ea'/%3E%3Crect x='17' y='9' width='6' height='6' rx='2' fill='%23f4f1ea'/%3E%3Crect x='9' y='17' width='14' height='6' rx='2' fill='%23ff5b1f'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400..700&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css?v=14">
+</head>
+<body>
+<a class="skip" href="#app">Skip to content</a>
+<div class="grain" aria-hidden="true"></div>
+
+<header class="nav" id="nav">
+  <a class="brand" href="#/" aria-label="Playbook home">
+    <span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i></span>
+    <span>Playbook</span>
+  </a>
+  <nav class="nav-links" id="navLinks" aria-label="Main">
+    <a href="#/discover" data-nav="discover">Discover</a>
+    <a href="#/mechanics" data-nav="mechanics">Mechanics</a>
+    <a href="#/games" data-nav="games">Recipes</a>
+    <a href="#/jam" data-nav="jam">Jam</a>
+  </nav>
+  <div class="nav-right">
+    <button class="searchbtn" data-search aria-label="Search games">
+      <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
+      <span>Search games…</span><kbd>/</kbd>
+    </button>
+    <a class="ghost" href="#/publish" data-nav="publish">Publish</a>
+    <a class="btn btn-ink btn-sm" href="#/mcp" data-nav="mcp">Connect MCP</a>
+    <button class="burger" id="burger" aria-label="Menu" aria-expanded="false"><i></i><i></i></button>
+  </div>
+</header>
+
+<div class="menu" id="menu" aria-hidden="true">
+  <a href="#/discover">Discover</a>
+  <a href="#/mechanics">Mechanics</a>
+  <a href="#/games">Recipes</a>
+  <a href="#/jam">Jam</a>
+  <a href="#/publish">Publish</a>
+  <a href="#/mcp">Connect MCP</a>
+</div>
+
+<main id="app" tabindex="-1"></main>
+
+<footer class="footer">
+  <div class="footer-in">
+    <div>
+      <div class="brand"><span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i></span><span>Playbook</span></div>
+      <p class="muted">Every game is a link. Every link is a recipe. Play it, then make it yours.</p>
+    </div>
+    <div class="flinks">
+      <div><b>Play</b><a href="#/discover">Discover</a><a href="#/games">Playbook recipes</a><a href="#/jam">Jam</a></div>
+      <div><b>Make</b><a href="#/mcp">Connect MCP</a><a href="#/mechanics">Mechanics</a><a href="#/publish">Publish</a></div>
+      <div><b>About</b><a href="#/discover" data-submit-game>Submit a game</a><a href="#/discover">Claim a listing</a><a href="https://github.com/rexgu9911/playbook" target="_blank" rel="noopener">GitHub</a></div>
+    </div>
+    <p class="fnote">Games under Discover belong to their creators. We link to their own pages and show the cover image they publish; nothing is copied or hosted here. Creators can claim or remove a listing from its card at any time. Playbook MCP, publishing and the Jam are coming soon.</p>
+  </div>
+</footer>
+
+<nav class="tabbar" aria-label="Quick">
+  <a href="#/" data-tab="home"><svg viewBox="0 0 24 24"><path d="M4 11l8-7 8 7v9a1 1 0 0 1-1 1h-5v-6h-4v6H5a1 1 0 0 1-1-1z"/></svg>Home</a>
+  <a href="#/discover" data-tab="discover"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M15.5 8.5l-2 5-5 2 2-5z"/></svg>Discover</a>
+  <a href="#/games" data-tab="games"><svg viewBox="0 0 24 24"><path d="M6 12h4M8 10v4M15 11h.01M18 13h.01M7 6h10a5 5 0 0 1 5 5v2a5 5 0 0 1-9 3h-2a5 5 0 0 1-9-3v-2a5 5 0 0 1 5-5z"/></svg>Recipes</a>
+  <button data-search><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>Search</button>
+  <a href="#/mcp" data-tab="make"><svg viewBox="0 0 24 24"><path d="M12 3l2.4 5.6L20 11l-5.6 2.4L12 19l-2.4-5.6L4 11l5.6-2.4z"/></svg>Remake</a>
+</nav>
+
+<div class="modal" id="modal" aria-hidden="true">
+  <div class="modal-scrim" data-close></div>
+  <div class="modal-card bezel" role="dialog" aria-modal="true"><div class="core" id="modalBody"></div></div>
+</div>
+
+<div class="cmdk" id="cmdk" aria-hidden="true">
+  <div class="modal-scrim" data-cmdk-close></div>
+  <div class="cmdk-box" role="dialog" aria-modal="true" aria-label="Search">
+    <div class="cmdk-in">
+      <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
+      <input id="cmdkInput" type="search" placeholder="Search games, creators, mechanics…" autocomplete="off" spellcheck="false" aria-controls="cmdkList">
+      <kbd>esc</kbd>
+    </div>
+    <div class="cmdk-list" id="cmdkList" role="listbox"></div>
+    <div class="cmdk-foot"><span><kbd>↑</kbd> <kbd>↓</kbd> move</span><span><kbd>↵</kbd> open</span><span><kbd>esc</kbd> close</span></div>
+  </div>
+</div>
+<div class="toast" id="toast" role="status"></div>
+
+<script src="data.js?v=3"></script>
+<script src="discover.js?v=6"></script>
+<script src="app.js?v=14"></script>
+</body>
+</html>

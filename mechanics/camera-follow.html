@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Camera Follow</title>
+<style>html,body{margin:0;height:100%;background:#0D0D10;overflow:hidden}canvas{display:block;width:100%;height:100%;touch-action:none}</style>
+</head><body><canvas id="c"></canvas><script>
+(()=>{
+const C={bg:'#0D0D10',dot:'#1A1A20',a:'#FF4D2E',y:'#F5E663',ink:'#F4F1EA',mu:'#6B6B76'};
+const cv=document.getElementById('c'),ctx=cv.getContext('2d');
+let W=300,H=200,D=1,S=1,VW=400,VH=250;
+function resize(){
+  D=Math.min(2,window.devicePixelRatio||1);W=Math.max(40,innerWidth||300);H=Math.max(40,innerHeight||200);
+  cv.width=Math.round(W*D);cv.height=Math.round(H*D);S=Math.min(W/400,H/250);VW=W/S;VH=H/S;
+}
+addEventListener('resize',resize);resize();
+function rr(x,y,w,h,r){ctx.beginPath();ctx.moveTo(x+r,y);ctx.arcTo(x+w,y,x+w,y+h,r);ctx.arcTo(x+w,y+h,x,y+h,r);ctx.arcTo(x,y+h,x,y,r);ctx.arcTo(x,y,x+w,y,r);ctx.closePath();}
+const clamp=(v,a,b)=>Math.max(a,Math.min(b,v)),rnd=(a,b)=>a+Math.random()*(b-a);
+// ---- world ----
+const WW=1000,WH=640,SPEED=118,DZX=30,DZY=20,LOOK=52,SMOOTH=0.28;
+let seed=7;const sr=()=>(seed=(seed*16807)%2147483647)/2147483647;
+const props=[];for(let i=0;i<46;i++)props.push({x:40+sr()*(WW-80),y:40+sr()*(WH-80),k:Math.floor(sr()*4),s:8+sr()*16,r:sr()*1.5,hi:sr()<0.16});
+const p={x:WW/2,y:WH/2,vx:0,vy:0,face:0,step:0};
+const focus={x:p.x,y:p.y},look={x:0,y:0},cam={x:p.x,y:p.y,vx:0,vy:0},want={x:p.x,y:p.y};
+const wp={x:p.x+160,y:p.y-60,wait:0},keys={},ptr={down:false,x:0,y:0};
+let userT=0,time=0,dust=[],edge={l:0,r:0,t:0,b:0};
+
+function smoothDamp(cur,tgt,o,key,st,dt){                      // critically damped spring
+  const w=2/st,x=w*dt,e=1/(1+x+0.48*x*x+0.235*x*x*x),ch=cur-tgt,tmp=(o[key]+w*ch)*dt;
+  o[key]=(o[key]-w*tmp)*e;return tgt+(ch+tmp)*e;
+}
+function update(dt){
+  time+=dt;let ix=0,iy=0;
+  if(userT>0){userT-=dt;
+    ix=(keys.ArrowRight||keys.d?1:0)-(keys.ArrowLeft||keys.a?1:0);iy=(keys.ArrowDown||keys.s?1:0)-(keys.ArrowUp||keys.w?1:0);
+    if(ptr.down){userT=4;const dx=ptr.x-(p.x-cam.x+VW/2),dy=ptr.y-(p.y-cam.y+VH/2);if(Math.hypot(dx,dy)>10){ix=dx;iy=dy;}}
+    if(ix||iy)userT=4;
+    if(userT<=0){wp.x=clamp(p.x+rnd(-300,300),50,WW-50);wp.y=clamp(p.y+rnd(-200,200),50,WH-50);wp.wait=0.3;}
+  }else{                                                      // auto wander between waypoints
+    const dx=wp.x-p.x,dy=wp.y-p.y,d=Math.hypot(dx,dy);
+    if(wp.wait>0)wp.wait-=dt;
+    else if(d<10){wp.wait=rnd(0.35,0.9);for(let i=0;i<10;i++){wp.x=rnd(60,WW-60);wp.y=rnd(60,WH-60);const dd=Math.hypot(wp.x-p.x,wp.y-p.y);if(dd>180&&dd<480)break;}}
+    else{ix=dx;iy=dy;}
+  }
+  const il=Math.hypot(ix,iy),tx=il?ix/il*SPEED:0,ty=il?iy/il*SPEED:0,acc=Math.min(1,dt*(il?9:12));
+  p.vx+=(tx-p.vx)*acc;p.vy+=(ty-p.vy)*acc;
+  p.x=clamp(p.x+p.vx*dt,14,WW-14);p.y=clamp(p.y+p.vy*dt,14,WH-14);
+  const sp=Math.hypot(p.vx,p.vy);
+  if(sp>12){let da=Math.atan2(p.vy,p.vx)-p.face;da=Math.atan2(Math.sin(da),Math.cos(da));p.face+=da*Math.min(1,dt*12);
+    p.step+=dt*sp*0.09;if(Math.random()<dt*7&&dust.length<24)dust.push({x:p.x-Math.cos(p.face)*8,y:p.y-Math.sin(p.face)*8,life:0,max:0.5,r:rnd(1.5,3)});}
+  // 1) dead zone: the focus point only moves when the player pushes its edge
+  edge.l=edge.r=edge.t=edge.b=0;
+  if(p.x>focus.x+DZX){focus.x=p.x-DZX;edge.r=1;}else if(p.x<focus.x-DZX){focus.x=p.x+DZX;edge.l=1;}
+  if(p.y>focus.y+DZY){focus.y=p.y-DZY;edge.b=1;}else if(p.y<focus.y-DZY){focus.y=p.y+DZY;edge.t=1;}
+  // 2) look-ahead: lead the focus in the direction of travel (eased)
+  const lk=Math.min(1,dt*2.6);look.x+=(p.vx/SPEED*LOOK-look.x)*lk;look.y+=(p.vy/SPEED*LOOK*0.75-look.y)*lk;
+  // 3) smooth-damp the camera toward focus + look-ahead, clamped to world bounds
+  const hx=VW/2-24,hy=VH/2-24;
+  want.x=WW>hx*2?clamp(focus.x+look.x,hx,WW-hx):WW/2;want.y=WH>hy*2?clamp(focus.y+look.y,hy,WH-hy):WH/2;
+  cam.x=smoothDamp(cam.x,want.x,cam,'vx',SMOOTH,dt);cam.y=smoothDamp(cam.y,want.y,cam,'vy',SMOOTH,dt);
+  if(!isFinite(cam.x+cam.y+p.x+p.y+focus.x+focus.y)){p.x=focus.x=cam.x=WW/2;p.y=focus.y=cam.y=WH/2;p.vx=p.vy=cam.vx=cam.vy=look.x=look.y=0;}
+  for(const q of dust)q.life+=dt;dust=dust.filter(q=>q.life<q.max);
+}
+function draw(){
+  ctx.setTransform(1,0,0,1,0,0);ctx.fillStyle=C.bg;ctx.fillRect(0,0,cv.width,cv.height);
+  const ox=VW/2-cam.x,oy=VH/2-cam.y;
+  ctx.setTransform(D*S,0,0,D*S,D*S*ox,D*S*oy);
+  // world: dot grid, border, floor markings (only what is in view)
+  const x0=Math.max(0,Math.floor((cam.x-VW/2)/20)*20),x1=Math.min(WW,cam.x+VW/2+20),y0=Math.max(0,Math.floor((cam.y-VH/2)/20)*20),y1=Math.min(WH,cam.y+VH/2+20);
+  ctx.fillStyle=C.dot;for(let x=x0+10;x<x1;x+=20)for(let y=y0+10;y<y1;y+=20)ctx.fillRect(x-0.75,y-0.75,1.5,1.5);
+  ctx.strokeStyle=C.mu;ctx.lineWidth=1.5;rr(2,2,WW-4,WH-4,14);ctx.stroke();
+  ctx.lineWidth=1.4;
+  for(const o of props){if(o.x<x0-40||o.x>x1+40||o.y<y0-40||o.y>y1+40)continue;
+    ctx.strokeStyle=o.hi?C.mu:'#2A2A32';ctx.save();ctx.translate(o.x,o.y);ctx.rotate(o.r);
+    if(o.k===0){ctx.beginPath();ctx.arc(0,0,o.s,0,6.283);ctx.stroke();}
+    else if(o.k===1){rr(-o.s,-o.s,o.s*2,o.s*2,5);ctx.stroke();}
+    else if(o.k===2){ctx.beginPath();ctx.moveTo(-o.s,0);ctx.lineTo(o.s,0);ctx.moveTo(0,-o.s);ctx.lineTo(0,o.s);ctx.stroke();}
+    else{ctx.beginPath();ctx.moveTo(0,-o.s);ctx.lineTo(o.s*0.9,o.s*0.7);ctx.lineTo(-o.s*0.9,o.s*0.7);ctx.closePath();ctx.stroke();}
+    ctx.restore();}
+  if(userT<=0){ctx.strokeStyle=C.mu;ctx.beginPath();ctx.arc(wp.x,wp.y,5+Math.sin(time*5)*1.2,0,6.283);ctx.stroke();}
+  // camera debug: dead zone box, look-ahead lead, camera centre
+  const dzx=focus.x-DZX-8,dzy=focus.y-DZY-8,dzw=DZX*2+16,dzh=DZY*2+16;
+  ctx.setLineDash([4,4]);ctx.strokeStyle=C.mu;ctx.lineWidth=1;rr(dzx,dzy,dzw,dzh,8);ctx.stroke();ctx.setLineDash([]);
+  ctx.strokeStyle=C.y;ctx.lineWidth=2;ctx.lineCap='round';ctx.beginPath();
+  if(edge.r){ctx.moveTo(dzx+dzw,dzy+9);ctx.lineTo(dzx+dzw,dzy+dzh-9);}if(edge.l){ctx.moveTo(dzx,dzy+9);ctx.lineTo(dzx,dzy+dzh-9);}
+  if(edge.b){ctx.moveTo(dzx+9,dzy+dzh);ctx.lineTo(dzx+dzw-9,dzy+dzh);}if(edge.t){ctx.moveTo(dzx+9,dzy);ctx.lineTo(dzx+dzw-9,dzy);}
+  ctx.stroke();ctx.lineCap='butt';
+  const lx=focus.x+look.x,ly=focus.y+look.y;
+  ctx.strokeStyle='rgba(245,230,99,.45)';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(focus.x,focus.y);ctx.lineTo(lx,ly);ctx.stroke();
+  ctx.strokeStyle=C.y;ctx.lineWidth=1.5;ctx.beginPath();ctx.arc(lx,ly,3.5,0,6.283);ctx.stroke();
+  ctx.strokeStyle=C.ink;ctx.lineWidth=1.2;ctx.beginPath();ctx.moveTo(cam.x-5,cam.y);ctx.lineTo(cam.x+5,cam.y);ctx.moveTo(cam.x,cam.y-5);ctx.lineTo(cam.x,cam.y+5);ctx.stroke();
+  // player
+  for(const q of dust){const k=q.life/q.max;ctx.globalAlpha=(1-k)*0.6;ctx.fillStyle=C.mu;ctx.beginPath();ctx.arc(q.x,q.y,q.r*(1+k),0,6.283);ctx.fill();}
+  ctx.globalAlpha=1;
+  const sp=Math.hypot(p.vx,p.vy)/SPEED,wob=Math.sin(p.step*6.283)*0.07*sp;
+  ctx.fillStyle='rgba(0,0,0,.4)';ctx.beginPath();ctx.ellipse(p.x+1,p.y+4,10,8,0,0,6.283);ctx.fill();
+  ctx.save();ctx.translate(p.x,p.y);ctx.rotate(p.face);ctx.scale(1+sp*0.1+wob,1-sp*0.06-wob);
+  rr(-10,-9,20,18,8);ctx.fillStyle=C.a;ctx.fill();
+  ctx.fillStyle=C.ink;ctx.beginPath();ctx.arc(4.5,-3.6,1.9,0,6.283);ctx.arc(4.5,3.6,1.9,0,6.283);ctx.fill();
+  ctx.restore();
+  // mini-map (screen space): world, player, camera frame
+  ctx.setTransform(D*S,0,0,D*S,0,0);
+  const mw=Math.min(84,VW*0.24),ms=mw/WW,mh=WH*ms,mx=VW-mw-9,my=VH-mh-9;
+  rr(mx-3,my-3,mw+6,mh+6,5);ctx.fillStyle='rgba(13,13,16,.9)';ctx.fill();ctx.strokeStyle=C.mu;ctx.lineWidth=1;ctx.stroke();
+  ctx.fillStyle='#2A2A32';for(const o of props)ctx.fillRect(mx+o.x*ms-0.6,my+o.y*ms-0.6,1.2,1.2);
+  ctx.save();rr(mx-1,my-1,mw+2,mh+2,3);ctx.clip();
+  ctx.fillStyle='rgba(255,77,46,.14)';ctx.strokeStyle=C.a;ctx.lineWidth=1.2;
+  rr(mx+(cam.x-VW/2)*ms,my+(cam.y-VH/2)*ms,VW*ms,VH*ms,2);ctx.fill();ctx.stroke();
+  ctx.restore();
+  if(userT<=0){ctx.fillStyle=C.mu;ctx.beginPath();ctx.arc(mx+wp.x*ms,my+wp.y*ms,1.4,0,6.283);ctx.fill();}
+  ctx.fillStyle=C.ink;ctx.beginPath();ctx.arc(mx+p.x*ms,my+p.y*ms,2,0,6.283);ctx.fill();
+}
+let last=0;
+function frame(t){
+  requestAnimationFrame(frame);if(document.hidden){last=0;return;}
+  let dt=last?(t-last)/1000:0.016;last=t;if(!(dt>0))dt=0.016;dt=Math.min(dt,0.033);
+  update(dt);draw();
+}
+const MOVE=['ArrowLeft','ArrowRight','ArrowUp','ArrowDown','a','d','w','s'];
+addEventListener('keydown',e=>{
+  const k=e.key.length===1?e.key.toLowerCase():e.key;
+  if([' ','ArrowLeft','ArrowRight','ArrowUp','ArrowDown'].includes(k))e.preventDefault();
+  if(MOVE.includes(k)){keys[k]=true;userT=4;}
+});
+addEventListener('keyup',e=>{const k=e.key.length===1?e.key.toLowerCase():e.key;keys[k]=false;});
+addEventListener('blur',()=>{for(const k in keys)keys[k]=false;ptr.down=false;});
+function pp(e){const r=cv.getBoundingClientRect();ptr.x=(e.clientX-r.left)/S;ptr.y=(e.clientY-r.top)/S;}
+cv.addEventListener('pointerdown',e=>{pp(e);ptr.down=true;userT=4;e.preventDefault();});
+cv.addEventListener('pointermove',e=>{if(ptr.down)pp(e);});
+addEventListener('pointerup',()=>{ptr.down=false;});addEventListener('pointercancel',()=>{ptr.down=false;});
+requestAnimationFrame(frame);
+})();
+</script></body></html>

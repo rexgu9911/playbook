@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Particle Burst</title>
+<style>html,body{margin:0;height:100%;background:#0D0D10;overflow:hidden}canvas{display:block;width:100%;height:100%;touch-action:none;cursor:crosshair}</style>
+</head><body><canvas id="c"></canvas><script>
+(()=>{
+const C={bg:'#0D0D10',dot:'#1A1A20',a:'#FF4D2E',y:'#F5E663',ink:'#F4F1EA',mu:'#6B6B76'};
+const cv=document.getElementById('c'),ctx=cv.getContext('2d');
+let W=300,H=200,D=1,S=1,VW=440,VH=280;
+function resize(){
+  D=Math.min(2,window.devicePixelRatio||1);W=Math.max(40,innerWidth||300);H=Math.max(40,innerHeight||200);
+  cv.width=Math.round(W*D);cv.height=Math.round(H*D);S=Math.min(W/400,H/250);VW=W/S;VH=H/S;
+}
+addEventListener('resize',resize);resize();
+const rnd=(a,b)=>a+Math.random()*(b-a);
+const MAXP=200;
+let sparks=[],smoke=[],debris=[],rings=[],flashes=[],userT=0,autoT=0.4,time=0,kick=0;
+
+function burst(x,y,pw){
+  if(!isFinite(x+y))return;
+  kick=Math.min(1,kick+0.5*pw);
+  flashes.push({x,y,t:0,pw});                                  // layer 1: core flash
+  rings.push({x,y,t:0,max:0.45,r:70*pw,col:C.ink,w:3});        // layer 2: shockwave
+  rings.push({x,y,t:-0.06,max:0.6,r:105*pw,col:C.a,w:1.5});
+  const total=sparks.length+smoke.length+debris.length,room=Math.max(0,MAXP-total),sc=room<50?0.4:1;
+  const ns=Math.round(22*sc),a0=Math.random()*6.283;           // layer 3: sparks (fast, heavy drag)
+  for(let i=0;i<ns;i++){const a=a0+i/ns*6.283+rnd(-0.12,0.12),sp=rnd(180,520)*pw;
+    sparks.push({x,y,vx:Math.cos(a)*sp,vy:Math.sin(a)*sp,life:0,max:rnd(0.25,0.6),w:rnd(1.2,2.6)});}
+  const nm=Math.round(8*sc);                                   // layer 4: smoke (slow, grows, rises)
+  for(let i=0;i<nm;i++){const a=rnd(0,6.283),sp=rnd(20,80)*pw;
+    smoke.push({x:x+Math.cos(a)*6,y:y+Math.sin(a)*6,vx:Math.cos(a)*sp,vy:Math.sin(a)*sp,life:-rnd(0,0.08),max:rnd(0.7,1.2),r:rnd(7,15)*pw});}
+  const nd=Math.round(8*sc);                                   // layer 5: debris (gravity, spin, bounce)
+  for(let i=0;i<nd;i++){const a=rnd(-Math.PI*0.95,-Math.PI*0.05),sp=rnd(140,330)*pw;
+    debris.push({x,y,vx:Math.cos(a)*sp,vy:Math.sin(a)*sp,rot:rnd(0,6),rv:rnd(-14,14),life:0,max:rnd(0.9,1.5),s:rnd(3,6.5),tri:i%3===0,col:i%4===0?C.a:i%4===1?C.y:C.ink,b:0});}
+}
+function update(dt){
+  time+=dt;kick=Math.max(0,kick-dt*3);
+  if(userT>0)userT-=dt;
+  else{autoT-=dt;if(autoT<=0){burst(rnd(VW*0.2,VW*0.8),rnd(VH*0.25,VH*0.65),rnd(0.75,1.15));autoT=rnd(0.7,1.3);}}
+  for(const f of flashes)f.t+=dt;flashes=flashes.filter(f=>f.t<0.14);
+  for(const r of rings)r.t+=dt;rings=rings.filter(r=>r.t<r.max);
+  for(const s of sparks){s.life+=dt;const dr=1-Math.min(1,dt*4.5);s.vx*=dr;s.vy*=dr;s.vy+=120*dt;s.x+=s.vx*dt;s.y+=s.vy*dt;}
+  sparks=sparks.filter(s=>s.life<s.max);
+  for(const s of smoke){s.life+=dt;if(s.life<0)continue;const dr=1-Math.min(1,dt*2.5);s.vx*=dr;s.vy*=dr;s.vy-=26*dt;s.x+=s.vx*dt;s.y+=s.vy*dt;}
+  smoke=smoke.filter(s=>s.life<s.max);
+  for(const d of debris){d.life+=dt;d.vy+=760*dt;d.x+=d.vx*dt;d.y+=d.vy*dt;d.rot+=d.rv*dt;
+    if(d.y>VH-6&&d.vy>0&&d.b<2){d.y=VH-6;d.vy*=-0.45;d.vx*=0.65;d.rv*=0.6;d.b++;}}
+  debris=debris.filter(d=>d.life<d.max&&d.y<VH+20);
+}
+function draw(){
+  ctx.setTransform(1,0,0,1,0,0);ctx.fillStyle=C.bg;ctx.fillRect(0,0,cv.width,cv.height);
+  const k2=kick*kick;
+  ctx.setTransform(D*S,0,0,D*S,D*S*Math.sin(time*67)*3*k2,D*S*Math.cos(time*53)*3*k2);
+  ctx.fillStyle=C.dot;for(let x=10;x<VW+20;x+=20)for(let y=10;y<VH+20;y+=20)ctx.fillRect(x-0.75,y-0.75,1.5,1.5);
+  // smoke
+  for(const s of smoke){if(s.life<0)continue;const k=s.life/s.max,e=1-(1-k)*(1-k);
+    ctx.globalAlpha=0.34*(1-k)*Math.min(1,k*8);ctx.fillStyle=k<0.25?C.mu:'#3A3A44';ctx.beginPath();ctx.arc(s.x,s.y,s.r*(0.5+e*1.3),0,6.283);ctx.fill();}
+  ctx.globalAlpha=1;
+  // shockwave rings
+  for(const r of rings){if(r.t<0)continue;const k=r.t/r.max,e=1-Math.pow(1-k,3);
+    ctx.globalAlpha=(1-k)*0.9;ctx.strokeStyle=r.col;ctx.lineWidth=Math.max(0.3,r.w*(1-k)*2);ctx.beginPath();ctx.arc(r.x,r.y,6+e*r.r,0,6.283);ctx.stroke();}
+  ctx.globalAlpha=1;
+  // debris
+  for(const d of debris){const k=d.life/d.max;ctx.globalAlpha=k>0.7?(1-k)/0.3:1;ctx.fillStyle=d.col;ctx.save();ctx.translate(d.x,d.y);ctx.rotate(d.rot);
+    if(d.tri){ctx.beginPath();ctx.moveTo(0,-d.s*0.7);ctx.lineTo(d.s*0.7,d.s*0.5);ctx.lineTo(-d.s*0.7,d.s*0.5);ctx.closePath();ctx.fill();}
+    else ctx.fillRect(-d.s/2,-d.s/2,d.s,d.s);
+    ctx.restore();}
+  ctx.globalAlpha=1;
+  // sparks (velocity-stretched streaks, yellow -> orange)
+  ctx.lineCap='round';
+  for(const s of sparks){const k=s.life/s.max;ctx.globalAlpha=1-k*k;ctx.strokeStyle=k<0.35?C.y:C.a;ctx.lineWidth=s.w*(1-k*0.6);
+    ctx.beginPath();ctx.moveTo(s.x,s.y);ctx.lineTo(s.x-s.vx*0.045,s.y-s.vy*0.045);ctx.stroke();}
+  ctx.globalAlpha=1;ctx.lineCap='butt';
+  // core flash
+  for(const f of flashes){const k=f.t/0.14;ctx.globalAlpha=1-k;ctx.fillStyle=k<0.4?'#fff':C.y;ctx.beginPath();ctx.arc(f.x,f.y,(10+k*26)*f.pw,0,6.283);ctx.fill();}
+  ctx.globalAlpha=1;
+}
+let last=0;
+function frame(t){
+  requestAnimationFrame(frame);if(document.hidden){last=0;return;}
+  let dt=last?(t-last)/1000:0.016;last=t;if(!(dt>0))dt=0.016;dt=Math.min(dt,0.033);
+  update(dt);draw();
+}
+let lastP=0;
+function pt(e){const r=cv.getBoundingClientRect();return[(e.clientX-r.left)/S,(e.clientY-r.top)/S];}
+cv.addEventListener('pointerdown',e=>{const p=pt(e);burst(p[0],p[1],1.1);userT=3;lastP=performance.now();e.preventDefault();});
+cv.addEventListener('pointermove',e=>{                         // drag to paint smaller bursts
+  if(!(e.buttons&1)&&e.pointerType==='mouse')return;const n=performance.now();if(n-lastP<110)return;lastP=n;
+  const p=pt(e);burst(p[0],p[1],0.6);userT=3;});
+addEventListener('keydown',e=>{
+  if([' ','ArrowLeft','ArrowRight','ArrowUp','ArrowDown'].includes(e.key))e.preventDefault();
+  if((e.key===' '||e.key==='Enter')&&!e.repeat){burst(rnd(VW*0.25,VW*0.75),rnd(VH*0.3,VH*0.6),1.2);userT=3;}
+});
+requestAnimationFrame(frame);
+})();
+</script></body></html>

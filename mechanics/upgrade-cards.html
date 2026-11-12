@@ -1,0 +1,151 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Upgrade Cards</title>
+<style>
+html,body{margin:0;height:100%;background:#0D0D10;overflow:hidden;touch-action:none;user-select:none;-webkit-user-select:none;
+  font-family:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Helvetica,Arial,sans-serif}
+canvas{position:absolute;left:0;top:0;width:100%;height:100%;display:block}
+#stage{position:absolute;left:50%;top:50%;width:0;height:0}
+.slot{position:absolute;left:-52px;top:-74px;width:104px;height:148px;perspective:620px;cursor:pointer;will-change:transform,opacity}
+.inner{position:absolute;left:0;top:0;right:0;bottom:0;transform-style:preserve-3d;will-change:transform}
+.face{position:absolute;left:0;top:0;right:0;bottom:0;border-radius:12px;box-sizing:border-box;overflow:hidden;
+  backface-visibility:hidden;-webkit-backface-visibility:hidden;background:#15151A;border:1.5px solid #6B6B76}
+.front{color:#F4F1EA;display:flex;flex-direction:column;align-items:center;padding:14px 8px 11px;transition:border-color .15s}
+.back{transform:rotateY(180deg);background-image:radial-gradient(#2A2A32 1.2px,transparent 1.4px);background-size:10px 10px;background-position:5px 5px}
+.back:after{content:"";position:absolute;left:50%;top:50%;width:22px;height:22px;margin:-11px;border-radius:5px;background:#FF4D2E;transform:rotate(45deg)}
+.hot .front{border-color:#F4F1EA}
+.picked .front{border-color:#F5E663;box-shadow:inset 0 0 0 1.5px #F5E663}
+.icon{width:46px;height:46px;color:var(--tc);flex:none}
+.icon svg{width:100%;height:100%;fill:none;stroke:currentColor;stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round}
+.name{font-size:11px;font-weight:700;letter-spacing:.09em;margin-top:13px;text-align:center;white-space:nowrap}
+.stat{font-size:9.5px;color:#6B6B76;margin-top:5px;text-align:center;white-space:nowrap}
+.pips{margin-top:auto;display:flex;gap:4px}
+.pips i{width:5px;height:5px;border-radius:50%;background:#2A2A32}.pips i.on{background:var(--tc)}
+.sheen{position:absolute;left:-60%;top:-20%;width:220%;height:140%;pointer-events:none;
+  background:linear-gradient(115deg,transparent 42%,rgba(244,241,234,.13) 50%,transparent 58%)}
+</style>
+</head><body><canvas id="c"></canvas><div id="stage"></div><script>
+(()=>{
+const C={bg:'#0D0D10',dot:'#1A1A20',a:'#FF4D2E',y:'#F5E663',ink:'#F4F1EA',mu:'#6B6B76'};
+const cv=document.getElementById('c'),ctx=cv.getContext('2d'),stage=document.getElementById('stage');
+let W=300,H=200,D=1,S=1,VW=400,VH=250;
+function resize(){
+  D=Math.min(2,window.devicePixelRatio||1);W=Math.max(40,innerWidth||300);H=Math.max(40,innerHeight||200);
+  cv.width=Math.round(W*D);cv.height=Math.round(H*D);S=Math.min(W/400,H/250);VW=W/S;VH=H/S;
+  stage.style.transform='scale('+S.toFixed(4)+')';
+}
+addEventListener('resize',resize);resize();
+const rnd=(a,b)=>a+Math.random()*(b-a),clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
+const CW=104,CH=148,GAP=14;
+const ICON={
+  shots:'M9 31 L21 13 M17 35 L29 17 M25 37 L37 19 M21 13 l-1 6 M21 13 l5 2',
+  shield:'M22 6 L36 11 V22 C36 30 30 36 22 39 C14 36 8 30 8 22 V11 Z',
+  bolt:'M25 5 L11 24 H21 L18 39 L33 19 H23 Z',
+  heart:'M22 37 C8 27 6 19 9 13 C12 8 19 8 22 14 C25 8 32 8 35 13 C38 19 36 27 22 37 Z',
+  star:'M22 5 L26.5 16.5 L39 17.5 L29.5 25.5 L32.5 38 L22 31 L11.5 38 L14.5 25.5 L5 17.5 L17.5 16.5 Z',
+  wing:'M8 31 C17 31 31 27 37 10 C35 23 28 35 12 37 M8 22 C14 22 22 20 28 12',
+  ring:'M22 8 A14 14 0 1 1 21.99 8 M22 17 A5 5 0 1 1 21.99 17',
+  nova:'M22 4 V12 M22 32 V40 M4 22 H12 M32 22 H40 M9 9 L15 15 M29 29 L35 35 M35 9 L29 15 M15 29 L9 35 M22 17 A5 5 0 1 1 21.99 17'};
+const POOL=[['MULTISHOT','+1 projectile','shots',2],['IRON SKIN','+25 armor','shield',1],['OVERCLOCK','+20% fire rate','bolt',2],
+  ['VITALITY','+30 max HP','heart',1],['CRIT LENS','+15% crit chance','star',3],['SWIFT','+12% move speed','wing',1],
+  ['MAGNET','+40% pickup','ring',1],['NOVA','blast on kill','nova',3]];
+const TC=[C.ink,C.ink,C.y,C.a];
+const cards=[];
+for(let i=0;i<3;i++){
+  const slot=document.createElement('div');slot.className='slot';
+  slot.innerHTML='<div class="inner"><div class="face front"></div><div class="face back"></div></div>';
+  stage.appendChild(slot);
+  cards.push({el:slot,inner:slot.firstChild,front:slot.firstChild.firstChild,sheen:null,x:0,y:260,vy:0,ty:0,rot:0,trot:0,s:1,vs:0,ts:1,flip:0,tflip:0,al:1,tal:1,tiltX:0,tiltY:0,spin:0,delay:0,tier:1});
+}
+let phase='deal',pt=0,hover=-1,picked=-1,burstDone=false,userT=0,kbd=false,time=0,seq=[];
+let px=0,py=0,parts=[],rings=[],lastSet=[];
+function deal(){
+  let ids;do{ids=[];while(ids.length<3){const k=Math.floor(Math.random()*POOL.length);if(!ids.includes(k))ids.push(k);}}while(ids.join()===lastSet.join());
+  lastSet=ids;
+  cards.forEach((c,i)=>{const u=POOL[ids[i]];c.tier=u[3];
+    c.front.style.setProperty('--tc',TC[u[3]]);
+    c.front.innerHTML='<div class="icon"><svg viewBox="0 0 44 44"><path d="'+ICON[u[2]]+'"/></svg></div><div class="name">'+u[0]+'</div><div class="stat">'+u[1]+'</div>'+
+      '<div class="pips">'+[1,2,3].map(n=>'<i'+(n<=u[3]?' class="on"':'')+'></i>').join('')+'</div><div class="sheen"></div>';
+    c.sheen=c.front.lastChild;c.el.className='slot';
+    c.x=(i-1)*(CW+GAP);c.y=VH/2+CH;c.vy=0;c.ty=0;c.rot=rnd(-28,28);c.trot=(i-1)*2.5;c.s=0.85;c.vs=0;c.ts=1;c.flip=0;c.tflip=0;c.al=1;c.tal=1;c.spin=0;c.tiltX=c.tiltY=0;c.delay=i*0.1;});
+  phase='deal';pt=0;hover=-1;picked=-1;burstDone=false;
+  const a=Math.floor(Math.random()*3),b=(a+1+Math.floor(Math.random()*2))%3;seq=Math.random()<0.5?[a,b]:[a,b,3-a-b];
+}
+function pick(i){
+  if(phase!=='choose'||i<0||i>2)return;picked=i;hover=i;phase='picked';pt=0;burstDone=false;
+  cards.forEach((c,j)=>{if(j===i){c.el.classList.add('picked');c.ty=-12;c.ts=1.16;c.trot=0;c.vs+=3;}
+    else{c.el.classList.remove('hot');c.delay=0.08+Math.abs(j-i)*0.06;c.tflip=0;c.ty=VH/2+CH;c.tal=0;c.trot=(j-i)*14;}});
+}
+function burst(x,y,tier){
+  const cols=[TC[tier],C.y,C.ink,C.a];
+  rings.push({x,y,t:0,max:0.5,r:120,col:TC[tier]});rings.push({x,y,t:-0.08,max:0.6,r:160,col:C.ink});
+  for(let i=0;i<30;i++){const a=rnd(0,6.283),sp=rnd(120,380);
+    parts.push({x:x+Math.cos(a)*30,y:y+Math.sin(a)*40,vx:Math.cos(a)*sp,vy:Math.sin(a)*sp-90,rot:rnd(0,6),rv:rnd(-12,12),life:0,max:rnd(0.6,1.1),w:rnd(3,7),h:rnd(2,4),col:cols[i%4]});}
+}
+function update(dt){
+  time+=dt;pt+=dt;if(userT>0)userT-=dt;
+  if(phase==='deal'){cards.forEach((c,i)=>{if(pt>0.38+i*0.11)c.tflip=1;});if(pt>1.05){phase='choose';pt=0;}}
+  else if(phase==='choose'){
+    if(userT<=0){kbd=false;const k=Math.floor(pt/0.62);if(k>=seq.length)pick(seq[seq.length-1]);else hover=seq[k];}
+    else if(!kbd){hover=-1;for(let i=0;i<3;i++)if(Math.abs(px-cards[i].x)<CW/2+GAP/2&&Math.abs(py)<CH/2+12)hover=i;}
+  }else if(phase==='picked'){
+    const c=cards[picked],k=clamp(pt/0.5,0,1);c.spin=360*(1-Math.pow(1-k,3));         // confirm flip
+    if(pt>0.26&&!burstDone){burstDone=true;burst(c.x,c.y,c.tier);c.vs+=2.5;}
+    if(pt>1.3){c.ty=-VH/2-CH;c.tal=0;}
+    if(pt>1.75)deal();
+  }
+  cards.forEach((c,i)=>{
+    const hot=phase==='choose'&&hover===i;
+    if(phase==='choose'){c.el.classList.toggle('hot',hot);c.ty=hot?-10:0;c.ts=hot?1.07:1;}
+    let tx=0,ty=0;
+    if(hot||(phase==='picked'&&i===picked&&pt>0.5)){
+      if(userT>0&&!kbd&&phase==='choose'){ty=clamp((px-c.x)/(CW/2),-1,1)*15;tx=-clamp(py/(CH/2),-1,1)*11;}
+      else{ty=Math.sin(time*3.1)*9;tx=Math.cos(time*2.3)*6;}
+    }
+    const e=Math.min(1,dt*10);c.tiltX+=(tx-c.tiltX)*e;c.tiltY+=(ty-c.tiltY)*e;
+    if(c.delay>0){c.delay-=dt;}
+    else{
+      c.vy+=((c.ty-c.y)*190-c.vy*21)*dt;c.y+=c.vy*dt;                                 // springy travel
+      c.vs+=((c.ts-c.s)*260-c.vs*18)*dt;c.s+=c.vs*dt;
+      c.rot+=(c.trot-c.rot)*Math.min(1,dt*8);c.flip+=(c.tflip-c.flip)*Math.min(1,dt*9);c.al+=(c.tal-c.al)*Math.min(1,dt*7);
+    }
+    if(!isFinite(c.y+c.s+c.rot+c.flip)){c.y=c.ty;c.vy=0;c.s=1;c.vs=0;c.rot=0;c.flip=c.tflip;}
+    c.el.style.transform='translate('+c.x.toFixed(1)+'px,'+c.y.toFixed(1)+'px) rotate('+c.rot.toFixed(2)+'deg) scale('+clamp(c.s,0.3,1.6).toFixed(3)+')';
+    c.el.style.opacity=clamp(c.al,0,1).toFixed(2);c.el.style.zIndex=(i===picked||hot)?3:1;
+    c.inner.style.transform='rotateX('+c.tiltX.toFixed(2)+'deg) rotateY('+(c.tiltY+180*(1-c.flip)+c.spin).toFixed(2)+'deg)';
+    if(c.sheen)c.sheen.style.transform='translateX('+(c.tiltY*1.8).toFixed(1)+'%)';
+  });
+  for(const q of parts){q.life+=dt;q.vy+=520*dt;const dr=1-Math.min(1,dt*1.8);q.vx*=dr;q.vy*=dr;q.x+=q.vx*dt;q.y+=q.vy*dt;q.rot+=q.rv*dt;}
+  parts=parts.filter(q=>q.life<q.max);
+  for(const r of rings)r.t+=dt;rings=rings.filter(r=>r.t<r.max);
+}
+function draw(){
+  ctx.setTransform(1,0,0,1,0,0);ctx.fillStyle=C.bg;ctx.fillRect(0,0,cv.width,cv.height);
+  ctx.setTransform(D*S,0,0,D*S,D*W/2,D*H/2);
+  ctx.fillStyle=C.dot;for(let x=-Math.ceil(VW/40)*20+10;x<VW/2;x+=20)for(let y=-Math.ceil(VH/40)*20+10;y<VH/2;y+=20)ctx.fillRect(x-0.75,y-0.75,1.5,1.5);
+  for(const r of rings){if(r.t<0)continue;const k=r.t/r.max,e=1-Math.pow(1-k,3);ctx.globalAlpha=(1-k)*0.9;ctx.strokeStyle=r.col;ctx.lineWidth=Math.max(0.4,3*(1-k));
+    ctx.beginPath();ctx.arc(r.x,r.y,50+e*r.r,0,6.283);ctx.stroke();}
+  for(const q of parts){const k=q.life/q.max;ctx.globalAlpha=k>0.7?(1-k)/0.3:1;ctx.fillStyle=q.col;ctx.save();ctx.translate(q.x,q.y);ctx.rotate(q.rot);
+    ctx.fillRect(-q.w/2,-q.h/2*Math.cos(q.rot*2),q.w,q.h*Math.cos(q.rot*2));ctx.restore();}
+  ctx.globalAlpha=1;
+}
+let last=0;
+function frame(t){
+  requestAnimationFrame(frame);if(document.hidden){last=0;return;}
+  let dt=last?(t-last)/1000:0.016;last=t;if(!(dt>0))dt=0.016;dt=Math.min(dt,0.033);
+  update(dt);draw();
+}
+function pp(e){px=(e.clientX-W/2)/S;py=(e.clientY-H/2)/S;userT=4;kbd=false;}
+addEventListener('pointermove',pp);
+addEventListener('pointerdown',e=>{pp(e);for(let i=0;i<3;i++)if(Math.abs(px-cards[i].x)<CW/2+GAP/2&&Math.abs(py)<CH/2+12)pick(i);});
+document.addEventListener('pointerleave',()=>{px=py=9999;});
+addEventListener('keydown',e=>{
+  const k=e.key;if([' ','ArrowLeft','ArrowRight','ArrowUp','ArrowDown'].includes(k))e.preventDefault();
+  if(e.repeat)return;
+  if(k==='ArrowLeft'||k==='ArrowRight'){userT=4;kbd=true;if(phase==='choose')hover=hover<0?1:(hover+(k==='ArrowLeft'?2:1))%3;}
+  else if(k===' '||k==='Enter'){userT=4;kbd=true;pick(hover<0?1:hover);}
+  else if(k==='1'||k==='2'||k==='3'){userT=4;kbd=true;pick(+k-1);}
+});
+deal();requestAnimationFrame(frame);
+})();
+</script></body></html>

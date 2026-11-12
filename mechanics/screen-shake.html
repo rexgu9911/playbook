@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Screen Shake</title>
+<style>html,body{margin:0;height:100%;background:#0D0D10;overflow:hidden}canvas{display:block;width:100%;height:100%;touch-action:none}</style>
+</head><body><canvas id="c"></canvas><script>
+(()=>{
+const C={bg:'#0D0D10',dot:'#1A1A20',a:'#FF4D2E',y:'#F5E663',ink:'#F4F1EA',mu:'#6B6B76'};
+const cv=document.getElementById('c'),ctx=cv.getContext('2d');
+let W=300,H=200,D=1,S=1,VW=440,VH=280,GY=230;
+const N=5,CS=36,GAP=14;
+const crates=[];for(let i=0;i<N;i++)crates.push({x:0,oy:0,vy:0,sq:0,sv:0,rot:0,rv:0,flash:0,delay:-1,pow:0});
+function layout(){GY=VH-44;const tw=N*CS+(N-1)*GAP,x0=VW/2-tw/2+CS/2;crates.forEach((c,i)=>c.x=x0+i*(CS+GAP));}
+function resize(){
+  D=Math.min(2,window.devicePixelRatio||1);W=Math.max(40,innerWidth||300);H=Math.max(40,innerHeight||200);
+  cv.width=Math.round(W*D);cv.height=Math.round(H*D);S=Math.min(W/440,H/280);VW=W/S;VH=H/S;layout();
+}
+addEventListener('resize',resize);resize();
+function rr(x,y,w,h,r){ctx.beginPath();ctx.moveTo(x+r,y);ctx.arcTo(x+w,y,x+w,y+h,r);ctx.arcTo(x+w,y+h,x,y+h,r);ctx.arcTo(x,y+h,x,y,r);ctx.arcTo(x,y,x+w,y,r);ctx.closePath();}
+
+let trauma=0,time=0,userT=0,autoT=0.6,combo=0;
+let hammers=[],parts=[],rings=[];
+function slam(i,pow){if(hammers.length<4)hammers.push({i:Math.max(0,Math.min(N-1,i)),t:0,pow,hit:false});}
+function impact(h){
+  const c=crates[h.i];
+  trauma=Math.min(1,trauma+0.38*h.pow);           // trauma accumulates, shake = trauma^2
+  crates.forEach((o,j)=>{const d=Math.abs(j-h.i);o.delay=d*0.045;o.pow=h.pow/(1+d*1.1);});
+  c.flash=1;
+  rings.push({x:c.x,y:GY,t:0,pow:h.pow});
+  const n=Math.round(8*h.pow);
+  for(let k=0;k<n&&parts.length<70;k++){const a=-Math.PI*(0.1+Math.random()*0.8),sp=(90+Math.random()*190)*h.pow;
+    parts.push({x:c.x+(Math.random()-0.5)*CS,y:GY-CS,vx:Math.cos(a)*sp,vy:Math.sin(a)*sp,rot:Math.random()*6,rv:(Math.random()-0.5)*20,
+      life:0,max:0.5+Math.random()*0.5,w:2+Math.random()*5,col:k%3===0?C.y:k%3===1?C.ink:C.mu});}
+}
+function update(dt){
+  time+=dt;
+  if(userT>0)userT-=dt;
+  else{autoT-=dt;if(autoT<=0){
+    slam(Math.floor(Math.random()*N),combo>0?0.7:0.75+Math.random()*0.45);
+    if(combo>0){combo--;autoT=0.16;}else{combo=Math.random()<0.3?2:0;autoT=combo?0.16:0.9+Math.random()*0.8;}
+  }}
+  trauma=Math.max(0,trauma-dt*1.15);               // linear decay
+  for(const h of hammers){h.t+=dt;if(!h.hit&&h.t>=0.17){h.hit=true;impact(h);}}
+  hammers=hammers.filter(h=>h.t<0.6);
+  for(const c of crates){
+    if(c.delay>=0){c.delay-=dt;if(c.delay<0){c.vy=-150*c.pow;c.sv+=-9*c.pow;c.rv+=(Math.random()-0.5)*5*c.pow;}}
+    c.vy+=1500*dt;c.oy+=c.vy*dt;if(c.oy>0){c.oy=0;if(c.vy>120){c.sv-=c.vy*0.012;}c.vy=0;}
+    c.sv+=(-260*c.sq-14*c.sv)*dt;c.sq+=c.sv*dt;c.sq=Math.max(-0.55,Math.min(0.5,c.sq));  // squash spring
+    c.rv+=(-200*c.rot-12*c.rv)*dt;c.rot+=c.rv*dt;
+    c.flash=Math.max(0,c.flash-dt*7);
+    if(!isFinite(c.oy+c.sq+c.rot)){c.oy=c.vy=c.sq=c.sv=c.rot=c.rv=0;}
+  }
+  for(const q of parts){q.life+=dt;q.vy+=900*dt;q.x+=q.vx*dt;q.y+=q.vy*dt;q.rot+=q.rv*dt;
+    if(q.y>GY-1&&q.vy>0){q.y=GY-1;q.vy*=-0.35;q.vx*=0.6;q.rv*=0.5;}}
+  parts=parts.filter(q=>q.life<q.max);
+  for(const r of rings)r.t+=dt;rings=rings.filter(r=>r.t<0.45);
+}
+function noise(seed){return (Math.sin(time*53+seed)+Math.sin(time*31.7+seed*2.3)*0.6+Math.sin(time*87.1+seed*4.1)*0.4)/2;}
+function draw(){
+  ctx.setTransform(1,0,0,1,0,0);ctx.fillStyle=C.bg;ctx.fillRect(0,0,cv.width,cv.height);
+  // camera shake: offset + roll, both scaled by trauma squared
+  const sh=trauma*trauma,ox=noise(1)*11*sh,oy=noise(7)*9*sh,ang=noise(13)*0.035*sh;
+  ctx.setTransform(D*S,0,0,D*S,0,0);
+  ctx.translate(VW/2+ox,VH/2+oy);ctx.rotate(ang);ctx.translate(-VW/2,-VH/2);
+  ctx.fillStyle=C.dot;for(let x=-30;x<VW+40;x+=20)for(let y=-30;y<VH+40;y+=20)ctx.fillRect(x-0.75,y-0.75,1.5,1.5);
+  ctx.fillStyle='#131317';ctx.fillRect(-40,GY,VW+80,VH-GY+40);
+  ctx.strokeStyle=C.ink;ctx.lineWidth=1.5;ctx.beginPath();ctx.moveTo(-40,GY);ctx.lineTo(VW+40,GY);ctx.stroke();
+  // ground rings
+  for(const r of rings){const k=r.t/0.45,e=1-(1-k)*(1-k);ctx.globalAlpha=(1-k)*0.9;ctx.strokeStyle=C.y;ctx.lineWidth=2*(1-k)+0.5;
+    ctx.beginPath();ctx.ellipse(r.x,GY,(20+e*70)*r.pow,(4+e*10)*r.pow,0,0,6.283);ctx.stroke();}
+  ctx.globalAlpha=1;
+  // crates
+  for(const c of crates){
+    const sx=1-c.sq*0.7,sy=1+c.sq;
+    ctx.save();ctx.translate(c.x,GY+c.oy);ctx.rotate(c.rot*0.12);ctx.scale(sx,sy);
+    rr(-CS/2,-CS,CS,CS,5);ctx.fillStyle='#17171C';ctx.fill();
+    ctx.strokeStyle=C.mu;ctx.lineWidth=1.2;ctx.beginPath();ctx.moveTo(-CS/2+6,-CS+6);ctx.lineTo(CS/2-6,-6);ctx.moveTo(CS/2-6,-CS+6);ctx.lineTo(-CS/2+6,-6);ctx.stroke();
+    rr(-CS/2,-CS,CS,CS,5);ctx.strokeStyle=C.ink;ctx.lineWidth=1.5;ctx.stroke();
+    if(c.flash>0){ctx.globalAlpha=c.flash;ctx.fillStyle=C.ink;rr(-CS/2,-CS,CS,CS,5);ctx.fill();ctx.globalAlpha=1;}
+    ctx.restore();
+  }
+  // hammers
+  for(const h of hammers){
+    const c=crates[h.i],top=GY-CS-11;let y,al=1,sq=1;
+    if(h.t<0.17){const k=h.t/0.17;y=-40+(top+40)*k*k;
+      ctx.strokeStyle=C.a;ctx.globalAlpha=0.35;ctx.lineWidth=14;ctx.lineCap='round';ctx.beginPath();ctx.moveTo(c.x,y-12);ctx.lineTo(c.x,y-12-90*k);ctx.stroke();ctx.lineCap='butt';ctx.globalAlpha=1;}
+    else{const k=(h.t-0.17)/0.43,e=1-(1-k)*(1-k);y=top-e*38+c.oy*0.3;al=1-k*k;sq=k<0.15?0.7+k*2:1;}
+    ctx.globalAlpha=Math.max(0,al);ctx.save();ctx.translate(c.x,y+11);ctx.scale(2-sq,sq);
+    rr(-15,-22,30,22,6);ctx.fillStyle=C.a;ctx.fill();ctx.restore();ctx.globalAlpha=1;
+  }
+  // splinters
+  for(const q of parts){const k=q.life/q.max;ctx.globalAlpha=1-k*k;ctx.fillStyle=q.col;ctx.save();ctx.translate(q.x,q.y);ctx.rotate(q.rot);ctx.fillRect(-q.w/2,-1,q.w,2);ctx.restore();}
+  ctx.globalAlpha=1;
+}
+let last=0;
+function frame(t){
+  requestAnimationFrame(frame);if(document.hidden){last=0;return;}
+  let dt=last?(t-last)/1000:0.016;last=t;if(!(dt>0))dt=0.016;dt=Math.min(dt,0.033);
+  update(dt);draw();
+}
+cv.addEventListener('pointerdown',e=>{
+  const r=cv.getBoundingClientRect(),x=(e.clientX-r.left)/S;let bi=0,bd=1e9;
+  crates.forEach((c,i)=>{const d=Math.abs(c.x-x);if(d<bd){bd=d;bi=i;}});
+  slam(bi,1.1);userT=3;combo=0;autoT=0.8;e.preventDefault();
+});
+addEventListener('keydown',e=>{
+  if([' ','ArrowLeft','ArrowRight','ArrowUp','ArrowDown'].includes(e.key))e.preventDefault();
+  if((e.key===' '||e.key==='Enter')&&!e.repeat){slam(Math.floor(Math.random()*N),1.1);userT=3;combo=0;autoT=0.8;}
+});
+requestAnimationFrame(frame);
+})();
+</script></body></html>
