@@ -39,7 +39,8 @@
   "prompt": "Make an endless 3D hover-racer in one HTML file with Three.js. Steer left/right to dodge pylons and grab energy shards. Speed ramps up, near-misses give bonus. Add camera lean, screen shake on crashes and a particle trail.",
   "play_url": "https://rexgu9911.github.io/playbook/games/neon-drift.html?theme=0",
   "page_url": "https://rexgu9911.github.io/playbook/#/game/neon-drift",
-  "source_url": "https://raw.githubusercontent.com/rexgu9911/playbook/main/games/neon-drift.html",
+  "source_url": "https://rexgu9911.github.io/playbook/games/neon-drift.html",
+  "source_raw": "https://raw.githubusercontent.com/rexgu9911/playbook/main/games/neon-drift.html",
   "theme_param": "theme=0",
   "license": "MIT"
  },
@@ -83,7 +84,8 @@
   "prompt": "Remake \"Neon Drift\" with a new look: desert sunset · sandstone pillars. Keep the controls and difficulty curve, change the shapes, palette and sound to match.",
   "play_url": "https://rexgu9911.github.io/playbook/games/neon-drift.html?theme=1",
   "page_url": "https://rexgu9911.github.io/playbook/#/game/neon-drift-1",
-  "source_url": "https://raw.githubusercontent.com/rexgu9911/playbook/main/games/neon-drift.html",
+  "source_url": "https://rexgu9911.github.io/playbook/games/neon-drift.html",
+  "source_raw": "https://raw.githubusercontent.com/rexgu9911/playbook/main/games/neon-drift.html",
   "theme_param": "theme=1",
   "license": "MIT"
  },
@@ -127,7 +129,8 @@
   "prompt": "Remake \"Neon Drift\" with a new look: glacier blue · crystal obstacles · snowfall. Keep the controls and difficulty curve, change the shapes, palette and sound to match.",
   "play_url": "https://rexgu9911.github.io/playbook/games/neon-drift.html?theme=2",
   "page_url": "https://rexgu9911.github.io/playbook/#/game/neon-drift-2",
-  "source_url": "https://raw.githubusercontent.com/rexgu9911/playbook/main/games/neon-drift.html",
+  "source_url": "https://rexgu9911.github.io/playbook/games/neon-drift.html",
+  "source_raw": "https://raw.githubusercontent.com/rexgu9911/playbook/main/games/neon-drift.html",
   "theme_param": "theme=2",
   "license": "MIT"
  },
@@ -175,7 +178,8 @@
   "prompt": "Make a top-down arena survivor in one HTML file on Canvas 2D. Auto-fire at the nearest enemy, waves that swarm, XP gems, and a pick-1-of-3 upgrade screen on level-up. Add damage numbers, hit-stop and screen shake.",
   "play_url": "https://rexgu9911.github.io/playbook/games/swarm-arena.html?theme=0",
   "page_url": "https://rexgu9911.github.io/playbook/#/game/swarm-arena",
-  "source_url": "https://raw.githubusercontent.com/rexgu9911/playbook/main/games/swarm-arena.html",
+  "source_url": "https://rexgu9911.github.io/playbook/games/swarm-arena.html",
+  "source_raw": "https://raw.githubusercontent.com/rexgu9911/playbook/main/games/swarm-arena.html",
   "theme_param": "theme=0",
   "license": "MIT"
  },
@@ -223,7 +227,8 @@
   "prompt": "Remake \"Swarm Arena\" with a new look: paper background · bugs · tiny gardener. Keep the controls and difficulty curve, change the shapes, palette and sound to match.",
   "play_url": "https://rexgu9911.github.io/playbook/games/swarm-arena.html?theme=1",
   "page_url": "https://rexgu9911.github.io/playbook/#/game/swarm-arena-1",
-  "source_url": "https://raw.githubusercontent.com/rexgu9911/playbook/main/games/swarm-arena.html",
+  "source_url": "https://rexgu9911.github.io/playbook/games/swarm-arena.html",
+  "source_raw": "https://raw.githubusercontent.com/rexgu9911/playbook/main/games/swarm-arena.html",
   "theme_param": "theme=1",
   "license": "MIT"
  },
@@ -271,7 +276,8 @@
   "prompt": "Remake \"Swarm Arena\" with a new look: underwater blues · jellyfish · bubbles. Keep the controls and difficulty curve, change the shapes, palette and sound to match.",
   "play_url": "https://rexgu9911.github.io/playbook/games/swarm-arena.html?theme=2",
   "page_url": "https://rexgu9911.github.io/playbook/#/game/swarm-arena-2",
-  "source_url": "https://raw.githubusercontent.com/rexgu9911/playbook/main/games/swarm-arena.html",
+  "source_url": "https://rexgu9911.github.io/playbook/games/swarm-arena.html",
+  "source_raw": "https://raw.githubusercontent.com/rexgu9911/playbook/main/games/swarm-arena.html",
   "theme_param": "theme=2",
   "license": "MIT"
  },
@@ -311,7 +317,8 @@
   "prompt": "Make a 3D tile-hopping game in one HTML file with Three.js. A bouncy character auto-hops forward; steer to land on floating tiles that crumble, move and shrink. Low-poly look, fog, smooth follow camera, squash and stretch.",
   "play_url": "https://rexgu9911.github.io/playbook/games/sky-hop.html?theme=0",
   "page_url": "https://rexgu9911.github.io/playbook/#/game/sky-hop",
-  "source_url": "https://raw.githubusercontent.com/rexgu9911/playbook/main/games/sky-hop.html",
+  "source_url": "https://rexgu9911.github.io/playbook/games/sky-hop.html",
+  "source_raw": "https://raw.githubusercontent.com/rexgu9911/playbook/main/games/sky-hop.html",
   "theme_param": "theme=0",
   "license": "MIT"
  },
@@ -351,7 +358,8 @@
   "prompt": "Remake \"Sky Hop\" with a new look: volcanic rock · glowing lava · embers. Keep the controls and difficulty curve, change the shapes, palette and sound to match.",
   "play_url": "https://rexgu9911.github.io/playbook/games/sky-hop.html?theme=1",
   "page_url": "https://rexgu9911.github.io/playbook/#/game/sky-hop-1",
-  "source_url": "https://raw.githubusercontent.com/rexgu9911/playbook/main/games/sky-hop.html",
+  "source_url": "https://rexgu9911.github.io/playbook/games/sky-hop.html",
+  "source_raw": "https://raw.githubusercontent.com/rexgu9911/playbook/main/games/sky-hop.html",
   "theme_param": "theme=1",
   "license": "MIT"
  },
@@ -391,7 +399,8 @@
   "prompt": "Remake \"Sky Hop\" with a new look: glossy candy tiles · sprinkles. Keep the controls and difficulty curve, change the shapes, palette and sound to match.",
   "play_url": "https://rexgu9911.github.io/playbook/games/sky-hop.html?theme=2",
   "page_url": "https://rexgu9911.github.io/playbook/#/game/sky-hop-2",
-  "source_url": "https://raw.githubusercontent.com/rexgu9911/playbook/main/games/sky-hop.html",
+  "source_url": "https://rexgu9911.github.io/playbook/games/sky-hop.html",
+  "source_raw": "https://raw.githubusercontent.com/rexgu9911/playbook/main/games/sky-hop.html",
   "theme_param": "theme=2",
   "license": "MIT"
  },
@@ -435,7 +444,8 @@
   "prompt": "Make a side-scrolling grappling-hook swinger in one HTML file on Canvas 2D. Hold to fire a rope at the nearest anchor and swing with real pendulum physics, release to fling. Parallax background, speed lines, coins.",
   "play_url": "https://rexgu9911.github.io/playbook/games/grapple-rush.html?theme=0",
   "page_url": "https://rexgu9911.github.io/playbook/#/game/grapple-rush",
-  "source_url": "https://raw.githubusercontent.com/rexgu9911/playbook/main/games/grapple-rush.html",
+  "source_url": "https://rexgu9911.github.io/playbook/games/grapple-rush.html",
+  "source_raw": "https://raw.githubusercontent.com/rexgu9911/playbook/main/games/grapple-rush.html",
   "theme_param": "theme=0",
   "license": "MIT"
  },
@@ -479,7 +489,8 @@
   "prompt": "Remake \"Grapple Rush\" with a new look: green canopy · vines · fireflies. Keep the controls and difficulty curve, change the shapes, palette and sound to match.",
   "play_url": "https://rexgu9911.github.io/playbook/games/grapple-rush.html?theme=1",
   "page_url": "https://rexgu9911.github.io/playbook/#/game/grapple-rush-1",
-  "source_url": "https://raw.githubusercontent.com/rexgu9911/playbook/main/games/grapple-rush.html",
+  "source_url": "https://rexgu9911.github.io/playbook/games/grapple-rush.html",
+  "source_raw": "https://raw.githubusercontent.com/rexgu9911/playbook/main/games/grapple-rush.html",
   "theme_param": "theme=1",
   "license": "MIT"
  },
@@ -523,7 +534,8 @@
   "prompt": "Remake \"Grapple Rush\" with a new look: crystal cave · stalactites · glow. Keep the controls and difficulty curve, change the shapes, palette and sound to match.",
   "play_url": "https://rexgu9911.github.io/playbook/games/grapple-rush.html?theme=2",
   "page_url": "https://rexgu9911.github.io/playbook/#/game/grapple-rush-2",
-  "source_url": "https://raw.githubusercontent.com/rexgu9911/playbook/main/games/grapple-rush.html",
+  "source_url": "https://rexgu9911.github.io/playbook/games/grapple-rush.html",
+  "source_raw": "https://raw.githubusercontent.com/rexgu9911/playbook/main/games/grapple-rush.html",
   "theme_param": "theme=2",
   "license": "MIT"
  },
@@ -567,7 +579,8 @@
   "prompt": "Make a 3D orbital defence game in one HTML file with Three.js. A ship orbits a glowing core and auto-fires outward at things falling in from every direction. Waves escalate, power-ups drop, the core has health. Fake bloom with additive sprites.",
   "play_url": "https://rexgu9911.github.io/playbook/games/core-defender.html?theme=0",
   "page_url": "https://rexgu9911.github.io/playbook/#/game/core-defender",
-  "source_url": "https://raw.githubusercontent.com/rexgu9911/playbook/main/games/core-defender.html",
+  "source_url": "https://rexgu9911.github.io/playbook/games/core-defender.html",
+  "source_raw": "https://raw.githubusercontent.com/rexgu9911/playbook/main/games/core-defender.html",
   "theme_param": "theme=0",
   "license": "MIT"
  },
@@ -611,7 +624,8 @@
   "prompt": "Remake \"Core Defender\" with a new look: organic green/purple · spores · pulsing core. Keep the controls and difficulty curve, change the shapes, palette and sound to match.",
   "play_url": "https://rexgu9911.github.io/playbook/games/core-defender.html?theme=1",
   "page_url": "https://rexgu9911.github.io/playbook/#/game/core-defender-1",
-  "source_url": "https://raw.githubusercontent.com/rexgu9911/playbook/main/games/core-defender.html",
+  "source_url": "https://rexgu9911.github.io/playbook/games/core-defender.html",
+  "source_raw": "https://raw.githubusercontent.com/rexgu9911/playbook/main/games/core-defender.html",
   "theme_param": "theme=1",
   "license": "MIT"
  },
@@ -655,7 +669,8 @@
   "prompt": "Remake \"Core Defender\" with a new look: sun core · solar flares. Keep the controls and difficulty curve, change the shapes, palette and sound to match.",
   "play_url": "https://rexgu9911.github.io/playbook/games/core-defender.html?theme=2",
   "page_url": "https://rexgu9911.github.io/playbook/#/game/core-defender-2",
-  "source_url": "https://raw.githubusercontent.com/rexgu9911/playbook/main/games/core-defender.html",
+  "source_url": "https://rexgu9911.github.io/playbook/games/core-defender.html",
+  "source_raw": "https://raw.githubusercontent.com/rexgu9911/playbook/main/games/core-defender.html",
   "theme_param": "theme=2",
   "license": "MIT"
  },
@@ -698,7 +713,8 @@
   "prompt": "Make a tactile collapse puzzle in one HTML file on Canvas 2D. Tap connected groups of same-colour tiles to smelt them; tiles fall with bouncy easing. Bigger groups score exponentially and spawn bombs. Add a heat meter and lots of juice.",
   "play_url": "https://rexgu9911.github.io/playbook/games/tile-forge.html?theme=0",
   "page_url": "https://rexgu9911.github.io/playbook/#/game/tile-forge",
-  "source_url": "https://raw.githubusercontent.com/rexgu9911/playbook/main/games/tile-forge.html",
+  "source_url": "https://rexgu9911.github.io/playbook/games/tile-forge.html",
+  "source_raw": "https://raw.githubusercontent.com/rexgu9911/playbook/main/games/tile-forge.html",
   "theme_param": "theme=0",
   "license": "MIT"
  },
@@ -741,7 +757,8 @@
   "prompt": "Remake \"Tile Forge\" with a new look: cut jewels on velvet · sparkle. Keep the controls and difficulty curve, change the shapes, palette and sound to match.",
   "play_url": "https://rexgu9911.github.io/playbook/games/tile-forge.html?theme=1",
   "page_url": "https://rexgu9911.github.io/playbook/#/game/tile-forge-1",
-  "source_url": "https://raw.githubusercontent.com/rexgu9911/playbook/main/games/tile-forge.html",
+  "source_url": "https://rexgu9911.github.io/playbook/games/tile-forge.html",
+  "source_raw": "https://raw.githubusercontent.com/rexgu9911/playbook/main/games/tile-forge.html",
   "theme_param": "theme=1",
   "license": "MIT"
  },
@@ -784,7 +801,8 @@
   "prompt": "Remake \"Tile Forge\" with a new look: pastel squishy blobs with faces. Keep the controls and difficulty curve, change the shapes, palette and sound to match.",
   "play_url": "https://rexgu9911.github.io/playbook/games/tile-forge.html?theme=2",
   "page_url": "https://rexgu9911.github.io/playbook/#/game/tile-forge-2",
-  "source_url": "https://raw.githubusercontent.com/rexgu9911/playbook/main/games/tile-forge.html",
+  "source_url": "https://rexgu9911.github.io/playbook/games/tile-forge.html",
+  "source_raw": "https://raw.githubusercontent.com/rexgu9911/playbook/main/games/tile-forge.html",
   "theme_param": "theme=2",
   "license": "MIT"
  }
