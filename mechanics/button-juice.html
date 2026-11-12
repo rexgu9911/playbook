@@ -1,0 +1,185 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Button Juice</title>
+<style>html,body{margin:0;height:100%;background:#0D0D10;overflow:hidden}canvas{display:block;width:100%;height:100%;touch-action:none}</style>
+</head><body><canvas id="c"></canvas><script>
+(()=>{
+const K = {
+  BTN_W: 168,            // px button width
+  BTN_H: 32,             // px button height
+  BTN_GAP: 12,           // px vertical gap between menu buttons
+  RADIUS: 7,             // px corner radius
+  BASE_DEPTH: 4,         // px of button "thickness" visible under the face
+  HOVER_LIFT: 3,         // px the face rises while hovered
+  HOVER_RATE: 14,        // 1/s how fast hover lift / caret ease in and out
+  SQUASH_X: 0.06,        // 0-1 extra width at full press
+  SQUASH_Y: 0.14,        // 0-1 height lost at full press
+  SPRING_STIFF: 520,     // 1/s^2 press spring stiffness
+  SPRING_DAMP: 15,       // 1/s press spring damping (lower = more wobble on release)
+  RIPPLE_TIME: 0.45,     // s for the ripple to fill the button
+  RIPPLE_ALPHA: 0.35,    // 0-1 starting ripple opacity
+  MAX_RIPPLES: 4,        // ripples alive per button
+  CONFIRM_FLASH: 0.25,   // s the label flashes after a completed click
+  DENY_TIME: 0.3,        // s disabled-button shake duration
+  DENY_SHAKE: 5,         // px disabled-button shake amplitude
+  DENY_WOBBLE: 55,       // rad/s disabled-button shake speed
+  CLICK_FREQ: 1400,      // Hz click start pitch (falls one octave)
+  CLICK_LEN: 0.05,       // s click length
+  CLICK_VOL: 0.08,       // 0-1 click gain
+  DENY_FREQ: 180,        // Hz disabled-button thunk pitch
+  DENY_LEN: 0.09,        // s disabled-button thunk length
+  ATTRACT_IDLE: 3.5,     // s after user input before attract mode resumes
+};
+const C={bg:'#0D0D10',dot:'#1A1A20',a:'#FF4D2E',y:'#F5E663',ink:'#F4F1EA',mu:'#6B6B76'};
+const FONT='ui-sans-serif,system-ui,-apple-system,"Segoe UI",Helvetica,Arial,sans-serif';
+const cv=document.getElementById('c'),ctx=cv.getContext('2d');
+let W=300,H=200,D=1,S=1,VW=440,VH=280;
+const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
+function rr(x,y,w,h,r){ctx.beginPath();ctx.moveTo(x+r,y);ctx.arcTo(x+w,y,x+w,y+h,r);ctx.arcTo(x+w,y+h,x,y+h,r);ctx.arcTo(x,y+h,x,y,r);ctx.arcTo(x,y,x+w,y,r);ctx.closePath();}
+
+// ---- mechanic ----
+// A juicy button = hover lift + press spring (squash, overshoot into a stretch on release) + ripple + click.
+let ac=null;
+function unlockAudio(){   // call from a user gesture only
+  try{if(!ac)ac=new(window.AudioContext||window.webkitAudioContext)();if(ac.state==='suspended')ac.resume();}catch(e){ac=null;}
+}
+function blip(f0,f1,len,vol,type){
+  if(!ac)return;
+  const t=ac.currentTime,o=ac.createOscillator(),g=ac.createGain();
+  o.type=type;o.frequency.setValueAtTime(f0,t);o.frequency.exponentialRampToValueAtTime(f1,t+len);
+  g.gain.setValueAtTime(vol,t);g.gain.exponentialRampToValueAtTime(0.0001,t+len);
+  o.connect(g).connect(ac.destination);o.start(t);o.stop(t+len+0.02);
+}
+function makeButton(label,disabled){
+  return {label,disabled:!!disabled,x:0,y:0,w:K.BTN_W,h:K.BTN_H,hovered:false,held:false,
+    hover:0,sel:0,p:0,pv:0,ripples:[],deny:0,flash:0};
+}
+function pressButton(b,px,py,audible){
+  if(b.disabled){b.deny=K.DENY_TIME;if(audible)blip(K.DENY_FREQ,K.DENY_FREQ*0.7,K.DENY_LEN,K.CLICK_VOL,'sine');return false;}
+  b.held=true;
+  if(b.ripples.length>=K.MAX_RIPPLES)b.ripples.shift();
+  b.ripples.push({x:px-b.x,y:py-b.y,t:0});            // ripple origin in button-local px
+  if(audible)blip(K.CLICK_FREQ,K.CLICK_FREQ/2,K.CLICK_LEN,K.CLICK_VOL,'triangle');
+  return true;
+}
+function releaseButton(b,fire){if(!b.held)return;b.held=false;if(fire)b.flash=K.CONFIRM_FLASH;}
+function stepButton(b,dt){
+  const ease=Math.min(1,dt*K.HOVER_RATE);
+  b.hover+=((b.hovered&&!b.disabled?1:0)-b.hover)*ease;  // disabled buttons never lift
+  b.sel+=((b.hovered?1:0)-b.sel)*ease;                    // caret shows on any focused button
+  // damped spring toward 1 (held) or 0 (released); underdamped, so release overshoots below 0
+  b.pv+=(K.SPRING_STIFF*((b.held?1:0)-b.p)-K.SPRING_DAMP*b.pv)*dt;
+  b.p+=b.pv*dt;
+  if(!isFinite(b.p)){b.p=b.pv=0;}
+  for(const r of b.ripples)r.t+=dt;
+  b.ripples=b.ripples.filter(r=>r.t<K.RIPPLE_TIME);
+  b.deny=Math.max(0,b.deny-dt);b.flash=Math.max(0,b.flash-dt);
+}
+function drawButton(b){
+  const dx=b.deny>0?Math.sin(b.deny*K.DENY_WOBBLE)*K.DENY_SHAKE*(b.deny/K.DENY_TIME):0;
+  const pc=clamp(b.p,-0.6,1.4);
+  const down=K.BASE_DEPTH*clamp(b.p,0,1)-K.HOVER_LIFT*b.hover;  // pressed face sinks onto its base, hover rises
+  const sx=1+K.SQUASH_X*pc,sy=1-K.SQUASH_Y*pc;                  // negative pc (release overshoot) = stretch
+  const x=b.x+dx,y=b.y,w=b.w,h=b.h,r=K.RADIUS;
+  if(b.sel>0.01){                                                // menu caret
+    const cx=x-15-(1-b.sel)*8,cy=y+h/2+down;ctx.globalAlpha=b.sel;ctx.fillStyle=b.disabled?C.mu:C.a;
+    ctx.beginPath();ctx.moveTo(cx,cy-5);ctx.lineTo(cx+6,cy);ctx.lineTo(cx,cy+5);ctx.closePath();ctx.fill();ctx.globalAlpha=1;
+  }
+  if(!b.disabled){rr(x,y+K.BASE_DEPTH,w,h,r);ctx.fillStyle='#08080A';ctx.fill();ctx.strokeStyle=C.mu;ctx.lineWidth=1.5;ctx.stroke();}
+  ctx.save();ctx.translate(x+w/2,y+h/2+down);ctx.scale(sx,sy);
+  rr(-w/2,-h/2,w,h,r);ctx.fillStyle=b.disabled?'#121216':'#18181E';ctx.fill();
+  if(b.hover>0.01){ctx.globalAlpha=0.05*b.hover;ctx.fillStyle=C.ink;ctx.fill();ctx.globalAlpha=1;}
+  if(b.ripples.length){                                          // ripples, clipped to the face
+    ctx.save();rr(-w/2,-h/2,w,h,r);ctx.clip();ctx.fillStyle=C.a;
+    for(const q of b.ripples){
+      const k=q.t/K.RIPPLE_TIME,e=1-Math.pow(1-k,3),R=Math.hypot(Math.max(q.x,w-q.x),Math.max(q.y,h-q.y));
+      ctx.globalAlpha=K.RIPPLE_ALPHA*(1-k);ctx.beginPath();ctx.arc(q.x-w/2,q.y-h/2,R*e,0,6.283);ctx.fill();
+    }
+    ctx.restore();ctx.globalAlpha=1;
+  }
+  rr(-w/2,-h/2,w,h,r);ctx.lineWidth=1.5;
+  if(b.disabled){ctx.setLineDash([4,3]);ctx.strokeStyle='#2E2E36';ctx.stroke();ctx.setLineDash([]);}
+  else{ctx.strokeStyle=C.ink;ctx.stroke();}
+  ctx.font='700 12px '+FONT;ctx.textAlign='center';ctx.textBaseline='middle';
+  ctx.fillStyle=b.disabled?C.mu:b.flash>0?C.y:C.ink;ctx.fillText(b.label,0,0.5);
+  if(b.disabled){const lx=w/2-20;ctx.strokeStyle=C.mu;ctx.lineWidth=1.3;ctx.strokeRect(lx-4,-1,8,6);
+    ctx.beginPath();ctx.arc(lx,-1,2.6,Math.PI,0);ctx.stroke();}
+  ctx.restore();
+}
+
+// ---- demo ----
+const btns=[makeButton('PLAY'),makeButton('OPTIONS'),makeButton('CONTINUE',true),makeButton('QUIT')];
+let focus=-1,userT=0,userHeld=null,botHeld=null;
+const bot={x:0,y:0,tx:0,ty:0,ph:'move',t:0,n:0,vis:0,seq:[0,1,2,3,1,0,2,3]};
+function layout(){
+  const n=btns.length,tot=n*K.BTN_H+(n-1)*K.BTN_GAP,x=VW/2-K.BTN_W/2;let y=VH/2-tot/2+8;
+  for(const b of btns){b.x=x;b.y=y;y+=K.BTN_H+K.BTN_GAP;}
+}
+function resize(){
+  D=Math.min(2,window.devicePixelRatio||1);W=Math.max(40,innerWidth||300);H=Math.max(40,innerHeight||200);
+  cv.width=Math.round(W*D);cv.height=Math.round(H*D);S=Math.min(W/440,H/280);VW=W/S;VH=H/S;layout();
+}
+addEventListener('resize',resize);resize();
+function hit(x,y){return btns.find(b=>x>=b.x&&x<=b.x+b.w&&y>=b.y-K.HOVER_LIFT&&y<=b.y+b.h+K.BASE_DEPTH)||null;}
+function botTarget(){const b=btns[bot.seq[bot.n%bot.seq.length]];bot.tx=b.x+b.w*(0.2+Math.random()*0.6);bot.ty=b.y+b.h*(0.3+Math.random()*0.4);}
+botTarget();bot.x=bot.tx+30;bot.y=bot.ty+24;
+function stepBot(dt){            // attract mode: a fake cursor that hovers and presses buttons (silently)
+  bot.vis=Math.min(1,bot.vis+dt*4);bot.t+=dt;
+  bot.x+=(bot.tx-bot.x)*Math.min(1,dt*9);bot.y+=(bot.ty-bot.y)*Math.min(1,dt*9);
+  const over=hit(bot.x,bot.y);focus=over?btns.indexOf(over):-1;
+  if(bot.ph==='move'&&bot.t>0.15&&Math.hypot(bot.tx-bot.x,bot.ty-bot.y)<1.5){bot.ph='aim';bot.t=0;}
+  else if(bot.ph==='aim'&&bot.t>0.12){bot.ph='down';bot.t=0;if(over&&pressButton(over,bot.x,bot.y,false))botHeld=over;}
+  else if(bot.ph==='down'&&bot.t>0.14){bot.ph='rest';bot.t=0;if(botHeld){releaseButton(botHeld,true);botHeld=null;}}
+  else if(bot.ph==='rest'&&bot.t>0.45){bot.ph='move';bot.t=0;bot.n++;botTarget();}
+}
+function takeover(){
+  userT=K.ATTRACT_IDLE;bot.vis=0;bot.ph='rest';bot.t=0;
+  if(botHeld){releaseButton(botHeld,false);botHeld=null;}
+}
+function update(dt){
+  if(userT>0)userT-=dt;else stepBot(dt);
+  btns.forEach((b,i)=>b.hovered=i===focus);
+  for(let left=dt;left>1e-6;left-=1/120){const h=Math.min(left,1/120);for(const b of btns)stepButton(b,h);}  // fixed substeps keep the spring stable
+}
+function draw(){
+  ctx.setTransform(1,0,0,1,0,0);ctx.fillStyle=C.bg;ctx.fillRect(0,0,cv.width,cv.height);
+  ctx.setTransform(D*S,0,0,D*S,0,0);
+  ctx.fillStyle=C.dot;for(let x=10;x<VW;x+=20)for(let y=10;y<VH;y+=20)ctx.fillRect(x-0.75,y-0.75,1.5,1.5);
+  ctx.font='800 15px '+FONT;ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillStyle=C.ink;
+  ctx.fillText('PAUSED',VW/2,btns[0].y-24);
+  for(const b of btns)drawButton(b);
+  if(userT<=0&&bot.vis>0){                                       // attract cursor
+    const s=bot.ph==='down'?0.85:1;ctx.save();ctx.globalAlpha=bot.vis;ctx.translate(bot.x,bot.y);ctx.scale(s,s);
+    ctx.beginPath();ctx.moveTo(0,0);ctx.lineTo(0,14);ctx.lineTo(3.6,10.6);ctx.lineTo(6.4,16.4);ctx.lineTo(8.6,15.4);ctx.lineTo(5.9,9.8);ctx.lineTo(10.6,9.8);ctx.closePath();
+    ctx.fillStyle=C.ink;ctx.fill();ctx.strokeStyle=C.bg;ctx.lineWidth=1.2;ctx.stroke();ctx.restore();
+  }
+  ctx.font='10px '+FONT;ctx.fillStyle=C.mu;ctx.fillText('Hover · click or Enter to press · ↑ ↓ to move',VW/2,VH-12);
+}
+let last=0;
+function frame(t){
+  requestAnimationFrame(frame);if(document.hidden){last=0;return;}
+  let dt=last?(t-last)/1000:0.016;last=t;if(!(dt>0))dt=0.016;dt=Math.min(dt,0.05);
+  update(dt);draw();
+}
+function vpt(e){const r=cv.getBoundingClientRect();return [(e.clientX-r.left)/S,(e.clientY-r.top)/S];}
+cv.addEventListener('pointermove',e=>{const [x,y]=vpt(e);takeover();const b=hit(x,y);focus=b?btns.indexOf(b):-1;});
+cv.addEventListener('pointerdown',e=>{
+  unlockAudio();takeover();const [x,y]=vpt(e),b=hit(x,y);focus=b?btns.indexOf(b):-1;
+  if(b&&pressButton(b,x,y,true))userHeld=b;e.preventDefault();
+});
+cv.addEventListener('pointerup',e=>{if(!userHeld)return;const [x,y]=vpt(e);releaseButton(userHeld,hit(x,y)===userHeld);userHeld=null;});
+function cancel(){if(userHeld){releaseButton(userHeld,false);userHeld=null;}if(userT>0)focus=-1;}
+cv.addEventListener('pointerleave',cancel);cv.addEventListener('pointercancel',cancel);
+addEventListener('keydown',e=>{
+  if([' ','ArrowUp','ArrowDown','ArrowLeft','ArrowRight'].includes(e.key))e.preventDefault();
+  const n=btns.length;
+  if(e.key==='ArrowDown'||e.key==='ArrowUp'){takeover();focus=focus<0?0:(focus+(e.key==='ArrowDown'?1:-1)+n)%n;}
+  else if((e.key===' '||e.key==='Enter')&&!e.repeat){
+    unlockAudio();takeover();if(focus<0)focus=0;const b=btns[focus];
+    if(userHeld)releaseButton(userHeld,false);userHeld=pressButton(b,b.x+b.w/2,b.y+b.h/2,true)?b:null;
+  }
+});
+addEventListener('keyup',e=>{if((e.key===' '||e.key==='Enter')&&userHeld){releaseButton(userHeld,true);userHeld=null;}});
+requestAnimationFrame(frame);
+})();
+</script></body></html>

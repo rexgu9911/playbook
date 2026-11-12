@@ -10,10 +10,10 @@ const K={
   RECOVER: 0.32,           // s follow-through after hits 1 and 2
   FINISHER_RECOVER: 0.50,  // s follow-through after hit 3 (no cancel: the combo ends here)
   CANCEL_START: 0.45,      // 0–1 point in RECOVER where the cancel window opens (a press chains instantly)
-  INPUT_BUFFER: 0.25,      // s an early press is remembered and fires the moment the window opens
+  INPUT_BUFFER: 0.35,      // s an early press is remembered and fires the moment the window opens (covers a whole swing)
   RESET_TIME: 0.30,        // s of idle after recovery before the chain drops back to hit 1
-  LUNGE: 12,               // px forward step on hits 1 and 2
-  FINISHER_LUNGE: 28,      // px forward step on hit 3
+  LUNGE: 12,               // px visual lunge offset on hits 1 and 2 (springs back; the body does not travel)
+  FINISHER_LUNGE: 28,      // px visual lunge offset on hit 3 (springs back)
   KNOCKBACK: 120,          // px/s dummy push on hits 1 and 2
   FINISHER_KNOCKBACK: 300, // px/s dummy push on hit 3
   FINISHER_SHAKE: 0.45,    // 0–1 screen trauma added by hit 3

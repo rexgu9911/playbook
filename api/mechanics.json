@@ -654,7 +654,7 @@
   "name": "Dodge Roll",
   "category": "Movement",
   "description": "A burst-speed roll with i-frames, a short recovery and a cooldown so timing matters.",
-  "prompt": "On roll, move for ROLL_TIME 0.40 s at speed 60 + (420 - 60)·(1-t)² px/s, invincible from 0.02 s to 0.30 s into the roll; then 0.14 s recovery at 0.3x walk speed with no roll, then a 0.40 s cooldown, buffering roll presses for 0.15 s.",
+  "prompt": "On roll, move for ROLL_TIME 0.40 s at speed 60 + (420 - 60)·(1-t)² px/s, invincible from 0.02 s to 0.30 s into the roll; then 0.14 s recovery at 0.3x walk speed with no roll, then a 0.40 s cooldown; a roll press made within 0.15 s before the roll is ready again is queued.",
   "key_numbers": [
    {
     "name": "WALK_SPEED",
@@ -726,7 +726,7 @@
     "name": "ROLL_BUFFER",
     "value": 0.15,
     "unit": "s",
-    "note": "how long a roll press is remembered while still busy"
+    "note": "a roll press made this long before the roll is ready again is queued"
    },
    {
     "name": "HIT_KNOCKBACK",
@@ -862,7 +862,7 @@
   "name": "Combo Window",
   "category": "Combat",
   "description": "A 3-hit melee string with an input buffer and a late-swing cancel window to chain hits.",
-  "prompt": "Split each attack into windup (0.07 s), active (0.06 s) and recovery (0.32 s; 0.50 s on hit 3); presses are buffered for 0.25 s and chain into the next, different swing as soon as recovery passes 45% (CANCEL_START 0.45), with a 0.30 s grace after recovery before the combo resets to hit 1. Hit 3 is a finisher with no cancel, a bigger lunge and knockback.",
+  "prompt": "Split each attack into windup (0.07 s), active (0.06 s) and recovery (0.32 s; 0.50 s on hit 3); presses are buffered for 0.35 s (a whole swing) and chain into the next, different swing as soon as recovery passes 45% (CANCEL_START 0.45), with a 0.30 s grace after recovery before the combo resets to hit 1. Hit 3 is a finisher with no cancel, a bigger lunge and knockback.",
   "key_numbers": [
    {
     "name": "WINDUP",
@@ -896,9 +896,9 @@
    },
    {
     "name": "INPUT_BUFFER",
-    "value": 0.25,
+    "value": 0.35,
     "unit": "s",
-    "note": "an early press is remembered and fires the moment the window opens"
+    "note": "an early press is remembered and fires the moment the window opens (covers a whole swing)"
    },
    {
     "name": "RESET_TIME",
@@ -910,13 +910,13 @@
     "name": "LUNGE",
     "value": 12,
     "unit": "px",
-    "note": "forward step on hits 1 and 2"
+    "note": "visual lunge offset on hits 1 and 2; springs back, the body does not travel"
    },
    {
     "name": "FINISHER_LUNGE",
     "value": 28,
     "unit": "px",
-    "note": "forward step on hit 3"
+    "note": "visual lunge offset on hit 3; springs back"
    },
    {
     "name": "KNOCKBACK",
@@ -1572,7 +1572,7 @@
     "name": "MAX_HP",
     "value": 100,
     "unit": "hp",
-    "note": "of a full bar"
+    "note": "hit points in a full bar"
    },
    {
     "name": "LAG_DELAY",
