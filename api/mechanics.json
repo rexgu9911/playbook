@@ -47,7 +47,7 @@
   "name": "Hit Stop",
   "category": "Feel",
   "description": "Freeze frames, white flash and knockback so every hit lands.",
-  "prompt": "Add hit-stop on impact: freeze both actors 60–90ms, flash the target white, then apply knockback with recoil on the attacker.",
+  "prompt": "Add hit-stop on impact: freeze the whole world for 70ms + 75ms × hit power (about 120–180ms), keep the target fully white for the whole freeze, then apply knockback to the target and recoil to the attacker when the freeze ends.",
   "demo_url": "https://rexgu9911.github.io/playbook/mechanics/hit-stop.html",
   "page_url": "https://rexgu9911.github.io/playbook/#/mechanic/hit-stop",
   "source_url": "https://rexgu9911.github.io/playbook/mechanics/hit-stop.html",

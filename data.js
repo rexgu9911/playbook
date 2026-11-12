@@ -110,7 +110,7 @@ window.PB = (() => {
       prompt: 'Add trauma-based screen shake: impacts add trauma (0–1), shake = trauma², decay over time, rotate slightly as well as translate.' },
     { slug: 'hit-stop', name: 'Hit Stop', cat: 'Feel', by: 'otto.wav', installs: 63900,
       desc: 'Freeze frames, white flash and knockback so every hit lands.',
-      prompt: 'Add hit-stop on impact: freeze both actors 60–90ms, flash the target white, then apply knockback with recoil on the attacker.' },
+      prompt: 'Add hit-stop on impact: freeze the whole world for 70ms + 75ms × hit power (about 120–180ms), keep the target fully white for the whole freeze, then apply knockback to the target and recoil to the attacker when the freeze ends.' },
     { slug: 'particle-burst', name: 'Layered Particle Burst', cat: 'Feel', by: 'kiln', installs: 77400,
       desc: 'Sparks, smoke, shockwave ring and debris in one call.',
       prompt: 'Add a burst(x, y, power) effect with four layers: fast sparks, slow smoke, an expanding shockwave ring and debris with gravity. Cap total particles.' },
