@@ -969,6 +969,18 @@
             <button class="dclaim" data-claim="${d._i}">Is this yours? Claim or remove</button>
           </aside>
         </div>
+        ${(() => {
+          const share = `${LIVE}s/g/${d.slug}/`, picked = WEEKS.find(w => w.games.some(p => p.d === d));
+          const kinds = [['featured-dark', 'Dark'], ['featured-light', 'Light'], ...(picked ? [['pick-orange', 'Weekly pick'], ['pick-dark', 'Weekly pick, dark']] : [])];
+          const post = picked ? `My game ${d.title} was picked in This week in vibe gaming #${picked.no} on Playbook 🎮 ${share}`
+            : `My game ${d.title} is featured on Playbook, the home of vibe gaming 🎮 ${share}`;
+          return `<section class="section tight kit"><div class="sec-head"><div><h2>Share kit</h2><p>Made this game? Show it's on Playbook. Badges link back here.</p></div><a class="link" href="#/standards">Our standards</a></div>
+          <div class="kit-grid">${kinds.map(([b, lab]) => {
+            const alt = b.startsWith('pick') ? 'Weekly pick on Playbook' : 'Featured on Playbook', img = `${LIVE}badge/${b}.svg`;
+            const html = `<a href="${share}" target="_blank" rel="noopener"><img src="${img}" alt="${alt}" width="236" height="54"></a>`, md = `[![${alt}](${img})](${share})`;
+            return `<div class="kit-card"><div class="kit-prev ${b.includes('light') ? 'light' : ''}"><img src="badge/${b}.svg" alt="${alt}" width="236" height="54"></div><div class="kit-meta"><span>${lab}</span><span class="kit-btns"><button class="btn btn-sm" data-copy="${esc(html)}">HTML</button><button class="btn btn-sm" data-copy="${esc(md)}">Markdown</button></span></div></div>`;
+          }).join('')}<div class="kit-card post"><p data-noi18n>${esc(post)}</p><button class="btn btn-sm" data-copy="${esc(post)}">Copy post</button></div></div></section>`;
+        })()}
         ${own.length ? `<section class="section tight"><div class="sec-head"><div><h2>More from ${esc(d.creator)}</h2></div><a class="link" href="${crLink(d.creator)}">Profile</a></div><div class="wall">${own.slice(0, 8).map(gcard).join('')}</div></section>` : ''}
         ${like.length ? `<section class="section tight"><div class="sec-head"><div><h2>More ${esc(d.genre.toLowerCase())} games</h2></div><a class="link" href="#/play/${encodeURIComponent(d.genre)}">All ${esc(d.genre.toLowerCase())}</a></div><div class="wall">${like.map(gcard).join('')}</div></section>` : ''}
       </section>`;
@@ -1021,6 +1033,26 @@
           <div class="wkx-art">${w.games.slice(0, 3).map(p => `<span class="${p.d.cover ? 'has-cover' : ''}" style="${calm(p.d)}">${p.d.cover ? `<img src="${esc(p.d.cover)}" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.remove()">` : ''}</span>`).join('')}</div>
           <div class="wkx-meta"><span class="wkp-n">Issue #${w.no}</span><h3>Week of ${esc(weekName(w.id))}</h3><p>${esc(w.intro)}</p></div>
         </a>`).join('') || '<div class="empty">The first issue is on its way.</div>'}</div></div>`;
+  }
+
+  const STANDARDS = [['Made mostly with AI', 'The creator says in public that AI wrote most of the code, and we link to where they said it.'],
+    ['Free to play in a browser', 'No download, no sign-in and no payment to start playing.'],
+    ['An original game', "No clones of other people's games, characters or names. Inspired by is fine; copies are not."],
+    ['A real game', 'Something you can play and win, lose or score in, not a tech demo, a tool or a screensaver.'],
+    ['Not a content farm', "We list a creator's best work, not hundreds of near-identical games."],
+    ['Credited and respected', "We link to the creator's own page and show the image they publish. Nothing is copied or hosted here, and creators can claim or remove a listing at any time."]];
+  function standardsPage() {
+    app.innerHTML = `
+      <section class="page-head dots"><div class="wrap">
+        <span class="tag"><span class="dot"></span>Quality standards</span>
+        <h1>What makes the cut</h1>
+        <p>Playbook is picky on purpose. Every game here passes the same bar, and every weekly pick is chosen by a person.</p>
+      </div></section>
+      <div class="wrap">
+        <ol class="std">${STANDARDS.map(([t, p], i) => `<li class="std-item rv"><span class="wkp-n">${String(i + 1).padStart(2, '0')}</span><h3>${esc(t)}</h3><p>${esc(p)}</p></li>`).join('')}</ol>
+        <section class="std-picks rv"><h2>How weekly picks are chosen</h2><p>Each week a person picks five games that stand out for how they look, how they feel to play, or what they try. Every pick says why.</p>
+          <div class="acts"><button class="btn btn-accent" data-submit-game>Submit a game</button><a class="btn" href="#/weeks">Read the picks</a></div></section>
+      </div>`;
   }
 
   function savedPage() {
@@ -1361,7 +1393,7 @@
 
   // ---------- search palette (⌘K or /) ----------
   const cmdk = $('#cmdk'), cmdkIn = $('#cmdkInput'), cmdkList = $('#cmdkList');
-  const PAGES = [['Weekly picks', '#/weeks'], ['Guides', '#/guides'], ['Saved games', '#/saved'], ['Play all games', '#/play'], ['Creators', '#/creators'], ['Make: start here', '#/make'], ['Game feel (mechanics)', '#/mechanics'], ['Open recipes', '#/games'], ['Connect Playbook MCP', '#/mcp'], ['Playbook Jam', '#/jam']];
+  const PAGES = [['Weekly picks', '#/weeks'], ['Quality standards', '#/standards'], ['Guides', '#/guides'], ['Saved games', '#/saved'], ['Play all games', '#/play'], ['Creators', '#/creators'], ['Make: start here', '#/make'], ['Game feel (mechanics)', '#/mechanics'], ['Open recipes', '#/games'], ['Connect Playbook MCP', '#/mcp'], ['Playbook Jam', '#/jam']];
   let cmdkItems = [], cmdkSel = 0;
   const lc = s => String(s || '').toLowerCase();
   function searchAll(q) {
@@ -1461,18 +1493,18 @@
     $$('.media', app).forEach(m => { liveIO.unobserve(m); autoIO.unobserve(m); });
     stopPreview(); closeSearch();
     closeModal();
-    const nav = { '': 'home', play: 'play', g: 'play', week: 'play', weeks: 'play', saved: 'play', guides: 'play', guide: 'play', discover: 'play', review: 'play', make: 'make', game: 'make', games: 'make', mechanics: 'make', mechanic: 'make', publish: 'make', mcp: 'make', creators: 'creators', c: 'creators', jam: 'jam' }[page];
+    const nav = { '': 'home', standards: 'play', play: 'play', g: 'play', week: 'play', weeks: 'play', saved: 'play', guides: 'play', guide: 'play', discover: 'play', review: 'play', make: 'make', game: 'make', games: 'make', mechanics: 'make', mechanic: 'make', publish: 'make', mcp: 'make', creators: 'creators', c: 'creators', jam: 'jam' }[page];
     $$('[data-nav]').forEach(a => a.classList.toggle('on', a.dataset.nav === nav));
     const tab = { home: 'home', play: 'play', make: 'make', creators: 'creators' }[nav];
     $$('[data-tab]').forEach(a => a.classList.toggle('on', a.dataset.tab === tab));
     const a = decodeURIComponent(arg);
     if (page === 'charts') { location.replace('#/play'); return; }
     if (page === 'creator') { location.replace('#/creators'); return; }
-    ({ '': home, saved: savedPage, guides: guidesPage, guide: () => guidePage(a), week: () => weekPage(a), weeks: weeksPage, g: () => discGamePage(a), play: () => discoverPage(a), discover: () => discoverPage(a), make: makePage, creators: creatorsPage, c: () => creatorProfile(a), games: () => gamesPage(a), mcp: mcpPage, jam: jamPage, game: () => gamePage(a), mechanics: mechanicsPage, mechanic: () => mechanicPage(a), publish: publishPage, review: LOCAL ? reviewPage : notFound }[page] || notFound)();
+    ({ '': home, standards: standardsPage, saved: savedPage, guides: guidesPage, guide: () => guidePage(a), week: () => weekPage(a), weeks: weeksPage, g: () => discGamePage(a), play: () => discoverPage(a), discover: () => discoverPage(a), make: makePage, creators: creatorsPage, c: () => creatorProfile(a), games: () => gamesPage(a), mcp: mcpPage, jam: jamPage, game: () => gamePage(a), mechanics: mechanicsPage, mechanic: () => mechanicPage(a), publish: publishPage, review: LOCAL ? reviewPage : notFound }[page] || notFound)();
     window.scrollTo(0, 0);
     hydrate();
     const ttl = page === 'game' && byId[a] ? byId[a].title : page === 'mechanic' && mechBySlug[a] ? mechBySlug[a].name : page === 'c' && crBySlug[a] ? crBySlug[a].handle : page === 'g' && G_BY[a] ? G_BY[a].title : page === 'week' && WEEKS.find(w => w.id === a) ? `Week of ${weekName(a)}` : page === 'guide' && GUIDES.find(x => x.slug === a) ? GUIDES.find(x => x.slug === a).title
-      : { saved: 'Saved games', guides: 'Guides', weeks: 'Weekly picks', play: 'Play', discover: 'Play', make: 'Make', creators: 'Creators', mechanics: 'Game feel', games: 'Recipes', mcp: 'Connect MCP', jam: 'Jam' }[page];
+      : { standards: 'Quality standards', saved: 'Saved games', guides: 'Guides', weeks: 'Weekly picks', play: 'Play', discover: 'Play', make: 'Make', creators: 'Creators', mechanics: 'Game feel', games: 'Recipes', mcp: 'Connect MCP', jam: 'Jam' }[page];
     document.title = ttl ? `${ttl} — Playbook` : 'Playbook — the home of vibe gaming';
     track('/' + (location.hash.replace(/^#\/?/, '') || ''), document.title);
     if (I18N) document.title = I18N.tr(document.title);
