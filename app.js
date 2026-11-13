@@ -69,6 +69,7 @@
   }), { threshold: 0.6 });
   // ---------- motion details: rolling labels and word-by-word heading reveals (off with reduced motion) ----------
   const CALM = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const I18N = window.PB_I18N, ZH = !!I18N?.zh;
   const rollify = root => {
     if (CALM) return;
     $$('.nav-links a, .btn:not(.copy), .link, .flinks a', root).forEach(el => {
@@ -80,7 +81,7 @@
     });
   };
   const splitify = root => {
-    if (CALM) return;
+    if (CALM || ZH) return;  // Chinese has no spaces to split on, and whole lines must stay free to wrap
     $$('.sec-head h2, .rail-head h2, .page-head h1, .gd-info h1', root).forEach(h => {
       if (h.dataset.split) return;
       h.dataset.split = '1';
@@ -112,6 +113,7 @@
     $$('.media[data-auto]', root).forEach(m => autoIO.observe(m));
     $$('.media[data-src]', root).forEach(m => liveIO.observe(m));
     $$('.rv:not(.in)', root).forEach(r => revIO.observe(r));
+    I18N?.apply(root);
     rollify(root); splitify(root);
   };
 
@@ -710,7 +712,7 @@
   const gLink = d => `#/g/${d.slug}`;
   // weekly issues ("This week in vibe gaming"), newest first; picks point at listed games by URL
   const LIVE = 'https://rexgu9911.github.io/playbook/';
-  const WEEKS = (window.PB_WEEKS || []).map(w => ({ ...w, games: w.picks.map(p => ({ why: p.why, d: DISC.find(x => x.url === p.url) })).filter(p => p.d) }))
+  const WEEKS = (window.PB_WEEKS || []).map(w => ({ ...w, intro: ZH && w.intro_zh ? w.intro_zh : w.intro, games: w.picks.map(p => ({ why: ZH && p.why_zh ? p.why_zh : p.why, d: DISC.find(x => x.url === p.url) })).filter(p => p.d) }))
     .filter(w => w.games.length);
   const weekName = id => { const d = new Date(id + 'T00:00:00'); return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }); };
   const xPost = w => [`This week in vibe gaming · ${weekName(w.id)}`, '', ...w.games.map((p, i) => `${i + 1}. ${p.d.title}${p.d.creator ? ` by ${p.d.creator}` : ''}`), '', `Play them all: ${LIVE}s/week/${w.id}/`].join('\n');
@@ -1221,7 +1223,7 @@
 
   // ---------- modals ----------
   const modal = $('#modal'), modalBody = $('#modalBody');
-  const openModal = html => { modalBody.innerHTML = `<button class="icon-btn x" data-close aria-label="Close">${icon.close}</button>` + html; modal.classList.add('open'); modal.setAttribute('aria-hidden', 'false'); };
+  const openModal = html => { modalBody.innerHTML = `<button class="icon-btn x" data-close aria-label="Close">${icon.close}</button>` + html; I18N?.apply(modalBody); modal.classList.add('open'); modal.setAttribute('aria-hidden', 'false'); };
   const closeModal = () => { modal.classList.remove('open'); modal.setAttribute('aria-hidden', 'true'); };
 
   function mcpModal() {
@@ -1285,7 +1287,7 @@
       .slice(0, any ? 8 : 6).map(d => { const h = hashHue(d.title + d.url); return { group: any ? 'From the web' : 'Fresh from the web', title: d.title, sub: [d.creator || host(d.url), d.genre, d.model].filter(Boolean).join(' · '), href: gLink(d), c1: `hsl(${h} 78% 54%)`, c2: `hsl(${(h + 80) % 360} 72% 40%)`, go: 'Open' }; });
     const M = any ? mechanics.filter(m => hit(lc([m.name, m.cat, m.desc].join(' ')))).slice(0, 4).map(m => ({ group: 'Mechanics', title: m.name, sub: m.cat, href: `#/mechanic/${m.slug}`, c1: '#4a4337', c2: '#17150f', go: 'Open' })) : [];
     const C = any ? CREATORS.filter(c => hit(lc(c.handle + ' ' + c.games.map(g => g.title).join(' ')))).slice(0, 4).map(c => { const h = hashHue(c.handle); return { group: 'Creators', title: c.handle, sub: `${c.games.length} game${c.games.length > 1 ? 's' : ''} · ${c.games[0].title}`, href: crLink(c.handle), c1: `hsl(${h} 40% 46%)`, c2: `hsl(${(h + 40) % 360} 30% 24%)`, go: 'Profile' }; }) : [];
-    const P = PAGES.filter(p => !any || hit(lc(p[0]))).map(p => ({ group: 'Pages', title: p[0], sub: '', href: p[1], go: 'Go' }));
+    const P = PAGES.filter(p => !any || hit(lc(p[0]))).map(p => ({ group: 'Pages', title: I18N ? I18N.tr(p[0]) : p[0], sub: '', href: p[1], go: 'Go' }));
     return any ? [...D, ...C, ...G, ...M, ...P] : [...D, ...G, ...P];
   }
   function drawSearch() {
@@ -1297,6 +1299,7 @@
       return head + `<div class="cmdk-item ${i === cmdkSel ? 'sel' : ''}" role="option" aria-selected="${i === cmdkSel}" data-i="${i}">
         ${it.c1 ? `<i class="sw2" style="--c1:${it.c1};--c2:${it.c2}"></i>` : ''}<div><b>${esc(it.title)}</b>${it.sub ? `<span>${esc(it.sub)}</span>` : ''}</div><span class="go">${esc(it.go)}</span></div>`;
     }).join('') : `<div class="cmdk-empty">No games match “${esc(cmdkIn.value)}”. Try a genre like racing or puzzle.</div>`;
+    I18N?.apply(cmdkList);
     $('.cmdk-item.sel', cmdkList)?.scrollIntoView({ block: 'nearest' });
   }
   function openSearch(q = '') {
@@ -1317,12 +1320,12 @@
 
   // ---------- global events ----------
   const toastEl = $('#toast'); let toastT;
-  function toast(msg) { toastEl.textContent = msg; toastEl.classList.add('on'); clearTimeout(toastT); toastT = setTimeout(() => toastEl.classList.remove('on'), 1800); }
+  function toast(msg) { toastEl.textContent = I18N ? I18N.tr(msg) : msg; toastEl.classList.add('on'); clearTimeout(toastT); toastT = setTimeout(() => toastEl.classList.remove('on'), 1800); }
   async function copy(text, btn) {
     try { await navigator.clipboard.writeText(text); }
     catch { const t = document.createElement('textarea'); t.value = text; document.body.appendChild(t); t.select(); try { document.execCommand('copy'); } catch {} t.remove(); }
     toast('Copied');
-    if (btn?.classList.contains('copy')) { const old = btn.textContent; btn.textContent = 'Copied'; btn.classList.add('done'); setTimeout(() => { btn.textContent = old; btn.classList.remove('done'); }, 1400); }
+    if (btn?.classList.contains('copy')) { const old = btn.textContent; btn.textContent = I18N ? I18N.tr('Copied') : 'Copied'; btn.classList.add('done'); setTimeout(() => { btn.textContent = old; btn.classList.remove('done'); }, 1400); }
   }
   const burger = $('#burger'), menu = $('#menu');
   const setMenu = on => { menu.classList.toggle('open', on); burger.setAttribute('aria-expanded', on); menu.setAttribute('aria-hidden', !on); };
@@ -1337,6 +1340,7 @@
     const q = e.target.closest('[data-q]'); if (q) { e.preventDefault(); return openSearch(q.dataset.q); }
     const cl = e.target.closest('[data-claim]'); if (cl) return claimModal(+cl.dataset.claim);
     const cc = e.target.closest('[data-claim-creator]'); if (cc) return claimCreatorModal(cc.dataset.claimCreator);
+    if (e.target.closest('[data-lang]')) { try { localStorage.setItem('pb-lang', ZH ? 'en' : 'zh'); } catch {} return location.reload(); }
     if (e.target.closest('[data-top]')) return window.scrollTo({ top: 0, behavior: CALM ? 'auto' : 'smooth' });
     if (e.target.closest('[data-close]')) return closeModal();
     if (e.target.closest('.menu a')) setMenu(false);
@@ -1367,12 +1371,15 @@
     const ttl = page === 'game' && byId[a] ? byId[a].title : page === 'mechanic' && mechBySlug[a] ? mechBySlug[a].name : page === 'c' && crBySlug[a] ? crBySlug[a].handle : page === 'g' && G_BY[a] ? G_BY[a].title : page === 'week' && WEEKS.find(w => w.id === a) ? `Week of ${weekName(a)}`
       : { weeks: 'Weekly picks', play: 'Play', discover: 'Play', make: 'Make', creators: 'Creators', mechanics: 'Game feel', games: 'Recipes', mcp: 'Connect MCP', jam: 'Jam' }[page];
     document.title = ttl ? `${ttl} — Playbook` : 'Playbook — the home of vibe gaming';
+    if (I18N) document.title = I18N.tr(document.title);
   }
   const navEl = $('#nav');
   const navSync = () => navEl.classList.toggle('over', !!document.querySelector('.hx') && scrollY < 40);
   window.addEventListener('scroll', navSync, { passive: true });
   window.addEventListener('hashchange', navSync);
   window.addEventListener('hashchange', route);
+  I18N?.apply(document.body);
+  $$('[data-lang]').forEach(b => { b.textContent = ZH ? 'EN' : '中文'; b.setAttribute('aria-label', ZH ? 'Switch to English' : '切换到中文'); });
   rollify(document.querySelector('#nav')); rollify(document.querySelector('.footer'));
   route();
   navSync();

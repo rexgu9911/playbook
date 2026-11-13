@@ -1,7 +1,7 @@
 {
  "name": "Playbook API",
  "version": 1,
- "updated": "2026-11-13T13:53:31+00:00",
+ "updated": "2026-11-13T14:14:51+00:00",
  "base": "https://rexgu9911.github.io/playbook/api",
  "endpoints": {
   "recipes": "recipes.json",

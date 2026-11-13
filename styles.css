@@ -1198,3 +1198,12 @@ kbd { background: rgba(255,255,255,.08); color: var(--muted); box-shadow: none; 
   .wkx { grid-template-columns: 1fr; }
 }
 @media (prefers-reduced-motion: reduce) { .wkp-media:hover .media, .wkx-card:hover .wkx-art { transform: none !important; } }
+
+
+/* v25 — Chinese interface */
+.langbtn { font-weight: 600; }
+.menu .langbtn { text-align: left; font-size: 22px; padding: 10px 0; color: var(--ink-2); }
+html[lang="zh-CN"] :is(h1, h2, h3, .scard h3, .wkp-head h1, .nf h1) { letter-spacing: -0.015em; }
+html[lang="zh-CN"] body { line-height: 1.6; }
+html[lang="zh-CN"] .tag, html[lang="zh-CN"] .chip.hot { letter-spacing: .04em; }
+.scard-l, .scard-r { min-width: 0; }
