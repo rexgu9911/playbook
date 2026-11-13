@@ -738,6 +738,8 @@
   const LIVE = 'https://rexgu9911.github.io/playbook/';
   const WEEKS = (window.PB_WEEKS || []).map(w => ({ ...w, intro: ZH && w.intro_zh ? w.intro_zh : w.intro, games: w.picks.map(p => ({ why: ZH && p.why_zh ? p.why_zh : p.why, d: DISC.find(x => x.url === p.url) })).filter(p => p.d) }))
     .filter(w => w.games.length);
+  const pickOf = d => WEEKS.filter(w => w.games.some(p => p.d === d)).sort((a, b) => b.no - a.no).map(w => ({ w, why: w.games.find(p => p.d === d).why }))[0];
+  const pickBox = (pk, title) => `<a class="gd-pick" href="#/week/${pk.w.id}"><span class="gd-pick-k">This week in vibe gaming · Issue #${pk.w.no}</span>${title ? `<b>${esc(title)}</b>` : ''}<span class="gd-pick-why" data-noi18n>${esc(pk.why)}</span></a>`;
   const weekName = id => { const d = new Date(id + 'T00:00:00'); return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }); };
   const xPost = w => [`This week in vibe gaming · ${weekName(w.id)}`, '', ...w.games.map((p, i) => `${i + 1}. ${p.d.title}${p.d.creator ? ` by ${p.d.creator}` : ''}`), '', `Play them all: ${LIVE}s/week/${w.id}/`].join('\n');
   const PLATFORMS = { x: 'X', youtube: 'YouTube', hn: 'Hacker News', reddit: 'Reddit', itch: 'itch.io', jam: 'Game jam', wavedash: 'Wavedash', other: 'Web' };
@@ -886,7 +888,7 @@
         </div></div>
         <div class="acts">${prof ? `<a class="btn" href="${prof.url}" target="_blank" rel="noopener noreferrer">${prof.name} profile ↗</a>` : ''}<button class="btn btn-accent" data-claim-creator="${esc(c.slug)}">Is this you? Claim this profile</button></div>
       </div></section>
-      <div class="wrap"><div class="wall">${c.games.map(dcard).join('')}</div></div>`;
+      <div class="wrap">${(picks => picks.length ? `<div class="cr-picks">${picks.join('')}</div>` : '')(c.games.map(g => [g, pickOf(g)]).filter(x => x[1]).map(([g, pk]) => pickBox(pk, g.title)))}<div class="wall">${c.games.map(dcard).join('')}</div></div>`;
   }
 
   function claimCreatorModal(slug) {
@@ -900,7 +902,8 @@
         <div class="field"><label for="ccProof">A link that shows this is you</label><input id="ccProof" required maxlength="160" placeholder="https:// (a post or page on the account above)"></div>
         <button class="btn btn-accent btn-block" type="submit">Continue on GitHub</button>
       </form>
-      <p class="note">This opens a pre-filled issue on our GitHub repo. Removal requests are acted on as soon as we see them.</p>`);
+      <p class="note">This opens a pre-filled issue on our GitHub repo. Removal requests are acted on as soon as we see them.</p>
+      <p class="note">No GitHub account? If we told you about this listing, just reply to that message and we'll take care of it.</p>`);
     $('#ccForm').addEventListener('submit', e => {
       e.preventDefault();
       const w = $('#ccWhat').value;
@@ -958,6 +961,7 @@
             <h1>${esc(d.title)}</h1>
             ${d.creator ? `<a class="gd-by" href="${crLink(d.creator)}">${crAva(d.creator)}<span>${esc(d.creator)}</span></a>` : ''}
             <p class="gd-note">${esc(d.note || '')}</p>
+            ${(pk => pk ? pickBox(pk) : '')(pickOf(d))}
             <div class="dtags">${d.genre ? `<span class="chip">${esc(d.genre)}</span>` : ''}${d.is3d ? '<span class="chip">3D</span>' : '<span class="chip">2D</span>'}${eng ? `<span class="chip">${esc(eng)}</span>` : ''}${d.touch === true ? '<span class="chip">Touch</span>' : ''}</div>
             <dl class="gd-facts">${facts.map(([k, v]) => `<dt>${k}</dt><dd>${esc(v)}</dd>`).join('')}</dl>
             <div class="gd-acts">
@@ -970,7 +974,7 @@
           </aside>
         </div>
         ${(() => {
-          const share = `${LIVE}s/g/${d.slug}/`, picked = WEEKS.find(w => w.games.some(p => p.d === d));
+          const share = `${LIVE}s/g/${d.slug}/`, picked = pickOf(d)?.w;
           const kinds = [['featured-dark', 'Dark'], ['featured-light', 'Light'], ...(picked ? [['pick-orange', 'Weekly pick'], ['pick-dark', 'Weekly pick, dark']] : [])];
           const post = picked ? `My game ${d.title} was picked in This week in vibe gaming #${picked.no} on Playbook 🎮 ${share}`
             : `My game ${d.title} is featured on Playbook, the home of vibe gaming 🎮 ${share}`;
@@ -1188,7 +1192,8 @@
         <button class="btn btn-accent btn-block" type="submit">Continue on GitHub</button>
         ${CONTACT_EMAIL ? '<button class="btn btn-block" type="button" id="clMail" style="margin-top:8px">Send by email instead</button>' : ''}
       </form>
-      <p class="note">This opens a pre-filled issue on our GitHub repo. Removal requests from the creator are acted on as soon as we see them. Listed link: ${esc(host(d.url))}</p>`);
+      <p class="note">This opens a pre-filled issue on our GitHub repo. Removal requests from the creator are acted on as soon as we see them. Listed link: ${esc(host(d.url))}</p>
+      <p class="note">No GitHub account? If we told you about this listing, just reply to that message and we'll take care of it.</p>`);
     const clBody = () => `Listing: ${d.title}\nURL: ${d.url}\nRequest: ${$('#clWhat').value}\nProof it is mine: ${$('#clProof').value}\n\nDetails:\n`;
     $('#clForm').addEventListener('submit', e => { e.preventDefault(); const w = $('#clWhat').value; window.open(issueUrl(`${w.split(' ')[0]}: ${d.title}`, clBody(), /Remove/.test(w) ? 'removal' : 'claim'), '_blank', 'noopener'); closeModal(); toast('Opened GitHub in a new tab'); });
     $('#clMail')?.addEventListener('click', () => { if (!$('#clForm').reportValidity()) return; location.href = mailUrl(`Playbook: ${$('#clWhat').value} — ${d.title}`, clBody()); closeModal(); });
@@ -1503,6 +1508,9 @@
     ({ '': home, standards: standardsPage, saved: savedPage, guides: guidesPage, guide: () => guidePage(a), week: () => weekPage(a), weeks: weeksPage, g: () => discGamePage(a), play: () => discoverPage(a), discover: () => discoverPage(a), make: makePage, creators: creatorsPage, c: () => creatorProfile(a), games: () => gamesPage(a), mcp: mcpPage, jam: jamPage, game: () => gamePage(a), mechanics: mechanicsPage, mechanic: () => mechanicPage(a), publish: publishPage, review: LOCAL ? reviewPage : notFound }[page] || notFound)();
     window.scrollTo(0, 0);
     hydrate();
+    const sub = location.hash.split('/')[3];
+    if (sub === 'kit') requestAnimationFrame(() => $('.kit')?.scrollIntoView({ block: 'start' }));
+    if (sub === 'claim') { if (page === 'g' && G_BY[a]) claimModal(G_BY[a]._i); if (page === 'c' && crBySlug[a]) claimCreatorModal(a); }
     const ttl = page === 'game' && byId[a] ? byId[a].title : page === 'mechanic' && mechBySlug[a] ? mechBySlug[a].name : page === 'c' && crBySlug[a] ? crBySlug[a].handle : page === 'g' && G_BY[a] ? G_BY[a].title : page === 'week' && WEEKS.find(w => w.id === a) ? `Week of ${weekName(a)}` : page === 'guide' && GUIDES.find(x => x.slug === a) ? GUIDES.find(x => x.slug === a).title
       : { standards: 'Quality standards', saved: 'Saved games', guides: 'Guides', weeks: 'Weekly picks', play: 'Play', discover: 'Play', make: 'Make', creators: 'Creators', mechanics: 'Game feel', games: 'Recipes', mcp: 'Connect MCP', jam: 'Jam' }[page];
     document.title = ttl ? `${ttl} — Playbook` : 'Playbook — the home of vibe gaming';

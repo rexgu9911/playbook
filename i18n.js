@@ -91,6 +91,7 @@
     'A game-feel part with a working reference implementation': '一个手感组件，附可运行的参考实现', 'Every recipe or mechanic, by genre or category': '全部配方或组件，按类型或分类',
     'Then just ask: “Add hit-stop to my game” · “Remake Neon Drift, but underwater” · “Find AI-made racing games for inspiration”.': '然后直接说：“给我的游戏加上打击停顿” · “把 Neon Drift 重做成水下版” · “找一些 AI 做的赛车游戏找灵感”。',
     'Popular': '热门', 'Playbook MCP': 'Playbook MCP',
+    "No GitHub account? If we told you about this listing, just reply to that message and we'll take care of it.": '没有 GitHub 账号？如果我们联系过你，直接回复那条消息就行，我们来处理。',
     'Quality standards': '收录标准',
     'What makes the cut': '怎样才能被收录',
     'Playbook is picky on purpose. Every game here passes the same bar, and every weekly pick is chosen by a person.': 'Playbook 是故意挑剔的。这里的每款游戏都过了同一条门槛，每周精选都由真人挑选。',
