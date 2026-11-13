@@ -278,7 +278,7 @@
     const t = new Date(last + 'T00:00:00'); t.setDate(t.getDate() - ((t.getDay() + 6) % 7));
     return t.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
   };
-  const pick = (d, hero) => `
+  const pick = (d, hero, why = '') => `
     <article class="card pick ${hero ? 'pk-hero' : ''} rv">
       <a class="pick-media" href="${gLink(d)}" aria-label="${esc(d.title)}: details and play">
         <div class="media ${d.cover ? 'has-cover' : ''}" ${d.cover && d.embeddable && canHover ? `data-ext="${esc(d.url)}"` : ''} style="${calm(d)}">
@@ -289,13 +289,15 @@
       </a>
       <div class="pick-meta">
         <h3>${esc(d.title)}</h3>
-        ${hero ? `<p>${esc(d.note || '')}</p>` : ''}
+        ${hero ? `<p>${esc(why || d.note || '')}</p>` : ''}
         ${d.creator ? `<a class="pick-by" href="${crLink(d.creator)}">${crAva(d.creator)}<span>${esc(d.creator)}</span></a>` : ''}
       </div>
     </article>`;
 
   function home() {
-    const picks = PICKS.map(t => DISC.find(d => d.title === t)).filter(Boolean);
+    const issue = WEEKS[0];
+    const picks = issue ? issue.games.map(p => p.d) : PICKS.map(t => DISC.find(d => d.title === t)).filter(Boolean);
+    const whyOf = d => issue?.games.find(p => p.d === d)?.why;
     const best = BEST.map(t => DISC.find(d => d.title === t)).filter(d => d && !picks.includes(d));
     const newest = [...DISC].sort(byNew).filter(d => !picks.includes(d) && !best.includes(d)).slice(0, 18);
     const fresh = [...newest.filter(d => d.cover), ...newest.filter(d => !d.cover)].slice(0, 12);
@@ -310,7 +312,7 @@
     reel.forEach(d => seen.add(d.url));
     const jams = DISC.filter(d => d.platform === 'jam' && !seen.has(d.url)).sort((a, b) => (a.cover ? 0 : 1) - (b.cover ? 0 : 1) || byNew(a, b));
     const show = SHOWCASE.map(s => mechBySlug[s]).filter(Boolean);
-    const wk = weekOf();
+    const wk = issue ? weekName(issue.id).replace(/, \d{4}$/, '') : weekOf();
     const tiles = [
       ['#/mechanics', tabIc.mech, 'Game feel', `${mechanics.length} parts`, 'Hit-stop, shake, dodge roll, combos'],
       ['#/games', tabIc.recipes, 'Recipes', `${games.filter(g => !g.parent).length} games`, 'Open games you can remake'],
@@ -321,10 +323,10 @@
       <section class="wk wrap">
         <div class="wk-head">
           <span class="tag"><span class="dot"></span>This week in vibe gaming</span>
-          <span class="wk-date">${wk ? `Week of ${esc(wk)} · ` : ''}picked by hand from ${DISC.length} games</span>
-          <a class="link" href="#/play">Play all ${DISC.length}</a>
+          <span class="wk-date">${issue ? `Issue #${issue.no} · ` : ''}${wk ? `Week of ${esc(wk)} · ` : ''}picked by hand from ${DISC.length} games</span>
+          ${issue ? `<a class="link" href="#/week/${issue.id}">Read the issue</a><a class="link wk-past" href="#/weeks">Past issues</a>` : `<a class="link" href="#/play">Play all ${DISC.length}</a>`}
         </div>
-        <div class="picks">${picks.map((d, i) => pick(d, i === 0)).join('')}</div>
+        <div class="picks">${picks.map((d, i) => pick(d, i === 0, whyOf(d))).join('')}</div>
       </section>
 
       <div class="ticker" aria-label="Playbook at a glance"><div class="ticker-in">${(() => {
@@ -706,6 +708,12 @@
   const G_BY = {};
   DISC.forEach(d => { const base = slugify(d.title) || 'game'; let k = base, n = 2; while (G_BY[k]) k = `${base}-${n++}`; d.slug = k; G_BY[k] = d; });
   const gLink = d => `#/g/${d.slug}`;
+  // weekly issues ("This week in vibe gaming"), newest first; picks point at listed games by URL
+  const LIVE = 'https://rexgu9911.github.io/playbook/';
+  const WEEKS = (window.PB_WEEKS || []).map(w => ({ ...w, games: w.picks.map(p => ({ why: p.why, d: DISC.find(x => x.url === p.url) })).filter(p => p.d) }))
+    .filter(w => w.games.length);
+  const weekName = id => { const d = new Date(id + 'T00:00:00'); return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }); };
+  const xPost = w => [`This week in vibe gaming · ${weekName(w.id)}`, '', ...w.games.map((p, i) => `${i + 1}. ${p.d.title}${p.d.creator ? ` by ${p.d.creator}` : ''}`), '', `Play them all: ${LIVE}#/week/${w.id}`].join('\n');
   const PLATFORMS = { x: 'X', youtube: 'YouTube', hn: 'Hacker News', reddit: 'Reddit', itch: 'itch.io', jam: 'Game jam', wavedash: 'Wavedash', other: 'Web' };
   const dstate = { genre: 'All', platform: 'All', d3: false, sort: 'new' };
   const hashHue = s => { let h = 0; for (const c of String(s)) h = (h * 31 + c.charCodeAt(0)) % 360; return h; };
@@ -941,6 +949,50 @@
       st.classList.add('playing');
       st.innerHTML = `<iframe src="${esc(d.url)}" title="${esc(d.title)}" sandbox="allow-scripts allow-same-origin allow-pointer-lock allow-popups allow-forms" allow="fullscreen; autoplay; gamepad" referrerpolicy="no-referrer"></iframe>`;
     });
+  }
+
+  function weekPage(id) {
+    const k = WEEKS.findIndex(w => w.id === id); if (k < 0) return notFound();
+    const w = WEEKS[k], newer = WEEKS[k - 1], older = WEEKS[k + 1];
+    const link = `${LIVE}#/week/${w.id}`;
+    app.innerHTML = `
+      <section class="wkp wrap">
+        <div class="crumbs"><a href="#/weeks">Weekly picks</a><span>/</span><span>Issue #${w.no}</span></div>
+        <div class="wkp-head">
+          <span class="tag"><span class="dot"></span>This week in vibe gaming · Issue #${w.no}</span>
+          <h1>Week of ${esc(weekName(w.id))}</h1>
+          <p>${esc(w.intro)}</p>
+          <div class="acts"><button class="btn btn-accent" data-copy="${esc(link)}">Copy link</button><button class="btn" data-copy="${esc(xPost(w))}">Copy post for X</button></div>
+        </div>
+        <ol class="wkp-list">${w.games.map((p, i) => { const d = p.d; return `
+          <li class="wkp-item rv">
+            <a class="wkp-media" href="${gLink(d)}" aria-label="${esc(d.title)}: details and play">
+              <div class="media ${d.cover ? 'has-cover' : ''}" ${d.cover && d.embeddable && canHover ? `data-ext="${esc(d.url)}"` : ''} style="${calm(d)}"><div class="poster"><b class="ptitle">${esc(d.title)}</b></div>${coverImg(d)}<div class="scan"></div></div>
+            </a>
+            <div class="wkp-text">
+              <span class="wkp-n">${String(i + 1).padStart(2, '0')}${i === 0 ? ' · Pick of the week' : ''}</span>
+              <h2><a href="${gLink(d)}">${esc(d.title)}</a></h2>
+              ${d.creator ? `<a class="wkp-by" href="${crLink(d.creator)}">${crAva(d.creator)}<span>${esc(d.creator)}</span></a>` : ''}
+              <p>${esc(p.why)}</p>
+              <div class="wkp-acts"><a class="btn btn-accent" href="${esc(d.url)}" target="_blank" rel="noopener noreferrer">Play on ${esc(host(d.url))} ↗</a><a class="link" href="${gLink(d)}">Details</a></div>
+            </div>
+          </li>`; }).join('')}</ol>
+        <nav class="wkp-nav">${older ? `<a class="btn" href="#/week/${older.id}">← Issue #${older.no}</a>` : '<span></span>'}<a class="link" href="#/weeks">All issues</a>${newer ? `<a class="btn" href="#/week/${newer.id}">Issue #${newer.no} →</a>` : '<span></span>'}</nav>
+      </section>`;
+  }
+
+  function weeksPage() {
+    app.innerHTML = `
+      <section class="page-head dots"><div class="wrap">
+        <span class="tag"><span class="dot"></span>Every Monday</span>
+        <h1>This week in <em>vibe gaming</em></h1>
+        <p>Five AI-made web games we think are worth your time, picked by hand each week and credited to the people who made them. ${WEEKS.length} issue${WEEKS.length === 1 ? '' : 's'} so far.</p>
+      </div></section>
+      <div class="wrap"><div class="wkx">${WEEKS.map(w => `
+        <a class="wkx-card rv" href="#/week/${w.id}">
+          <div class="wkx-art">${w.games.slice(0, 3).map(p => `<span class="${p.d.cover ? 'has-cover' : ''}" style="${calm(p.d)}">${p.d.cover ? `<img src="${esc(p.d.cover)}" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.remove()">` : ''}</span>`).join('')}</div>
+          <div class="wkx-meta"><span class="wkp-n">Issue #${w.no}</span><h3>Week of ${esc(weekName(w.id))}</h3><p>${esc(w.intro)}</p></div>
+        </a>`).join('') || '<div class="empty">The first issue is on its way.</div>'}</div></div>`;
   }
 
   function discoverPage(arg = '') {
@@ -1220,7 +1272,7 @@
 
   // ---------- search palette (⌘K or /) ----------
   const cmdk = $('#cmdk'), cmdkIn = $('#cmdkInput'), cmdkList = $('#cmdkList');
-  const PAGES = [['Play all games', '#/play'], ['Creators', '#/creators'], ['Make: start here', '#/make'], ['Game feel (mechanics)', '#/mechanics'], ['Open recipes', '#/games'], ['Connect Playbook MCP', '#/mcp'], ['Playbook Jam', '#/jam']];
+  const PAGES = [['Weekly picks', '#/weeks'], ['Play all games', '#/play'], ['Creators', '#/creators'], ['Make: start here', '#/make'], ['Game feel (mechanics)', '#/mechanics'], ['Open recipes', '#/games'], ['Connect Playbook MCP', '#/mcp'], ['Playbook Jam', '#/jam']];
   let cmdkItems = [], cmdkSel = 0;
   const lc = s => String(s || '').toLowerCase();
   function searchAll(q) {
@@ -1301,18 +1353,18 @@
     $$('.media', app).forEach(m => { liveIO.unobserve(m); autoIO.unobserve(m); });
     stopPreview(); closeSearch();
     closeModal();
-    const nav = { '': 'home', play: 'play', g: 'play', discover: 'play', review: 'play', make: 'make', game: 'make', games: 'make', mechanics: 'make', mechanic: 'make', publish: 'make', mcp: 'make', creators: 'creators', c: 'creators', jam: 'jam' }[page];
+    const nav = { '': 'home', play: 'play', g: 'play', week: 'play', weeks: 'play', discover: 'play', review: 'play', make: 'make', game: 'make', games: 'make', mechanics: 'make', mechanic: 'make', publish: 'make', mcp: 'make', creators: 'creators', c: 'creators', jam: 'jam' }[page];
     $$('[data-nav]').forEach(a => a.classList.toggle('on', a.dataset.nav === nav));
     const tab = { home: 'home', play: 'play', make: 'make', creators: 'creators' }[nav];
     $$('[data-tab]').forEach(a => a.classList.toggle('on', a.dataset.tab === tab));
     const a = decodeURIComponent(arg);
     if (page === 'charts') { location.replace('#/play'); return; }
     if (page === 'creator') { location.replace('#/creators'); return; }
-    ({ '': home, g: () => discGamePage(a), play: () => discoverPage(a), discover: () => discoverPage(a), make: makePage, creators: creatorsPage, c: () => creatorProfile(a), games: () => gamesPage(a), mcp: mcpPage, jam: jamPage, game: () => gamePage(a), mechanics: mechanicsPage, mechanic: () => mechanicPage(a), publish: publishPage, review: LOCAL ? reviewPage : notFound }[page] || notFound)();
+    ({ '': home, week: () => weekPage(a), weeks: weeksPage, g: () => discGamePage(a), play: () => discoverPage(a), discover: () => discoverPage(a), make: makePage, creators: creatorsPage, c: () => creatorProfile(a), games: () => gamesPage(a), mcp: mcpPage, jam: jamPage, game: () => gamePage(a), mechanics: mechanicsPage, mechanic: () => mechanicPage(a), publish: publishPage, review: LOCAL ? reviewPage : notFound }[page] || notFound)();
     window.scrollTo(0, 0);
     hydrate();
-    const ttl = page === 'game' && byId[a] ? byId[a].title : page === 'mechanic' && mechBySlug[a] ? mechBySlug[a].name : page === 'c' && crBySlug[a] ? crBySlug[a].handle : page === 'g' && G_BY[a] ? G_BY[a].title
-      : { play: 'Play', discover: 'Play', make: 'Make', creators: 'Creators', mechanics: 'Game feel', games: 'Recipes', mcp: 'Connect MCP', jam: 'Jam' }[page];
+    const ttl = page === 'game' && byId[a] ? byId[a].title : page === 'mechanic' && mechBySlug[a] ? mechBySlug[a].name : page === 'c' && crBySlug[a] ? crBySlug[a].handle : page === 'g' && G_BY[a] ? G_BY[a].title : page === 'week' && WEEKS.find(w => w.id === a) ? `Week of ${weekName(a)}`
+      : { weeks: 'Weekly picks', play: 'Play', discover: 'Play', make: 'Make', creators: 'Creators', mechanics: 'Game feel', games: 'Recipes', mcp: 'Connect MCP', jam: 'Jam' }[page];
     document.title = ttl ? `${ttl} — Playbook` : 'Playbook — the home of vibe gaming';
   }
   const navEl = $('#nav');
