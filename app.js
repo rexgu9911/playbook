@@ -918,7 +918,7 @@
       && (!dstate.d3 || d.is3d) && (!dstate.touch || d.touch === true))
       .sort(dstate.sort === 'new' ? byNew : (a, b) => a.title.localeCompare(b.title));
     grid.innerHTML = list.length ? list.map(dcard).join('') : '<div class="empty"><b>Nothing matches yet</b>Try fewer filters, or <button class="link" data-submit-game>submit a game you found</button>.</div>';
-    $('#discCount').textContent = `${list.length} of ${DISC.length} games`;
+    $('#discCount').textContent = I18N ? I18N.tr(`${list.length} of ${DISC.length} games`) : `${list.length} of ${DISC.length} games`;
     hydrate(grid);
   }
   // genre tiles: a muted single-colour halftone over one of the genre's own covers; full colour on hover
