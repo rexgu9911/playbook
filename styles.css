@@ -1109,3 +1109,49 @@ kbd { background: rgba(255,255,255,.08); color: var(--muted); box-shadow: none; 
   .stk, .stk.s1, .stk.s2, .stk.s3 { position: relative; left: auto; right: auto; top: auto; margin: 14px 6px 0 0; }
 }
 @media (max-width: 560px) { .stk.s1 { margin-left: var(--pad); } }
+
+
+/* v23 — batch 2 learned from 1minus1: scroll-driven showreel, stacked cards */
+.reel { position: relative; height: 175vh; margin-top: 8px; }
+.reel-stick { position: sticky; top: var(--nav-h); height: calc(100vh - var(--nav-h)); display: flex; align-items: center; }
+.reel-stick .wrap { width: 100%; display: flex; justify-content: center; }
+.reel-card { --p: 0; position: relative; display: block; overflow: hidden; isolation: isolate; width: calc(46% + 54% * var(--p)); aspect-ratio: 16 / 9; max-height: calc(100vh - var(--nav-h) - 48px); border-radius: calc(30px - 14px * var(--p)); transform: rotate(calc(-5deg + 5deg * var(--p))); background: var(--panel); box-shadow: 0 40px 90px -40px rgba(0, 0, 0, .9); will-change: width, transform; }
+.reel-card img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0; transform: scale(1.06); transition: opacity .9s var(--ease), transform 3.2s linear; }
+.reel-card img.on { opacity: 1; transform: scale(1); }
+.reel-shade { position: absolute; inset: 0; z-index: 1; background: linear-gradient(to top, rgba(6, 6, 8, .72), transparent 45%), linear-gradient(to bottom, rgba(6, 6, 8, .45), transparent 30%); }
+.reel-top { position: absolute; z-index: 2; left: 22px; right: 22px; top: 18px; display: flex; justify-content: space-between; align-items: center; color: #fff; }
+.reel-top .tag { color: #fff; }
+.reel-tc { font-family: var(--pixel); font-size: 12px; color: rgba(255, 255, 255, .85); font-variant-numeric: tabular-nums; }
+.reel-cap { position: absolute; z-index: 2; left: 24px; bottom: 20px; right: 24px; display: grid; gap: 4px; color: #fff; }
+.reel-cap b { font-family: var(--display); font-weight: 750; font-size: clamp(24px, calc(22px + 2.6vw * var(--p)), 56px); letter-spacing: -.045em; line-height: 1; }
+.reel-cap span { font-size: 14px; color: rgba(255, 255, 255, .78); }
+.reel-card:hover .reel-cap b { text-decoration: underline; text-decoration-thickness: 2px; text-underline-offset: 6px; }
+
+.stack { position: relative; padding-bottom: 12px; }
+.scard { position: sticky; top: calc(var(--nav-h) + 22px + var(--k) * 16px); display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); gap: 36px; align-items: end; min-height: 320px; padding: 38px 42px; margin-bottom: 26px; border-radius: 28px; overflow: hidden; isolation: isolate; transform: rotate(var(--rot, 0deg)); box-shadow: 0 34px 70px -34px rgba(0, 0, 0, .85); }
+.scard::after { content: ''; position: absolute; right: -4px; top: -4px; width: 170px; aspect-ratio: 1; z-index: -1; background: var(--stairs) no-repeat right top / contain; transform: scaleY(-1); opacity: .16; }
+.scard.c0 { --rot: -1.2deg; background: var(--cream); color: var(--cream-ink); }
+.scard.c1 { --rot: 1deg; background: var(--accent); color: #140b06; }
+.scard.c1::after { filter: brightness(0); opacity: .14; }
+.scard.c2 { --rot: -.8deg; background: #17171b; color: var(--ink); box-shadow: inset 0 0 0 1px var(--line-2), 0 34px 70px -34px rgba(0, 0, 0, .9); }
+.scard.c3 { --rot: .9deg; background: #fbfaf7; color: #121212; }
+.scard .n { font-family: var(--pixel); font-size: 13px; opacity: .8; }
+.scard h3 { font-family: var(--display); font-weight: 750; font-size: clamp(36px, 4.6vw, 68px); letter-spacing: -.05em; line-height: .94; margin-top: 12px; }
+.scard p { font-size: 16.5px; line-height: 1.5; opacity: .82; max-width: 34em; }
+.scard .sx { margin-top: 18px; display: flex; gap: 14px; flex-wrap: wrap; align-items: center; }
+.scard .link { color: inherit; text-decoration: underline; text-decoration-thickness: 1.5px; text-underline-offset: 4px; }
+.scard .cmd { margin: 0; width: 100%; max-width: 560px; background: #121212; color: #f4f4f1; box-shadow: none; }
+.scard.c2 .cmd { background: #0b0b0d; box-shadow: inset 0 0 0 1px var(--line-2); }
+
+@media (max-width: 860px) {
+  .reel { height: auto; margin-top: 24px; }
+  .reel-stick { position: static; height: auto; display: block; }
+  .reel-card { width: 100%; transform: none; border-radius: 18px; }
+  .scard { grid-template-columns: 1fr; gap: 16px; min-height: 0; padding: 26px 24px; top: calc(var(--nav-h) + 12px + var(--k) * 10px); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .reel { height: auto; }
+  .reel-stick { position: static; height: auto; padding: 24px 0; }
+  .reel-card { width: 100%; transform: none; }
+  .reel-card img { transition: none; }
+}

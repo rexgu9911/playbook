@@ -306,6 +306,8 @@
       .sort((x, y) => newCover(y) - newCover(x) || y.games.length - x.games.length).slice(0, 10);
     const followCards = follow.map((c, i) => crcard(c, i, seen)).join('');
     const avoid0 = new Set(seen); follow.forEach(c => seen.add(crTop(c, avoid0).url));
+    const reel = DISC.filter(d => d.cover && !seen.has(d.url) && d.platform !== 'jam').sort(byNew).slice(0, 10);
+    reel.forEach(d => seen.add(d.url));
     const jams = DISC.filter(d => d.platform === 'jam' && !seen.has(d.url)).sort((a, b) => (a.cover ? 0 : 1) - (b.cover ? 0 : 1) || byNew(a, b));
     const show = SHOWCASE.map(s => mechBySlug[s]).filter(Boolean);
     const wk = weekOf();
@@ -331,6 +333,17 @@
         const run = items.map(t => `<span>${esc(t)}</span><i aria-hidden="true">✦</i>`).join('');
         return `<div class="ticker-run">${run}</div><div class="ticker-run" aria-hidden="true">${run}</div>`;
       })()}</div></div>
+
+      ${reel.length > 2 ? `<section class="reel" id="reel" aria-label="Showreel">
+        <div class="reel-stick"><div class="wrap">
+          <a class="reel-card" id="reelCard" href="${gLink(reel[0])}">
+            ${reel.map((d, i) => `<img class="${i ? '' : 'on'}" src="${esc(d.cover)}" alt="" loading="${i < 2 ? 'eager' : 'lazy'}" decoding="async" referrerpolicy="no-referrer" onerror="this.remove()">`).join('')}
+            <span class="reel-shade"></span>
+            <span class="reel-top"><span class="tag"><span class="dot"></span>Showreel</span><span class="reel-tc" id="reelTc">00:00 · 1/${reel.length}</span></span>
+            <span class="reel-cap"><b id="reelTitle">${esc(reel[0].title)}</b><span id="reelBy">${esc(reel[0].creator || host(reel[0].url))}${reel[0].genre ? ` · ${esc(reel[0].genre)}` : ''}</span></span>
+          </a>
+        </div></div>
+      </section>` : ''}
 
       <div class="wrap idx">
         ${best.length ? rail({ title: 'All-time best', sub: 'The vibe-coded games people keep coming back to: jam winners and the ones that went viral.', href: '#/play', more: `All ${DISC.length}`, items: best.map(gcard).join('') }) : ''}
@@ -359,7 +372,48 @@
         ${contest()}
       </div>`;
     bindRails(app);
+    bindReel(reel);
   }
+
+  // ---- showreel: grows from a tilted card to full width as you scroll; crossfades while on screen ----
+  let reelTimer = null, reelIO = null;
+  function bindReel(list) {
+    clearInterval(reelTimer); reelIO?.disconnect();
+    const sec = $('#reel'), card = $('#reelCard'); if (!sec || !card) return;
+    const imgs = () => $$('img', card);
+    let i = 0, secs = 0, playing = false;
+    const show = k => {
+      const all = imgs(); if (!all.length) return;
+      i = (k + list.length) % list.length;
+      all.forEach((im, n) => im.classList.toggle('on', n === i % all.length));
+      const d = list[i];
+      card.href = gLink(d);
+      $('#reelTitle').textContent = d.title;
+      $('#reelBy').textContent = (d.creator || host(d.url)) + (d.genre ? ` · ${d.genre}` : '');
+    };
+    const tick = () => {
+      if (!playing || !sec.isConnected) return;
+      secs++;
+      if (secs % 3 === 0) show(i + 1);
+      const tc = $('#reelTc'); if (tc) tc.textContent = `00:${String(secs % 60).padStart(2, '0')} · ${i + 1}/${list.length}`;
+    };
+    if (!CALM) {
+      reelIO = new IntersectionObserver(es => { playing = es[0].isIntersecting; }, { threshold: 0.25 });
+      reelIO.observe(card);
+      reelTimer = setInterval(tick, 1000);
+    }
+    reelScroll();
+  }
+  const reelScroll = () => {
+    const sec = $('#reel'), card = $('#reelCard'); if (!sec || !card) return;
+    if (CALM || innerWidth < 861) { card.style.setProperty('--p', 1); return; }
+    const r = sec.getBoundingClientRect(), total = Math.max(1, r.height - innerHeight);
+    const t = Math.min(1, Math.max(0, -r.top / total / 0.65));
+    card.style.setProperty('--p', (1 - Math.pow(1 - t, 3)).toFixed(4));  // ease-out
+  };
+  let reelRaf = 0;
+  window.addEventListener('scroll', () => { if (!reelRaf) reelRaf = requestAnimationFrame(() => { reelRaf = 0; reelScroll(); }); }, { passive: true });
+  window.addEventListener('resize', reelScroll);
 
   // ---------- make: the toolkit hub for vibe coders ----------
   function makePage() {
@@ -378,7 +432,7 @@
         <p>A one-line prompt gets you a game that runs. Playbook helps with the rest: the timing, impact and polish that keep people playing, pulled straight into your own coding agent.</p>
       </div></section>
       <div class="wrap">
-        <div class="steps4">${steps.map((x, k) => `<div class="step4 rv" style="--d:${k * 50}ms"><span class="n">${k + 1}</span><h3>${x[0]}</h3><p>${x[1]}</p><div class="sx">${x[2]}</div></div>`).join('')}</div>
+        <div class="stack">${steps.map((x, k) => `<div class="scard c${k}" style="--k:${k}"><div class="scard-l"><span class="n">${String(k + 1).padStart(2, '0')} / ${String(steps.length).padStart(2, '0')}</span><h3>${x[0]}</h3></div><div class="scard-r"><p>${x[1]}</p><div class="sx">${x[2]}</div></div></div>`).join('')}</div>
         <section class="section">
           <div class="sec-head"><div><h2>Game feel, ready to install</h2><p>Poke the live demo, then add it by name.</p></div><a class="link" href="#/mechanics">All ${mechanics.length}</a></div>
           <div class="mgrid" id="makeMech">${show.map(mcard).join('')}</div>
