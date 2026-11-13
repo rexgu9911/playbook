@@ -590,7 +590,7 @@
 
   // ---------- discover: games from around the web (link + credit only) ----------
   const DISC = (window.PB_DISCOVER || []).filter(d => !d.stale).map((d, i) => ({ ...d, _i: i }));
-  const PLATFORMS = { x: 'X', youtube: 'YouTube', hn: 'Hacker News', reddit: 'Reddit', itch: 'itch.io', jam: 'Game jam', other: 'Web' };
+  const PLATFORMS = { x: 'X', youtube: 'YouTube', hn: 'Hacker News', reddit: 'Reddit', itch: 'itch.io', jam: 'Game jam', wavedash: 'Wavedash', other: 'Web' };
   const dstate = { genre: 'All', platform: 'All', d3: false, sort: 'new' };
   const hashHue = s => { let h = 0; for (const c of String(s)) h = (h * 31 + c.charCodeAt(0)) % 360; return h; };
   const host = u => { try { return new URL(u).hostname.replace(/^www\./, ''); } catch { return ''; } };
