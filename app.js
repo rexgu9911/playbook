@@ -140,8 +140,8 @@
   }
 
   const contest = () => `
-    <a class="contest rv" href="#/jam">
-      <div><div class="money">Jam #1</div><p>Our first community game jam is coming. Make a game with AI, publish it as a link, get ranked by the community.</p></div>
+    <a class="contest calm rv" href="#/jam">
+      <div><span class="tag"><span class="dot"></span>Coming soon</span><div class="money">Jam #1</div><p>Our first vibe gaming jam is coming. Make a game with AI, share it as a link, get picked by the community.</p></div>
       <div class="right">Community<br>Game Jam<br><span class="btn btn-sm">Get notified</span></div>
     </a>`;
 
@@ -214,75 +214,94 @@
   function drawBest() {
     const grid = $('#bestGrid'); if (!grid) return;
     $$('.media', grid).forEach(m => autoIO.unobserve(m)); stopPreview();
-    const list = bestOfWeb().filter(d => hstate.genre === 'All' || d.genre === hstate.genre).slice(0, 12);
-    grid.innerHTML = list.length ? list.map(dcard).join('') : '<div class="empty"><b>Nothing here yet</b>Try another genre.</div>';
+    // 'All' skips games already shown higher up the home page; a genre shows everything in it
+    const list = bestOfWeb().filter(d => hstate.genre === 'All' ? !hstate.seen?.has(d.url) && d.platform !== 'jam' : d.genre === hstate.genre).slice(0, 12);
+    grid.innerHTML = list.length ? list.map(gcard).join('') : '<div class="empty"><b>Nothing here yet</b>Try another genre.</div>';
     hydrate(grid);
   }
 
+  // ---------- home: this week in vibe gaming. Media first, picked by hand, creators credited. ----------
+  const PICKS = ['Starry Nightrider', 'Oil Paint', 'Evensong', 'What the Water Keeps', 'Rooftop Rally'];
+  // all-time best: jam winners and the vibe-coded games that drew the most attention (see notes for sources)
+  const BEST = ['A Game About Capybaras Delivering Food', 'Wildbrush', 'Starfall', 'fly.pieter.com', 'Tiny Skies', 'Sky Reach', "Fanto's Mega-Mart",
+    'The Long Silence', 'Kanso', 'Tidewater', 'HALDANE-4', 'Arkenfall', 'The Great Taxi Assignment', 'DUST FRONT'];
+  const SHOWCASE = ['hit-stop', 'screen-shake', 'dodge-roll', 'combo-window', 'squash-stretch', 'health-bar-lag', 'pickup-magnet', 'procedural-sfx'];
+  const weekOf = () => {
+    const last = DISC.map(d => d.date || '').filter(x => x.length === 10).sort().pop(); if (!last) return '';
+    const t = new Date(last + 'T00:00:00'); t.setDate(t.getDate() - ((t.getDay() + 6) % 7));
+    return t.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+  };
+  const pick = (d, hero) => `
+    <article class="card pick ${hero ? 'pk-hero' : ''} rv">
+      <a class="pick-media" href="${esc(d.url)}" target="_blank" rel="noopener noreferrer" aria-label="Play ${esc(d.title)} on ${esc(host(d.url))} (opens in a new tab)">
+        <div class="media ${d.cover ? 'has-cover' : ''}" ${d.cover && d.embeddable && canHover ? `data-ext="${esc(d.url)}"` : ''} style="${calm(d)}">
+          <div class="poster"><b class="ptitle">${esc(d.title)}</b></div>${coverImg(d)}<div class="scan"></div>
+          <div class="top"><span>${hero ? '<span class="chip hot">Pick of the week</span>' : ''}</span><span><span class="chip">${dIc.out}${esc(host(d.url))}</span></span></div>
+          <span class="playbtn" aria-hidden="true">${playIco}</span>
+        </div>
+      </a>
+      <div class="pick-meta">
+        <h3>${esc(d.title)}</h3>
+        ${hero ? `<p>${esc(d.note || '')}</p>` : ''}
+        ${d.creator ? `<a class="pick-by" href="${crLink(d.creator)}">${crAva(d.creator)}<span>${esc(d.creator)}</span></a>` : ''}
+      </div>
+    </article>`;
+
   function home() {
-    const week = [...DISC].sort(byNew);
-    const covered = week.filter(d => d.cover);
-    const feat = FEATURE.map(t => DISC.find(d => d.title === t && d.cover)).filter(Boolean);
-    const hero = feat[0] || covered[0];
-    const collage = [...feat.slice(1), ...covered.filter(d => !feat.includes(d))].slice(0, 6);
-    const higgs = DISC.filter(d => /higgsfield/i.test(d.model) || /higgsfield\.app/.test(d.url));
-    const higgsHero = higgs.find(d => d.cover) || higgs[0];
-    const mech = mechBySlug['screen-shake'] || mechanics[0];
-    const live = week.filter(d => !d.cover && d.embeddable);
-    const jams = DISC.filter(d => d.platform === 'jam').sort((a, b) => (a.cover ? 0 : 1) - (b.cover ? 0 : 1) || byNew(a, b));
+    const picks = PICKS.map(t => DISC.find(d => d.title === t)).filter(Boolean);
+    const best = BEST.map(t => DISC.find(d => d.title === t)).filter(d => d && !picks.includes(d));
+    const newest = [...DISC].sort(byNew).filter(d => !picks.includes(d) && !best.includes(d)).slice(0, 18);
+    const fresh = [...newest.filter(d => d.cover), ...newest.filter(d => !d.cover)].slice(0, 12);
+    const seen = new Set([...picks, ...best, ...fresh].map(d => d.url));
+    hstate.seen = seen;   // the genre grid skips these too
+    const newCover = c => c.games.some(g => !seen.has(g.url) && g.cover) ? 1 : 0;
+    const follow = CREATORS.filter(c => c.games.some(g => !seen.has(g.url) && (g.cover || g.embeddable)))
+      .sort((x, y) => newCover(y) - newCover(x) || y.games.length - x.games.length).slice(0, 10);
+    const followCards = follow.map((c, i) => crcard(c, i, seen)).join('');
+    const avoid0 = new Set(seen); follow.forEach(c => seen.add(crTop(c, avoid0).url));
+    const jams = DISC.filter(d => d.platform === 'jam' && !seen.has(d.url)).sort((a, b) => (a.cover ? 0 : 1) - (b.cover ? 0 : 1) || byNew(a, b));
+    const show = SHOWCASE.map(s => mechBySlug[s]).filter(Boolean);
+    const wk = weekOf();
     const tiles = [
-      ['#/discover', tabIc.web, 'Discover', `${DISC.length} games`, 'The best AI-made games on the web'],
-      ['#/mechanics', tabIc.mech, 'Mechanics', `${mechanics.length} parts`, 'Hit-stop, shake, coyote time'],
-      ['#/games', tabIc.recipes, 'Playbook recipes', `${games.filter(g => !g.parent).length} originals`, 'Open recipes you can remake'],
-      ['#/discover', ic.up, 'Submit a game', 'Free', 'Found a great one? Send it in', 'data-submit-game'],
+      ['#/mechanics', tabIc.mech, 'Game feel', `${mechanics.length} parts`, 'Hit-stop, shake, dodge roll, combos'],
+      ['#/games', tabIc.recipes, 'Recipes', `${games.filter(g => !g.parent).length} games`, 'Open games you can remake'],
+      ['#/creators', crIc, 'Creators', `${CREATORS.length} people`, 'Who makes the best vibe games'],
+      ['#/play', ic.up, 'Submit a game', 'Free', 'Made one, or found one? Send it in', 'data-submit-game'],
     ];
     app.innerHTML = `
-      <div class="bnr" id="bnr">
-        ${hero ? `<a class="bnr-card" href="${esc(hero.url)}" target="_blank" rel="noopener noreferrer">
-          <div class="media has-cover feat" style="${calm(hero)}"><div class="poster"></div>${coverImg(hero)}<span class="bnr-tag"><span class="chip hot">Featured</span><span class="chip">${dIc.out}${esc(host(hero.url))}</span></span></div>
-          <h3>${esc(hero.title)}</h3><p>by ${esc(hero.creator)} · ${esc(hero.note)}</p>
-        </a>` : ''}
-        <a class="bnr-card" href="#/discover">
-          <div class="media collage"><div class="cl-grid">${collage.map(dposter).join('')}</div><span class="bnr-tag"><span class="chip hot">This week</span><span class="chip">${week.slice(0, 20).filter(d => /fable/i.test(d.model)).length} new Fable 5.2 games</span></span></div>
-          <h3>Hot on X this week</h3><p>The AI-made games everyone is sharing, in one place.</p>
-        </a>
-        ${higgsHero ? `<a class="bnr-card" href="#/discover" data-q="Higgsfield">
-          <div class="media ${higgsHero.cover ? 'has-cover' : ''} feat" style="${calm(higgsHero)}"><div class="poster"></div>${coverImg(higgsHero)}<span class="bnr-tag"><span class="chip">Made with Higgsfield</span></span></div>
-          <h3>Higgsfield games</h3><p>${higgs.length} games Higgsfield built with Fable 5.2, playable in the browser.</p>
-        </a>` : ''}
-        <a class="bnr-card" href="#/mechanic/${mech.slug}">
-          <div class="media plain" data-src="mechanics/${mech.slug}.html" style="--c1:#17171c;--c2:#0d0d10"><div class="poster"></div><div class="scan"></div><span class="bnr-tag"><span class="chip">Mechanics</span></span></div>
-          <h3>Game feel, as installable parts</h3><p>${esc(mech.name)} and ${mechanics.length - 1} more. Poke the demo, install by name.</p>
-        </a>
-        <a class="bnr-card" href="#/jam">
-          <div class="media jamart"><div class="ja-in"><small>Playbook</small><b>Jam #1</b><span>Coming soon. Get notified.</span></div><span class="bnr-tag"><span class="chip">Coming soon</span></span></div>
-          <h3>Community game jam</h3><p>Build something, publish it as a link, get ranked by plays.</p>
-        </a>
-      </div>
+      <section class="wk wrap">
+        <div class="wk-head">
+          <span class="tag"><span class="dot"></span>This week in vibe gaming</span>
+          <span class="wk-date">${wk ? `Week of ${esc(wk)} · ` : ''}picked by hand from ${DISC.length} games</span>
+          <a class="link" href="#/play">Play all ${DISC.length}</a>
+        </div>
+        <div class="picks">${picks.map((d, i) => pick(d, i === 0)).join('')}</div>
+      </section>
 
       <div class="wrap">
+        ${best.length ? rail({ title: 'All-time best', sub: 'The vibe-coded games people keep coming back to: jam winners and the ones that went viral.', href: '#/play', more: `All ${DISC.length}`, items: best.map(gcard).join('') }) : ''}
+        ${rail({ title: 'New this week', sub: 'Fresh from X, game jams and itch. Every card opens the creator’s own page.', href: '#/play', more: `All ${DISC.length}`, items: fresh.map(gcard).join('') })}
+        ${rail({ title: 'Creators to follow', sub: 'The people behind the best vibe games right now.', href: '#/creators', more: `All ${CREATORS.length}`, cls: 'cr', items: followCards })}
+
         <section class="promo2">
-          <div class="promo-big rv">
-            <span class="sticker">Free &amp;<br>open source</span>
-            <span class="pb-tag"><span class="dot"></span>Playbook MCP</span>
-            <h2>Saw a game you love?<span>Make your own version in your agent</span></h2>
+          <div class="promo-big calm rv">
+            <span class="pb-tag"><span class="dot"></span>For vibe coders · free and open source</span>
+            <h2>Make yours feel this good<span>Game feel, recipes and search, inside your own coding agent</span></h2>
             <div class="cmd"><code><b>$</b> ${esc(MCP_CMD)}</code><button class="copy" data-copy="${esc(MCP_CMD)}">Copy</button></div>
-            <div class="pb-acts"><a class="btn btn-ink" href="#/mcp">Setup for Cursor, Codex, Desktop</a><a class="btn" href="#/mechanics">Browse mechanics</a></div>
+            <div class="pb-acts"><a class="btn btn-ink" href="#/make">Start here</a><a class="btn" href="#/mcp">Cursor, Codex, Desktop</a></div>
           </div>
           <div class="tiles2">${tiles.map((t, k) => `<a class="tile2 rv" style="--d:${k * 50}ms" href="${t[0]}" ${t[5] || ''}><span class="ti">${t[1]}</span><div><h3>${t[2]} <em>${t[3]}</em></h3><p>${t[4]}</p></div></a>`).join('')}</div>
         </section>
 
+        ${rail({ title: 'Game feel, ready to install', sub: 'What a one-line prompt gets wrong. Poke the live demo, then add it to your game by name.', href: '#/mechanics', more: `All ${mechanics.length}`, cls: 'mech', items: show.map(mcard).join('') })}
+
         <section class="section">
-          <div class="sec-head"><div><h2>Best of the web</h2><p>Hand-picked AI-made games, playable in your browser. Each card opens the creator's own page.</p></div><a class="link" href="#/discover">All ${DISC.length} games</a></div>
+          <div class="sec-head"><div><h2>Play by genre</h2><p>Hand-picked AI-made games, playable in your browser.</p></div><a class="link" href="#/play">All ${DISC.length} games</a></div>
           <div class="controls"><div class="pills" id="bestGenres">${HOME_GENRES.map(g => `<button class="pill ${g === hstate.genre ? 'on' : ''}" data-v="${g}">${g}</button>`).join('')}</div></div>
           <div class="wall" id="bestGrid"></div>
         </section>
 
-        ${rail({ title: 'Hot this week', badge: ' <span class="chip hot">From X</span>', sub: 'Shared in the last few days.', href: '#/discover', more: `All ${DISC.length}`, items: [...covered.slice(0, 8), ...live.slice(0, 4)].map(dcard).join('') })}
-        ${live.length ? rail({ title: 'Live right now', badge: ' <span class="chip"><i class="livedot"></i> Playing</span>', sub: 'These pages play right here. Scroll to watch, click to take over.', href: '#/discover', items: live.slice(0, 10).map(dcard).join('') }) : ''}
-        ${rail({ title: 'Shooters', href: '#/discover/Shooter', more: 'All shooters', items: DISC.filter(d => d.genre === 'Shooter').sort((a, b) => (a.cover ? 0 : 1) - (b.cover ? 0 : 1) || byNew(a, b)).slice(0, 10).map(dcard).join('') })}
-        ${rail({ title: 'Game feel, ready to install', sub: 'The parts a one-line prompt gets wrong. Poke the live demo, then add it to your game.', href: '#/mechanics', more: 'All mechanics', cls: 'mech', items: [...mechanics].sort((a, b) => b.installs - a.installs).map(mcard).join('') })}
-        ${jams.length ? rail({ title: 'From the game jams', sub: 'Winners and standouts from Vibe Jam and other AI game jams.', href: '#/discover', items: jams.slice(0, 12).map(dcard).join('') }) : ''}
+        ${jams.length ? rail({ title: 'From the game jams', sub: 'Winners and standouts from Cursor Vibe Jam and other AI game jams.', href: '#/play', items: jams.slice(0, 12).map(gcard).join('') }) : ''}
 
         ${contest()}
       </div>`;
@@ -292,6 +311,36 @@
       hstate.genre = b.dataset.v; $$('#bestGenres .pill').forEach(x => x.classList.toggle('on', x === b)); drawBest();
     });
     bindRails(app);
+  }
+
+  // ---------- make: the toolkit hub for vibe coders ----------
+  function makePage() {
+    const originals = games.filter(g => !g.parent);
+    const show = SHOWCASE.map(s => mechBySlug[s]).filter(Boolean);
+    const steps = [
+      ['Connect your agent', 'Claude Code, Cursor or Codex. One command. No account, no API key.', `<div class="cmd"><code><b>$</b> ${esc(MCP_CMD)}</code><button class="copy" data-copy="${esc(MCP_CMD)}">Copy</button></div><a class="link" href="#/mcp">Other clients</a>`],
+      ['Add game feel', `${mechanics.length} parts, each with a live demo and its key numbers. Ask: “add hit-stop to my game”.`, '<a class="link" href="#/mechanics">Browse game feel</a>'],
+      ['Start from a recipe', `${originals.length} open games with prompt, mechanics and source. Ask: “remake Neon Drift, but underwater”.`, '<a class="link" href="#/games">Browse recipes</a>'],
+      ['Share it', 'Made something good? Send it in. The best ones go into the weekly picks, credited to you.', '<button class="link" data-submit-game>Submit a game</button>'],
+    ];
+    app.innerHTML = `
+      <section class="page-head dots"><div class="wrap">
+        <span class="tag"><span class="dot"></span>For vibe coders</span>
+        <h1>Make vibe games that <em>feel good</em></h1>
+        <p>A one-line prompt gets you a game that runs. Playbook helps with the rest: the timing, impact and polish that keep people playing, pulled straight into your own coding agent.</p>
+      </div></section>
+      <div class="wrap">
+        <div class="steps4">${steps.map((x, k) => `<div class="step4 rv" style="--d:${k * 50}ms"><span class="n">${k + 1}</span><h3>${x[0]}</h3><p>${x[1]}</p><div class="sx">${x[2]}</div></div>`).join('')}</div>
+        <section class="section">
+          <div class="sec-head"><div><h2>Game feel, ready to install</h2><p>Poke the live demo, then add it by name.</p></div><a class="link" href="#/mechanics">All ${mechanics.length}</a></div>
+          <div class="mgrid" id="makeMech">${show.map(mcard).join('')}</div>
+        </section>
+        <section class="section">
+          <div class="sec-head"><div><h2>Open recipes</h2><p>Whole games you can remake: prompt, mechanics, look, sound and source.</p></div><a class="link" href="#/games">All ${originals.length}</a></div>
+          <div class="wall three">${originals.slice(0, 6).map(g => card(g, { verb: true })).join('')}</div>
+        </section>
+      </div>`;
+    $$('#makeMech .media').forEach(m => m.style.pointerEvents = 'none');
   }
 
   function gamesPage(genre) {
@@ -462,65 +511,6 @@
       </div></section>`;
   }
 
-  function chartsPage() {
-    app.innerHTML = `
-      <section class="page-head"><div class="wrap">
-        <span class="tag rv"><span class="dot"></span>Charts · this week</span>
-        <h1 class="rv" style="--d:60ms">What people play,<br>and what they copy.</h1>
-        <p class="rv" style="--d:120ms">Plays show what is fun. Remixes show what is worth building on. Creators earn from both.</p>
-      </div></section>
-      <section class="section tight" style="padding-top:20px"><div class="wrap">
-        <div class="controls rv"><div class="seg" id="chartSeg">
-          <button data-chart="played" class="${state.chart === 'played' ? 'on' : ''}">Most played</button>
-          <button data-chart="remixed" class="${state.chart === 'remixed' ? 'on' : ''}">Most remixed</button>
-          <button data-chart="rising" class="${state.chart === 'rising' ? 'on' : ''}">Rising</button>
-        </div></div>
-        <div class="board bezel rv"><div class="core" id="board"></div></div>
-      </div></section>`;
-    const draw = () => {
-      const board = $('#board');
-      $$('.media', board).forEach(m => liveIO.unobserve(m));
-      const key = state.chart === 'played' ? g => g.plays : state.chart === 'remixed' ? g => g.remixes : g => g.remixes / g.days;
-      const list = [...games].sort(sorters[state.chart]).slice(0, 12);
-      const max = key(list[0]);
-      board.innerHTML = `<div class="brow head"><span>#</span><span></span><span>Game</span><span>Creator</span><span style="text-align:right">Plays</span><span style="text-align:right">Remixes</span><span></span></div>` +
-        list.map((g, i) => `
-        <a class="brow" href="#/game/${g.id}">
-          <span class="pos">${String(i + 1).padStart(2, '0')}</span>
-          <div class="media thumb" data-src="${g.src}&attract=1" style="--c1:${g.colors[0]};--c2:${g.colors[1]}"><div class="poster"></div><div class="scan"></div></div>
-          <div><h3>${esc(g.title)}</h3><span class="small muted">${esc(g.genres.join(' · '))}${g.parent ? ' · remix' : ''}</span></div>
-          <span class="small muted" style="display:flex;gap:8px;align-items:center">${ava(g.by)}${esc(g.by)}</span>
-          <span class="num">${fmt(g.plays)}</span>
-          <span class="num">${fmt(g.remixes)}</span>
-          <div class="bar"><i style="width:${Math.max(4, key(g) / max * 100)}%"></i></div>
-        </a>`).join('');
-      hydrate(board);
-    };
-    draw();
-    $('#chartSeg').addEventListener('click', e => { const b = e.target.closest('[data-chart]'); if (!b) return; state.chart = b.dataset.chart; $$('#chartSeg button').forEach(p => p.classList.toggle('on', p === b)); draw(); });
-  }
-
-  function creatorPage(name) {
-    const c = creators[name]; if (!c) return notFound();
-    const own = games.filter(g => g.by === name).sort(sorters.played);
-    const mech = mechanics.filter(m => m.by === name);
-    const plays = own.reduce((s, g) => s + g.plays, 0), rem = own.reduce((s, g) => s + g.remixes, 0);
-    const earn = Math.round(plays * 0.0011 + rem * 0.4);
-    app.innerHTML = `
-      <section class="page-head"><div class="wrap">
-        <div class="chead rv">${ava(name, 'lg')}<div><span class="tag">Creator</span><h1 style="margin-top:12px">${esc(c.name)}</h1></div></div>
-        <p class="rv" style="--d:80ms">${esc(c.bio)}</p>
-        <div class="cstats">
-          <div class="bezel rv"><div class="core"><b>${own.length}</b><span>Games</span></div></div>
-          <div class="bezel rv" style="--d:60ms"><div class="core"><b>${fmt(plays)}</b><span>Plays</span></div></div>
-          <div class="bezel rv" style="--d:120ms"><div class="core"><b>${fmt(rem)}</b><span>Times remixed</span></div></div>
-          <div class="bezel rv" style="--d:180ms"><div class="core"><b style="color:var(--coin)">$${fmt(earn)}</b><span>Earned · demo figure</span></div></div>
-        </div>
-        <div class="wall">${own.map(g => card(g)).join('') || '<div class="empty">No games yet.</div>'}</div>
-        ${mech.length ? `<div class="sec-head" style="margin-top:80px"><div><span class="tag">Mechanics by ${esc(c.name)}</span></div></div><div class="mgrid">${mech.map(mcard).join('')}</div>` : ''}
-      </div></section>`;
-  }
-
   function publishPage() {
     app.innerHTML = `
       <section class="page-head"><div class="wrap">
@@ -649,7 +639,7 @@
         <div class="media ${d.cover ? 'has-cover' : ''}" ${auto ? `data-auto="${esc(d.url)}"` : ''} ${hover ? `data-ext="${esc(d.url)}"` : ''} style="${calm(d)}">
           <div class="poster"><b class="ptitle">${esc(d.title)}</b></div>${coverImg(d)}<div class="scan"></div>
           <div class="top">
-            <span>${auto ? '<span class="chip"><i class="livedot"></i>Live</span>' : hover ? '<span class="chip">Hover to play</span>' : ''}</span>
+            <span>${auto ? '<span class="chip"><i class="livedot"></i>Live</span>' : ''}</span>
             <span><span class="chip">${dIc.out}${esc(host(d.url))}</span></span>
           </div>
           <span class="playbtn" aria-hidden="true">${playIco}</span>
@@ -660,14 +650,115 @@
         <div class="dtags">${d.genre ? `<span class="chip">${esc(d.genre)}</span>` : ''}${eng ? `<span class="chip">${esc(eng)}</span>` : ''}${d.is3d ? '<span class="chip">3D</span>' : ''}${d.date ? `<span class="chip">${esc(dDate(d.date))}</span>` : ''}</div>
         <p class="dnote">${esc(d.note || '')}</p>
         <div class="dby">
-          <span class="who"><i class="ava" style="--h:${hashHue(d.title + d.url)}"></i>${d.creator ? esc(d.creator) : 'Unknown creator'}${d.model ? `<span class="dim"> · ${esc(d.model)}</span>` : ''}</span>
+          ${d.creator ? `<a class="who" href="${crLink(d.creator)}">${crAva(d.creator)}${esc(d.creator)}${d.model ? `<span class="dim"> · ${esc(d.model)}</span>` : ''}</a>` : `<span class="who"><i class="ava" style="--h:${hashHue(d.title + d.url)}"></i>Unknown creator</span>`}
           ${d.source ? `<a href="${esc(d.source)}" target="_blank" rel="noopener noreferrer">Source · ${esc(PLATFORMS[d.platform] || 'Web')} ↗</a>` : ''}
         </div>
         <button class="dclaim" data-claim="${d._i}">Is this yours? Claim or remove</button>
       </div>
     </article>`;
   };
+  // compact card for browsing (home rails, genre grid): picture, title, creator. Full details live on Play.
+  const gcard = (d, i = 0) => {
+    const auto = !d.cover && d.embeddable, hover = d.cover && d.embeddable && canHover;
+    return `
+    <article class="card dcard gcard rv" style="--d:${Math.min(i, 8) * 30}ms">
+      <a class="dlink" href="${esc(d.url)}" target="_blank" rel="noopener noreferrer" aria-label="Play ${esc(d.title)} on ${esc(host(d.url))} (opens in a new tab)">
+        <div class="media ${d.cover ? 'has-cover' : ''}" ${auto ? `data-auto="${esc(d.url)}"` : ''} ${hover ? `data-ext="${esc(d.url)}"` : ''} style="${calm(d)}">
+          <div class="poster"><b class="ptitle">${esc(d.title)}</b></div>${coverImg(d)}<div class="scan"></div>
+          <div class="top"><span>${auto ? '<span class="chip"><i class="livedot"></i>Live</span>' : ''}</span><span><span class="chip host">${dIc.out}${esc(host(d.url))}</span></span></div>
+          <span class="playbtn" aria-hidden="true">${playIco}</span>
+        </div>
+      </a>
+      <div class="gmeta"><h3>${esc(d.title)}</h3><p>${d.creator ? `<a href="${crLink(d.creator)}">${esc(d.creator)}</a>` : 'Unknown creator'}${d.genre ? `<span> · ${esc(d.genre)}</span>` : ''}</p></div>
+    </article>`;
+  };
   const byNew = (a, b) => (b.date || '').localeCompare(a.date || '') || a.title.localeCompare(b.title);
+
+  // ---------- creators: built from the games we list (link + credit only) ----------
+  const crSlug = h => String(h).trim().replace(/^@|^u\//, '').toLowerCase().replace(/[^a-z0-9_.-]+/g, '-').replace(/^-|-$/g, '');
+  const crLink = h => `#/c/${encodeURIComponent(crSlug(h))}`;
+  const crIc = '<svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg>';
+  const crAva = (h, cls = '') => `<i class="cava ${cls}" style="--h:${hashHue(h)}" aria-hidden="true">${esc((String(h).replace(/^@|^u\//, '')[0] || '?').toUpperCase())}</i>`;
+  const crProfile = h => /^@[A-Za-z0-9_]{1,30}$/.test(h) ? { url: `https://x.com/${h.slice(1)}`, name: 'X' }
+    : /^u\/[A-Za-z0-9_-]{2,30}$/.test(h) ? { url: `https://www.reddit.com/user/${h.slice(2)}`, name: 'Reddit' } : null;
+  const CREATORS = (() => {
+    const m = new Map();
+    DISC.forEach(d => {
+      const h = (d.creator || '').trim(); if (!h) return;
+      const k = crSlug(h); if (!k) return;
+      if (!m.has(k)) m.set(k, { slug: k, handle: h, games: [] });
+      m.get(k).games.push(d);
+    });
+    const covered = c => c.games.some(g => g.cover) ? 1 : 0;
+    return [...m.values()]
+      .map(c => ({ ...c, games: c.games.sort((a, b) => (a.cover ? 0 : 1) - (b.cover ? 0 : 1) || byNew(a, b)) }))
+      .sort((a, b) => b.games.length - a.games.length || covered(b) - covered(a) || byNew(a.games[0], b.games[0]));
+  })();
+  const crBySlug = Object.fromEntries(CREATORS.map(c => [c.slug, c]));
+  // avoid: games already on screen, so a creator card shows something new
+  const crTop = (c, avoid = null) => {
+    const fresh = avoid instanceof Set ? c.games.filter(g => !avoid.has(g.url)) : c.games;
+    return fresh.find(g => g.cover) || fresh.find(g => g.embeddable) || fresh[0] || c.games[0];
+  };
+  const crcard = (c, i = 0, avoid = null) => {
+    const top = crTop(c, avoid);
+    return `
+    <a class="card crcard rv" href="${crLink(c.handle)}" style="--d:${Math.min(i, 8) * 30}ms">
+      <div class="media ${top.cover ? 'has-cover' : ''}" ${!top.cover && top.embeddable ? `data-auto="${esc(top.url)}"` : ''} style="${calm(top)}"><div class="poster"><b class="ptitle">${esc(top.title)}</b></div>${coverImg(top)}<div class="scan"></div></div>
+      <div class="crmeta">${crAva(c.handle)}<div><b>${esc(c.handle)}</b><span>${c.games.length} game${c.games.length > 1 ? 's' : ''} · ${esc(top.title)}</span></div></div>
+    </a>`;
+  };
+
+  function creatorsPage() {
+    app.innerHTML = `
+      <section class="page-head dots"><div class="wrap">
+        <span class="tag"><span class="dot"></span>${CREATORS.length} creators so far</span>
+        <h1>The people making <em>vibe games</em></h1>
+        <p>Everyone behind a game we list, linked to their own pages. Is one of them you? Open your profile to claim it, fix the details or take it down.</p>
+      </div></section>
+      <div class="wrap">
+        <div class="crgrid">${CREATORS.map((c, i) => crcard(c, i)).join('')}</div>
+        <p class="note dfoot">Profiles are built from the public posts where creators shared their games. Nothing is copied or hosted here.</p>
+      </div>`;
+  }
+
+  function creatorProfile(slug) {
+    const c = crBySlug[slug]; if (!c) return notFound();
+    const prof = crProfile(c.handle);
+    const plats = [...new Set(c.games.map(g => PLATFORMS[g.platform] || 'Web'))];
+    const engines = [...new Set(c.games.map(g => g.engine).filter(e => e && !/unknown/i.test(e)))];
+    app.innerHTML = `
+      <section class="page-head"><div class="wrap">
+        <div class="crumbs"><a href="#/creators">Creators</a><span>/</span><span>${esc(c.handle)}</span></div>
+        <div class="chead2 rv">${crAva(c.handle, 'lg')}<div>
+          <h1>${esc(c.handle)}</h1>
+          <p>${c.games.length} game${c.games.length > 1 ? 's' : ''} on Playbook · found on ${esc(plats.join(', '))}${engines.length ? ` · made with ${esc(engines.slice(0, 3).join(', '))}` : ''}</p>
+        </div></div>
+        <div class="acts">${prof ? `<a class="btn" href="${prof.url}" target="_blank" rel="noopener noreferrer">${prof.name} profile ↗</a>` : ''}<button class="btn btn-accent" data-claim-creator="${esc(c.slug)}">Is this you? Claim this profile</button></div>
+      </div></section>
+      <div class="wrap"><div class="wall">${c.games.map(dcard).join('')}</div></div>`;
+  }
+
+  function claimCreatorModal(slug) {
+    const c = crBySlug[slug]; if (!c) return;
+    openModal(`
+      <span class="tag">${esc(c.handle)}</span>
+      <h2>Claim this profile.</h2>
+      <p class="lead">Add your links and a short bio, fix a credit, list another game of yours, or ask us to take the profile down.</p>
+      <form id="ccForm">
+        <div class="field"><label for="ccWhat">I want to</label><select id="ccWhat"><option>Claim my profile</option><option>Add another game of mine</option><option>Fix a credit or detail</option><option>Remove my profile and games</option></select></div>
+        <div class="field"><label for="ccProof">A link that shows this is you</label><input id="ccProof" required maxlength="160" placeholder="https:// (a post or page on the account above)"></div>
+        <button class="btn btn-accent btn-block" type="submit">Continue on GitHub</button>
+      </form>
+      <p class="note">This opens a pre-filled issue on our GitHub repo. Removal requests are acted on as soon as we see them.</p>`);
+    $('#ccForm').addEventListener('submit', e => {
+      e.preventDefault();
+      const w = $('#ccWhat').value;
+      const body = `Profile: ${c.handle}\nRequest: ${w}\nProof it is me: ${$('#ccProof').value}\nGames listed: ${c.games.map(g => g.title).join(', ')}\n\nDetails (links, bio, fixes):\n`;
+      window.open(issueUrl(`${/Remove/.test(w) ? 'Remove' : 'Claim'} profile: ${c.handle}`, body, /Remove/.test(w) ? 'removal' : 'claim'), '_blank', 'noopener');
+      closeModal(); toast('Opened GitHub in a new tab');
+    });
+  }
 
   function drawDiscover() {
     const grid = $('#discGrid'); if (!grid) return;
@@ -688,10 +779,10 @@
     const g0 = genres.includes(arg) ? arg : 'All';
     app.innerHTML = `
       <section class="page-head dots"><div class="wrap">
-        <span class="tag"><span class="dot"></span>Indexed from around the web</span>
-        <h1>Discover <em>AI-made</em> games</h1>
-        <p>${DISC.length} games people built with AI and shared in public. We link to the creator's own page and credit the post where we found it. Nothing is copied or rehosted.</p>
-        <div class="acts"><button class="btn btn-accent" data-submit-game>Submit a game</button><a class="btn" href="#/games">Playbook originals</a></div>
+        <span class="tag"><span class="dot"></span>Updated every week</span>
+        <h1>Play the best <em>vibe-coded</em> games</h1>
+        <p>${DISC.length} games people made with AI and shared in public, from X, game jams, itch and Hacker News. Every card opens the creator's own page and credits the post where we found it. Nothing is copied or rehosted.</p>
+        <div class="acts"><button class="btn btn-accent" data-submit-game>Submit a game</button><a class="btn" href="#/creators">Meet the creators</a></div>
       </div></section>
       <div class="wrap">
         <div class="controls">
@@ -716,7 +807,7 @@
   }
   const freshRow = () => DISC.length ? `
         <section class="section tight fresh">
-          <div class="sec-head"><div><span class="tag"><span class="dot"></span>Updated weekly</span><h2>Ideas from around the web</h2><p>The newest AI-made games people shared on X, Hacker News, itch and in jams. Play them for inspiration; each card opens the creator's own page, and the code stays theirs.</p></div><a class="link" href="#/discover">All ${DISC.length} games →</a></div>
+          <div class="sec-head"><div><span class="tag"><span class="dot"></span>Updated weekly</span><h2>Ideas from around the web</h2><p>The newest AI-made games people shared on X, Hacker News, itch and in jams. Play them for inspiration; each card opens the creator's own page, and the code stays theirs.</p></div><a class="link" href="#/play">All ${DISC.length} games →</a></div>
           <div class="wall" id="freshGrid">${[...DISC].sort(byNew).slice(0, 4).map(dcard).join('')}</div>
         </section>` : '';
 
@@ -868,7 +959,7 @@
       <div class="wrap rq-wrap">
         <div class="controls">
           <div class="seg" id="rqTabs"><button data-v="todo" class="on">To review <i></i></button><button data-v="approve">Approved <i></i></button><button data-v="reject">Rejected <i></i></button></div>
-          <a class="btn btn-sm" href="#/discover">Back to Discover</a>
+          <a class="btn btn-sm" href="#/play">Back to Discover</a>
         </div>
         <div id="rqList"></div>
         <div class="rq-bar"><button class="btn btn-accent" id="rqExport" disabled>Export decisions</button><div id="rqCmd" class="rq-cmd"><span>Decisions are kept in this browser until you export them.</span></div></div>
@@ -956,7 +1047,7 @@
 
   // ---------- search palette (⌘K or /) ----------
   const cmdk = $('#cmdk'), cmdkIn = $('#cmdkInput'), cmdkList = $('#cmdkList');
-  const PAGES = [['Browse all recipes', '#/games'], ['Discover games from the web', '#/discover'], ['Mechanics', '#/mechanics'], ['Publish a game', '#/publish'], ['Connect Playbook MCP', '#/mcp'], ['Playbook Jam', '#/jam']];
+  const PAGES = [['Play all games', '#/play'], ['Creators', '#/creators'], ['Make: start here', '#/make'], ['Game feel (mechanics)', '#/mechanics'], ['Open recipes', '#/games'], ['Connect Playbook MCP', '#/mcp'], ['Playbook Jam', '#/jam']];
   let cmdkItems = [], cmdkSel = 0;
   const lc = s => String(s || '').toLowerCase();
   function searchAll(q) {
@@ -967,8 +1058,9 @@
     const D = (any ? DISC.filter(d => hit(lc([d.title, d.creator, d.genre, d.engine, d.model, PLATFORMS[d.platform], d.is3d ? '3d' : '', host(d.url), d.note].join(' ')))) : [...DISC].sort(byNew))
       .slice(0, any ? 8 : 6).map(d => { const h = hashHue(d.title + d.url); return { group: any ? 'From the web' : 'Fresh from the web', title: d.title, sub: [d.creator || host(d.url), d.genre, d.model].filter(Boolean).join(' · '), href: d.url, ext: true, c1: `hsl(${h} 78% 54%)`, c2: `hsl(${(h + 80) % 360} 72% 40%)`, go: host(d.url) + ' ↗' }; });
     const M = any ? mechanics.filter(m => hit(lc([m.name, m.cat, m.desc].join(' ')))).slice(0, 4).map(m => ({ group: 'Mechanics', title: m.name, sub: m.cat, href: `#/mechanic/${m.slug}`, c1: '#4a4337', c2: '#17150f', go: 'Open' })) : [];
+    const C = any ? CREATORS.filter(c => hit(lc(c.handle + ' ' + c.games.map(g => g.title).join(' ')))).slice(0, 4).map(c => { const h = hashHue(c.handle); return { group: 'Creators', title: c.handle, sub: `${c.games.length} game${c.games.length > 1 ? 's' : ''} · ${c.games[0].title}`, href: crLink(c.handle), c1: `hsl(${h} 40% 46%)`, c2: `hsl(${(h + 40) % 360} 30% 24%)`, go: 'Profile' }; }) : [];
     const P = PAGES.filter(p => !any || hit(lc(p[0]))).map(p => ({ group: 'Pages', title: p[0], sub: '', href: p[1], go: 'Go' }));
-    return any ? [...D, ...G, ...M, ...P] : [...D, ...G, ...P];
+    return any ? [...D, ...C, ...G, ...M, ...P] : [...D, ...G, ...P];
   }
   function drawSearch() {
     cmdkItems = searchAll(cmdkIn.value);
@@ -1018,6 +1110,7 @@
     if (e.target.closest('[data-search]')) { e.preventDefault(); setMenu(false); return openSearch(); }
     const q = e.target.closest('[data-q]'); if (q) { e.preventDefault(); return openSearch(q.dataset.q); }
     const cl = e.target.closest('[data-claim]'); if (cl) return claimModal(+cl.dataset.claim);
+    const cc = e.target.closest('[data-claim-creator]'); if (cc) return claimCreatorModal(cc.dataset.claimCreator);
     if (e.target.closest('[data-close]')) return closeModal();
     if (e.target.closest('.menu a')) setMenu(false);
     
@@ -1034,16 +1127,19 @@
     $$('.media', app).forEach(m => { liveIO.unobserve(m); autoIO.unobserve(m); });
     stopPreview(); closeSearch();
     closeModal();
-    const nav = { '': 'home', game: 'games', games: 'games', mechanics: 'mechanics', mechanic: 'mechanics', charts: 'charts', creator: 'charts', publish: 'publish', mcp: 'mcp', jam: 'jam', discover: 'discover', review: 'discover' }[page];
+    const nav = { '': 'home', play: 'play', discover: 'play', review: 'play', make: 'make', game: 'make', games: 'make', mechanics: 'make', mechanic: 'make', publish: 'make', mcp: 'make', creators: 'creators', c: 'creators', jam: 'jam' }[page];
     $$('[data-nav]').forEach(a => a.classList.toggle('on', a.dataset.nav === nav));
-    const tab = { home: 'home', games: 'games', discover: 'discover', mcp: 'make', publish: 'make' }[nav];
+    const tab = { home: 'home', play: 'play', make: 'make', creators: 'creators' }[nav];
     $$('[data-tab]').forEach(a => a.classList.toggle('on', a.dataset.tab === tab));
     const a = decodeURIComponent(arg);
-    if (page === 'charts' || page === 'creator') { location.replace('#/discover'); return; }
-    ({ '': home, games: () => gamesPage(a), mcp: mcpPage, jam: jamPage, game: () => gamePage(a), mechanics: mechanicsPage, mechanic: () => mechanicPage(a), charts: chartsPage, creator: () => creatorPage(a), publish: publishPage, discover: () => discoverPage(a), review: LOCAL ? reviewPage : notFound }[page] || notFound)();
+    if (page === 'charts') { location.replace('#/play'); return; }
+    if (page === 'creator') { location.replace('#/creators'); return; }
+    ({ '': home, play: () => discoverPage(a), discover: () => discoverPage(a), make: makePage, creators: creatorsPage, c: () => creatorProfile(a), games: () => gamesPage(a), mcp: mcpPage, jam: jamPage, game: () => gamePage(a), mechanics: mechanicsPage, mechanic: () => mechanicPage(a), publish: publishPage, review: LOCAL ? reviewPage : notFound }[page] || notFound)();
     window.scrollTo(0, 0);
     hydrate();
-    document.title = (page === 'game' && byId[a] ? byId[a].title + ' — ' : '') + 'Playbook';
+    const ttl = page === 'game' && byId[a] ? byId[a].title : page === 'mechanic' && mechBySlug[a] ? mechBySlug[a].name : page === 'c' && crBySlug[a] ? crBySlug[a].handle
+      : { play: 'Play', discover: 'Play', make: 'Make', creators: 'Creators', mechanics: 'Game feel', games: 'Recipes', mcp: 'Connect MCP', jam: 'Jam' }[page];
+    document.title = ttl ? `${ttl} — Playbook` : 'Playbook — the home of vibe gaming';
   }
   const navEl = $('#nav');
   const navSync = () => navEl.classList.toggle('over', !!document.querySelector('.hx') && scrollY < 40);
