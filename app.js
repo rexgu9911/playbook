@@ -7,6 +7,21 @@
   const REPO = 'https://github.com/rexgu9911/playbook';
   const CONTACT_EMAIL = '';   // set a public address to add an email option next to GitHub Issues
   const LOCAL = /^(localhost|127\.0\.0\.1|\[::1\])$/.test(location.hostname);
+  // Visitor stats: GoatCounter (no cookies, no personal data). Empty = off and nothing loads.
+  // Set to the site code, e.g. 'playbook-vibe' for https://playbook-vibe.goatcounter.com
+  const GOATCOUNTER = '';
+  if (GOATCOUNTER && !LOCAL) {
+    const gc = document.createElement('script');
+    gc.async = true; gc.src = 'https://gc.zgo.at/count.js';
+    gc.dataset.goatcounter = `https://${GOATCOUNTER}.goatcounter.com/count`;
+    gc.dataset.goatcounterSettings = JSON.stringify({ no_onload: true });
+    document.head.append(gc);
+  }
+  const track = (path, title, event = false) => {
+    if (!GOATCOUNTER || LOCAL) return;
+    const go = (tries = 0) => window.goatcounter?.count ? window.goatcounter.count({ path, title, event }) : tries < 20 && setTimeout(() => go(tries + 1), 250);
+    go();
+  };
   const issueUrl = (title, body, label) => `${REPO}/issues/new?${new URLSearchParams({ title, body, ...(label ? { labels: label } : {}) })}`;
   const mailUrl = (subject, body) => `mailto:${CONTACT_EMAIL}?${new URLSearchParams({ subject, body }).toString().replace(/\+/g, '%20')}`;
   const app = document.getElementById('app');
@@ -285,7 +300,7 @@
       <a class="pick-media" href="${gLink(d)}" aria-label="${esc(d.title)}: details and play">
         <div class="media ${d.cover ? 'has-cover' : ''}" ${d.cover && d.embeddable && canHover ? `data-ext="${esc(d.url)}"` : ''} style="${calm(d)}">
           <div class="poster"><b class="ptitle">${esc(d.title)}</b></div>${coverImg(d)}<div class="scan"></div>
-          <div class="top"><span>${hero ? '<span class="chip hot">Pick of the week</span>' : ''}</span><span><span class="chip">${dIc.out}${esc(host(d.url))}</span></span></div>
+          <div class="top"><span>${hero ? '<span class="chip hot">Pick of the week</span>' : ''}</span><span><span class="chip">${dIc.out}${esc(host(d.url))}</span>${favBtn(d)}</span></div>
           <span class="playbtn" aria-hidden="true">${playIco}</span>
         </div>
       </a>
@@ -710,6 +725,15 @@
   const G_BY = {};
   DISC.forEach(d => { const base = slugify(d.title) || 'game'; let k = base, n = 2; while (G_BY[k]) k = `${base}-${n++}`; d.slug = k; G_BY[k] = d; });
   const gLink = d => `#/g/${d.slug}`;
+  // favorites: kept in this browser only, no account
+  const FAV_KEY = 'pb-favs';
+  const FAVS = new Set((() => { try { return JSON.parse(localStorage.getItem(FAV_KEY) || '[]'); } catch { return []; } })());
+  const saveFavs = () => { try { localStorage.setItem(FAV_KEY, JSON.stringify([...FAVS])); } catch {} };
+  const heart = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z"/></svg>';
+  const favBtn = d => `<button class="fav ${FAVS.has(d.url) ? 'on' : ''}" data-fav="${esc(d.url)}" aria-pressed="${FAVS.has(d.url)}" aria-label="${FAVS.has(d.url) ? 'Saved' : 'Save'}">${heart}</button>`;
+  // guides: editorial lists built by tools/build_guides.py
+  const GUIDES = (window.PB_GUIDES || []).map(g => ({ ...g, title: ZH && g.title_zh ? g.title_zh : g.title, intro: ZH && g.intro_zh ? g.intro_zh : g.intro,
+    games: g.urls.map(u => DISC.find(d => d.url === u)).filter(Boolean) })).filter(g => g.games.length >= 3);
   // weekly issues ("This week in vibe gaming"), newest first; picks point at listed games by URL
   const LIVE = 'https://rexgu9911.github.io/playbook/';
   const WEEKS = (window.PB_WEEKS || []).map(w => ({ ...w, intro: ZH && w.intro_zh ? w.intro_zh : w.intro, games: w.picks.map(p => ({ why: ZH && p.why_zh ? p.why_zh : p.why, d: DISC.find(x => x.url === p.url) })).filter(p => p.d) }))
@@ -766,14 +790,14 @@
           <div class="poster"><b class="ptitle">${esc(d.title)}</b></div>${coverImg(d)}<div class="scan"></div>
           <div class="top">
             <span>${auto ? '<span class="chip"><i class="livedot"></i>Live</span>' : ''}</span>
-            <span><span class="chip">${dIc.out}${esc(host(d.url))}</span></span>
+            <span><span class="chip">${dIc.out}${esc(host(d.url))}</span>${favBtn(d)}</span>
           </div>
           <span class="playbtn" aria-hidden="true">${playIco}</span>
         </div>
       </a>
       <div class="dmeta">
         <h3>${esc(d.title)}</h3>
-        <div class="dtags">${d.genre ? `<span class="chip">${esc(d.genre)}</span>` : ''}${eng ? `<span class="chip">${esc(eng)}</span>` : ''}${d.is3d ? '<span class="chip">3D</span>' : ''}${d.date ? `<span class="chip">${esc(dDate(d.date))}</span>` : ''}</div>
+        <div class="dtags">${d.genre ? `<span class="chip">${esc(d.genre)}</span>` : ''}${eng ? `<span class="chip">${esc(eng)}</span>` : ''}${d.is3d ? '<span class="chip">3D</span>' : ''}${d.touch === true ? '<span class="chip">Touch</span>' : ''}${d.date ? `<span class="chip">${esc(dDate(d.date))}</span>` : ''}</div>
         <p class="dnote">${esc(d.note || '')}</p>
         <div class="dby">
           ${d.creator ? `<a class="who" href="${crLink(d.creator)}">${crAva(d.creator)}${esc(d.creator)}${d.model ? `<span class="dim"> · ${esc(d.model)}</span>` : ''}</a>` : `<span class="who"><i class="ava" style="--h:${hashHue(d.title + d.url)}"></i>Unknown creator</span>`}
@@ -791,7 +815,7 @@
       <a class="dlink" href="${gLink(d)}" aria-label="${esc(d.title)}: details and play">
         <div class="media ${d.cover ? 'has-cover' : ''}" ${auto ? `data-auto="${esc(d.url)}"` : ''} ${hover ? `data-ext="${esc(d.url)}"` : ''} style="${calm(d)}">
           <div class="poster"><b class="ptitle">${esc(d.title)}</b></div>${coverImg(d)}<div class="scan"></div>
-          <div class="top"><span>${auto ? '<span class="chip"><i class="livedot"></i>Live</span>' : ''}</span><span><span class="chip host">${dIc.out}${esc(host(d.url))}</span></span></div>
+          <div class="top"><span>${auto ? '<span class="chip"><i class="livedot"></i>Live</span>' : ''}</span><span><span class="chip host">${dIc.out}${esc(host(d.url))}</span>${favBtn(d)}</span></div>
           <span class="playbtn" aria-hidden="true">${playIco}</span>
         </div>
       </a>
@@ -891,7 +915,7 @@
     stopPreview();
     const list = DISC.filter(d => (dstate.genre === 'All' || d.genre === dstate.genre)
       && (dstate.platform === 'All' || d.platform === dstate.platform)
-      && (!dstate.d3 || d.is3d))
+      && (!dstate.d3 || d.is3d) && (!dstate.touch || d.touch === true))
       .sort(dstate.sort === 'new' ? byNew : (a, b) => a.title.localeCompare(b.title));
     grid.innerHTML = list.length ? list.map(dcard).join('') : '<div class="empty"><b>Nothing matches yet</b>Try fewer filters, or <button class="link" data-submit-game>submit a game you found</button>.</div>';
     $('#discCount').textContent = `${list.length} of ${DISC.length} games`;
@@ -934,12 +958,13 @@
             <h1>${esc(d.title)}</h1>
             ${d.creator ? `<a class="gd-by" href="${crLink(d.creator)}">${crAva(d.creator)}<span>${esc(d.creator)}</span></a>` : ''}
             <p class="gd-note">${esc(d.note || '')}</p>
-            <div class="dtags">${d.genre ? `<span class="chip">${esc(d.genre)}</span>` : ''}${d.is3d ? '<span class="chip">3D</span>' : '<span class="chip">2D</span>'}${eng ? `<span class="chip">${esc(eng)}</span>` : ''}</div>
+            <div class="dtags">${d.genre ? `<span class="chip">${esc(d.genre)}</span>` : ''}${d.is3d ? '<span class="chip">3D</span>' : '<span class="chip">2D</span>'}${eng ? `<span class="chip">${esc(eng)}</span>` : ''}${d.touch === true ? '<span class="chip">Touch</span>' : ''}</div>
             <dl class="gd-facts">${facts.map(([k, v]) => `<dt>${k}</dt><dd>${esc(v)}</dd>`).join('')}</dl>
             <div class="gd-acts">
               <a class="btn btn-accent btn-block" href="${esc(d.url)}" target="_blank" rel="noopener noreferrer">Play on ${esc(h)} ↗</a>
               ${d.source && d.source !== d.url ? `<a class="btn btn-block" href="${esc(d.source)}" target="_blank" rel="noopener noreferrer">Where it was shared ↗</a>` : ''}
               <button class="btn btn-block" data-copy="${esc(`${LIVE}s/g/${d.slug}/`)}">Copy share link</button>
+              <button class="btn btn-block savebtn ${FAVS.has(d.url) ? 'on' : ''}" data-fav="${esc(d.url)}" aria-pressed="${FAVS.has(d.url)}">${heart}<span>${FAVS.has(d.url) ? 'Saved' : 'Save'}</span></button>
             </div>
             <button class="dclaim" data-claim="${d._i}">Is this yours? Claim or remove</button>
           </aside>
@@ -998,6 +1023,58 @@
         </a>`).join('') || '<div class="empty">The first issue is on its way.</div>'}</div></div>`;
   }
 
+  function savedPage() {
+    const list = DISC.filter(d => FAVS.has(d.url));
+    app.innerHTML = `
+      <section class="page-head dots"><div class="wrap">
+        <span class="tag"><span class="dot"></span>Saved</span>
+        <h1>Saved games</h1>
+        <p>Saved in this browser only. No account needed.</p>
+      </div></section>
+      <div class="wrap">${list.length ? `<div class="wall">${list.map(gcard).join('')}</div>` : `<div class="empty"><b>Nothing saved yet</b>Tap ♡ on any game to save it here.<br><br><a class="btn" href="#/play">Play all games</a></div>`}</div>`;
+  }
+
+  function guidesPage() {
+    app.innerHTML = `
+      <section class="page-head dots"><div class="wrap">
+        <span class="tag"><span class="dot"></span>Guides</span>
+        <h1>Where to start</h1>
+        <p>Short lists of the vibe-coded games worth your time, picked by theme and kept up to date as new games arrive.</p>
+      </div></section>
+      <div class="wrap"><div class="wkx">${GUIDES.map(g => `
+        <a class="wkx-card rv" href="#/guide/${g.slug}">
+          <div class="wkx-art">${g.games.filter(d => d.cover).slice(0, 3).map(d => `<span class="has-cover" style="${calm(d)}"><img src="${esc(d.cover)}" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.remove()"></span>`).join('')}</div>
+          <div class="wkx-meta"><span class="wkp-n">${g.games.length} games</span><h3>${esc(g.title)}</h3><p>${esc(g.intro)}</p></div>
+        </a>`).join('')}</div></div>`;
+  }
+
+  function guidePage(slug) {
+    const g = GUIDES.find(x => x.slug === slug); if (!g) return notFound();
+    app.innerHTML = `
+      <section class="wkp wrap">
+        <div class="crumbs"><a href="#/guides">Guides</a><span>/</span><span>${esc(g.title)}</span></div>
+        <div class="wkp-head">
+          <span class="tag"><span class="dot"></span>Guide · ${g.games.length} games</span>
+          <h1>${esc(g.title)}</h1>
+          <p>${esc(g.intro)}</p>
+          <div class="acts"><button class="btn btn-accent" data-copy="${esc(`${LIVE}s/guides/${g.slug}/`)}">Copy link</button><a class="btn" href="#/guides">All guides</a></div>
+        </div>
+        <ol class="wkp-list">${g.games.map((d, i) => `
+          <li class="wkp-item rv">
+            <a class="wkp-media" href="${gLink(d)}" aria-label="${esc(d.title)}: details and play">
+              <div class="media ${d.cover ? 'has-cover' : ''}" ${d.cover && d.embeddable && canHover ? `data-ext="${esc(d.url)}"` : ''} style="${calm(d)}"><div class="poster"><b class="ptitle">${esc(d.title)}</b></div>${coverImg(d)}<div class="scan"></div></div>
+            </a>
+            <div class="wkp-text">
+              <span class="wkp-n">${String(i + 1).padStart(2, '0')}</span>
+              <h2><a href="${gLink(d)}">${esc(d.title)}</a></h2>
+              ${d.creator ? `<a class="wkp-by" href="${crLink(d.creator)}">${crAva(d.creator)}<span>${esc(d.creator)}</span></a>` : ''}
+              <p>${esc(d.note || '')}</p>
+              <div class="wkp-acts"><a class="btn btn-accent" href="${esc(d.url)}" target="_blank" rel="noopener noreferrer">Play on ${esc(host(d.url))} ↗</a><a class="link" href="${gLink(d)}">Details</a>${favBtn(d)}</div>
+            </div>
+          </li>`).join('')}</ol>
+      </section>`;
+  }
+
   function discoverPage(arg = '') {
     const count = k => DISC.reduce((m, d) => (d[k] && (m[d[k]] = (m[d[k]] || 0) + 1), m), {});
     const genres = Object.entries(count('genre')).sort((a, b) => b[1] - a[1]).map(x => x[0]);
@@ -1009,12 +1086,13 @@
         <span class="tag"><span class="dot"></span>Updated every week</span>
         <h1>Play the best <em>vibe-coded</em> games</h1>
         <p>${DISC.length} games people made with AI and shared in public, from X, game jams, itch and Hacker News. Every card opens the creator's own page and credits the post where we found it. Nothing is copied or rehosted.</p>
-        <div class="acts"><button class="btn btn-accent" data-submit-game>Submit a game</button><a class="btn" href="#/creators">Meet the creators</a></div>
+        <div class="acts"><button class="btn btn-accent" data-submit-game>Submit a game</button><a class="btn" href="#/creators">Meet the creators</a><a class="btn" href="#/saved">Saved (${FAVS.size})</a><a class="btn" href="#/guides">Guides</a></div>
       </div></section>
       <div class="wrap">
-        ${g0 === 'All' ? `<div class="gtiles small">${genreTiles(12)}</div>` : ''}
+        ${g0 === 'All' ? `<section class="rand"><div class="sec-head"><div><h2>Three at random</h2><p>Not sure what to play? Let the arcade pick.</p></div><button class="btn" id="randBtn">Shuffle ↻</button></div><div class="wall three" id="rand3"></div></section>
+        <div class="gtiles small">${genreTiles(12)}</div>` : ''}
         <div class="controls">
-          <div class="pills" id="dGenres"><button class="pill ${g0 === 'All' ? 'on' : ''}" data-v="All">All</button><button class="pill" id="d3d" aria-pressed="false">3D only</button>${genres.map(g => `<button class="pill ${g === g0 ? 'on' : ''}" data-v="${esc(g)}">${esc(g)}</button>`).join('')}</div>
+          <div class="pills" id="dGenres"><button class="pill ${g0 === 'All' ? 'on' : ''}" data-v="All">All</button><button class="pill" id="d3d" aria-pressed="false">3D only</button><button class="pill" id="dtouch" aria-pressed="false">Touch-friendly</button>${genres.map(g => `<button class="pill ${g === g0 ? 'on' : ''}" data-v="${esc(g)}">${esc(g)}</button>`).join('')}</div>
           <div class="seg" id="dSort"><button data-v="new" class="on">Newest</button><button data-v="az">A–Z</button></div>
         </div>
         <div class="controls">
@@ -1024,13 +1102,21 @@
         <div class="wall" id="discGrid"></div>
         <p class="note dfoot">Listings are links to third-party pages that their creators made public. Titles and credits are shown as given at the source; each link was last checked on the date in our index. Creators can claim or remove a listing from its card at any time.${LOCAL ? ' <a href="#/review" class="dclaim">Review queue</a>' : ''}</p>
       </div>`;
-    Object.assign(dstate, { genre: g0, platform: 'All', d3: false, sort: 'new' });
+    Object.assign(dstate, { genre: g0, platform: 'All', d3: false, touch: false, sort: 'new' });
     const pick = (id, key) => $(id).addEventListener('click', e => {
       const b = e.target.closest('[data-v]'); if (!b) return;
       dstate[key] = b.dataset.v; $$(id + ' [data-v]').forEach(x => x.classList.toggle('on', x === b)); drawDiscover();
     });
     pick('#dGenres', 'genre'); pick('#dPlats', 'platform'); pick('#dSort', 'sort');
     $('#d3d').addEventListener('click', e => { dstate.d3 = !dstate.d3; e.currentTarget.classList.toggle('on', dstate.d3); e.currentTarget.setAttribute('aria-pressed', dstate.d3); drawDiscover(); });
+    $('#dtouch').addEventListener('click', e => { dstate.touch = !dstate.touch; e.currentTarget.classList.toggle('on', dstate.touch); e.currentTarget.setAttribute('aria-pressed', dstate.touch); drawDiscover(); });
+    const rand = () => {
+      const pool = DISC.filter(d => d.cover), pickN = [];
+      while (pickN.length < 3 && pool.length) pickN.push(pool.splice(Math.floor(Math.random() * pool.length), 1)[0]);
+      const box = $('#rand3'); if (!box) return;
+      box.innerHTML = pickN.map(gcard).join(''); hydrate(box);
+    };
+    if ($('#randBtn')) { $('#randBtn').addEventListener('click', rand); rand(); }
     drawDiscover();
   }
   const freshRow = () => DISC.length ? `
@@ -1275,7 +1361,7 @@
 
   // ---------- search palette (⌘K or /) ----------
   const cmdk = $('#cmdk'), cmdkIn = $('#cmdkInput'), cmdkList = $('#cmdkList');
-  const PAGES = [['Weekly picks', '#/weeks'], ['Play all games', '#/play'], ['Creators', '#/creators'], ['Make: start here', '#/make'], ['Game feel (mechanics)', '#/mechanics'], ['Open recipes', '#/games'], ['Connect Playbook MCP', '#/mcp'], ['Playbook Jam', '#/jam']];
+  const PAGES = [['Weekly picks', '#/weeks'], ['Guides', '#/guides'], ['Saved games', '#/saved'], ['Play all games', '#/play'], ['Creators', '#/creators'], ['Make: start here', '#/make'], ['Game feel (mechanics)', '#/mechanics'], ['Open recipes', '#/games'], ['Connect Playbook MCP', '#/mcp'], ['Playbook Jam', '#/jam']];
   let cmdkItems = [], cmdkSel = 0;
   const lc = s => String(s || '').toLowerCase();
   function searchAll(q) {
@@ -1332,6 +1418,23 @@
   burger.onclick = () => setMenu(!menu.classList.contains('open'));
 
   document.addEventListener('click', e => {
+    const fv = e.target.closest('[data-fav]');
+    if (fv) {
+      e.preventDefault(); e.stopPropagation();
+      const u = fv.dataset.fav, on = !FAVS.has(u);
+      on ? FAVS.add(u) : FAVS.delete(u); saveFavs();
+      $$(`[data-fav="${CSS.escape(u)}"]`).forEach(b => {
+        b.classList.toggle('on', on); b.setAttribute('aria-pressed', on);
+        if (b.classList.contains('fav')) b.setAttribute('aria-label', I18N ? I18N.tr(on ? 'Saved' : 'Save') : (on ? 'Saved' : 'Save'));
+        const t = $('span', b); if (t && b.classList.contains('savebtn')) t.textContent = I18N ? I18N.tr(on ? 'Saved' : 'Save') : (on ? 'Saved' : 'Save');
+      });
+      toast(on ? 'Saved' : 'Removed from saved');
+      track(`${on ? 'save' : 'unsave'}/${u.replace(/^https?:\/\//, '')}`, '', true);
+      if (location.hash === '#/saved' && !on) savedPage();
+      return;
+    }
+    const out = e.target.closest('a[href^="http"]');
+    if (out && out.hostname !== location.hostname) track(`out/${out.hostname}${out.pathname}`.replace(/\/$/, ''), out.textContent.trim().slice(0, 80) || out.hostname, true);
     const c = e.target.closest('[data-copy]'); if (c) { e.preventDefault(); return copy(c.dataset.copy, c); }
     if (e.target.closest('[data-open-mcp]')) { e.preventDefault(); setMenu(false); return mcpModal(); }
     const r = e.target.closest('[data-remake]'); if (r) return remakeModal(r.dataset.remake);
@@ -1358,19 +1461,20 @@
     $$('.media', app).forEach(m => { liveIO.unobserve(m); autoIO.unobserve(m); });
     stopPreview(); closeSearch();
     closeModal();
-    const nav = { '': 'home', play: 'play', g: 'play', week: 'play', weeks: 'play', discover: 'play', review: 'play', make: 'make', game: 'make', games: 'make', mechanics: 'make', mechanic: 'make', publish: 'make', mcp: 'make', creators: 'creators', c: 'creators', jam: 'jam' }[page];
+    const nav = { '': 'home', play: 'play', g: 'play', week: 'play', weeks: 'play', saved: 'play', guides: 'play', guide: 'play', discover: 'play', review: 'play', make: 'make', game: 'make', games: 'make', mechanics: 'make', mechanic: 'make', publish: 'make', mcp: 'make', creators: 'creators', c: 'creators', jam: 'jam' }[page];
     $$('[data-nav]').forEach(a => a.classList.toggle('on', a.dataset.nav === nav));
     const tab = { home: 'home', play: 'play', make: 'make', creators: 'creators' }[nav];
     $$('[data-tab]').forEach(a => a.classList.toggle('on', a.dataset.tab === tab));
     const a = decodeURIComponent(arg);
     if (page === 'charts') { location.replace('#/play'); return; }
     if (page === 'creator') { location.replace('#/creators'); return; }
-    ({ '': home, week: () => weekPage(a), weeks: weeksPage, g: () => discGamePage(a), play: () => discoverPage(a), discover: () => discoverPage(a), make: makePage, creators: creatorsPage, c: () => creatorProfile(a), games: () => gamesPage(a), mcp: mcpPage, jam: jamPage, game: () => gamePage(a), mechanics: mechanicsPage, mechanic: () => mechanicPage(a), publish: publishPage, review: LOCAL ? reviewPage : notFound }[page] || notFound)();
+    ({ '': home, saved: savedPage, guides: guidesPage, guide: () => guidePage(a), week: () => weekPage(a), weeks: weeksPage, g: () => discGamePage(a), play: () => discoverPage(a), discover: () => discoverPage(a), make: makePage, creators: creatorsPage, c: () => creatorProfile(a), games: () => gamesPage(a), mcp: mcpPage, jam: jamPage, game: () => gamePage(a), mechanics: mechanicsPage, mechanic: () => mechanicPage(a), publish: publishPage, review: LOCAL ? reviewPage : notFound }[page] || notFound)();
     window.scrollTo(0, 0);
     hydrate();
-    const ttl = page === 'game' && byId[a] ? byId[a].title : page === 'mechanic' && mechBySlug[a] ? mechBySlug[a].name : page === 'c' && crBySlug[a] ? crBySlug[a].handle : page === 'g' && G_BY[a] ? G_BY[a].title : page === 'week' && WEEKS.find(w => w.id === a) ? `Week of ${weekName(a)}`
-      : { weeks: 'Weekly picks', play: 'Play', discover: 'Play', make: 'Make', creators: 'Creators', mechanics: 'Game feel', games: 'Recipes', mcp: 'Connect MCP', jam: 'Jam' }[page];
+    const ttl = page === 'game' && byId[a] ? byId[a].title : page === 'mechanic' && mechBySlug[a] ? mechBySlug[a].name : page === 'c' && crBySlug[a] ? crBySlug[a].handle : page === 'g' && G_BY[a] ? G_BY[a].title : page === 'week' && WEEKS.find(w => w.id === a) ? `Week of ${weekName(a)}` : page === 'guide' && GUIDES.find(x => x.slug === a) ? GUIDES.find(x => x.slug === a).title
+      : { saved: 'Saved games', guides: 'Guides', weeks: 'Weekly picks', play: 'Play', discover: 'Play', make: 'Make', creators: 'Creators', mechanics: 'Game feel', games: 'Recipes', mcp: 'Connect MCP', jam: 'Jam' }[page];
     document.title = ttl ? `${ttl} — Playbook` : 'Playbook — the home of vibe gaming';
+    track('/' + (location.hash.replace(/^#\/?/, '') || ''), document.title);
     if (I18N) document.title = I18N.tr(document.title);
   }
   const navEl = $('#nav');
