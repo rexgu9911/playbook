@@ -713,7 +713,7 @@
   const WEEKS = (window.PB_WEEKS || []).map(w => ({ ...w, games: w.picks.map(p => ({ why: p.why, d: DISC.find(x => x.url === p.url) })).filter(p => p.d) }))
     .filter(w => w.games.length);
   const weekName = id => { const d = new Date(id + 'T00:00:00'); return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }); };
-  const xPost = w => [`This week in vibe gaming · ${weekName(w.id)}`, '', ...w.games.map((p, i) => `${i + 1}. ${p.d.title}${p.d.creator ? ` by ${p.d.creator}` : ''}`), '', `Play them all: ${LIVE}#/week/${w.id}`].join('\n');
+  const xPost = w => [`This week in vibe gaming · ${weekName(w.id)}`, '', ...w.games.map((p, i) => `${i + 1}. ${p.d.title}${p.d.creator ? ` by ${p.d.creator}` : ''}`), '', `Play them all: ${LIVE}s/week/${w.id}/`].join('\n');
   const PLATFORMS = { x: 'X', youtube: 'YouTube', hn: 'Hacker News', reddit: 'Reddit', itch: 'itch.io', jam: 'Game jam', wavedash: 'Wavedash', other: 'Web' };
   const dstate = { genre: 'All', platform: 'All', d3: false, sort: 'new' };
   const hashHue = s => { let h = 0; for (const c of String(s)) h = (h * 31 + c.charCodeAt(0)) % 360; return h; };
@@ -937,6 +937,7 @@
             <div class="gd-acts">
               <a class="btn btn-accent btn-block" href="${esc(d.url)}" target="_blank" rel="noopener noreferrer">Play on ${esc(h)} ↗</a>
               ${d.source && d.source !== d.url ? `<a class="btn btn-block" href="${esc(d.source)}" target="_blank" rel="noopener noreferrer">Where it was shared ↗</a>` : ''}
+              <button class="btn btn-block" data-copy="${esc(`${LIVE}s/g/${d.slug}/`)}">Copy share link</button>
             </div>
             <button class="dclaim" data-claim="${d._i}">Is this yours? Claim or remove</button>
           </aside>
@@ -954,7 +955,7 @@
   function weekPage(id) {
     const k = WEEKS.findIndex(w => w.id === id); if (k < 0) return notFound();
     const w = WEEKS[k], newer = WEEKS[k - 1], older = WEEKS[k + 1];
-    const link = `${LIVE}#/week/${w.id}`;
+    const link = `${LIVE}s/week/${w.id}/`;
     app.innerHTML = `
       <section class="wkp wrap">
         <div class="crumbs"><a href="#/weeks">Weekly picks</a><span>/</span><span>Issue #${w.no}</span></div>
