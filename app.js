@@ -67,10 +67,52 @@
       f.src = el.dataset.auto; el.insertBefore(f, el.querySelector('.scan'));
     } else if (!e.isIntersecting && f) { f.remove(); el.classList.remove('live'); }
   }), { threshold: 0.6 });
+  // ---------- motion details: rolling labels and word-by-word heading reveals (off with reduced motion) ----------
+  const CALM = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const rollify = root => {
+    if (CALM) return;
+    $$('.nav-links a, .btn:not(.copy), .link, .flinks a', root).forEach(el => {
+      if (el.dataset.roll || el.children.length || !el.textContent.trim()) return;
+      const t = esc(el.textContent.trim());
+      el.dataset.roll = '1';
+      if (!el.hasAttribute('aria-label')) el.setAttribute('aria-label', el.textContent.trim());
+      el.innerHTML =`<span class="roll"><span>${t}</span><span aria-hidden="true">${t}</span></span>`;
+    });
+  };
+  const splitify = root => {
+    if (CALM) return;
+    $$('.sec-head h2, .rail-head h2, .page-head h1, .gd-info h1', root).forEach(h => {
+      if (h.dataset.split) return;
+      h.dataset.split = '1';
+      const box = document.createElement('span'); box.className = 'splitw';
+      let i = 0;
+      [...h.childNodes].forEach(n => {
+        if (n.nodeType === 1 && n.tagName === 'BR') { box.append(' '); return; }  // line breaks are hidden on this layout: keep a space
+        if (n.nodeType === 1 && n.classList.contains('chip')) return;  // badges stay put
+        if (n.nodeType === 3) {
+          n.textContent.split(/(\s+)/).forEach(part => {
+            if (!part) return;
+            if (/^\s+$/.test(part)) { box.append(' '); return; }
+            const w = document.createElement('span'); w.className = 'w';
+            w.innerHTML = `<span style="--i:${i++}">${esc(part)}</span>`; box.append(w);
+          });
+          n.textContent = '';
+        } else if (n.nodeType === 1) {
+          const w = document.createElement('span'); w.className = 'w';
+          const inner = document.createElement('span'); inner.style.setProperty('--i', i++);
+          w.append(inner); n.replaceWith(w); inner.append(n); box.append(w);
+        }
+      });
+      h.prepend(box);
+      h.classList.add('split');
+      revIO.observe(h);
+    });
+  };
   const hydrate = (root = app) => {
     $$('.media[data-auto]', root).forEach(m => autoIO.observe(m));
     $$('.media[data-src]', root).forEach(m => liveIO.observe(m));
     $$('.rv:not(.in)', root).forEach(r => revIO.observe(r));
+    rollify(root); splitify(root);
   };
 
   const ic = {
@@ -190,6 +232,11 @@
     const sync = () => { prev.disabled = t.scrollLeft < 4; next.disabled = t.scrollLeft + t.clientWidth >= t.scrollWidth - 4; };
     $$('.rail-btn', r).forEach(b => b.addEventListener('click', () => t.scrollBy({ left: +b.dataset.dir * t.clientWidth * 0.92, behavior: 'smooth' })));
     t.addEventListener('scroll', sync, { passive: true }); sync();
+    t.tabIndex = 0; t.setAttribute('aria-label', `${$('h2', r)?.textContent.trim() || 'Games'}: use the arrow keys to scroll`);
+    t.addEventListener('keydown', e => {
+      if (e.key !== 'ArrowRight' && e.key !== 'ArrowLeft') return;
+      e.preventDefault(); t.scrollBy({ left: (e.key === 'ArrowRight' ? 1 : -1) * t.clientWidth * 0.92, behavior: CALM ? 'auto' : 'smooth' });
+    });
   });
   const tabIc = {
     recipes: '<svg viewBox="0 0 24 24"><path d="M6 12h4M8 10v4M15 11h.01M18 13h.01M7 6h10a5 5 0 0 1 5 5v2a5 5 0 0 1-9 3h-2a5 5 0 0 1-9-3v-2a5 5 0 0 1 5-5z"/></svg>',
@@ -278,12 +325,19 @@
         <div class="picks">${picks.map((d, i) => pick(d, i === 0)).join('')}</div>
       </section>
 
-      <div class="wrap">
+      <div class="ticker" aria-label="Playbook at a glance"><div class="ticker-in">${(() => {
+        const items = [`${DISC.length} vibe-coded games`, `${CREATORS.length} creators`, ...fresh.slice(0, 3).map(d => `New: ${d.title}`),
+          'Cursor Vibe Jam winners inside', `${mechanics.length} game-feel parts for your agent`, 'Free and open-source MCP'];
+        const run = items.map(t => `<span>${esc(t)}</span><i aria-hidden="true">✦</i>`).join('');
+        return `<div class="ticker-run">${run}</div><div class="ticker-run" aria-hidden="true">${run}</div>`;
+      })()}</div></div>
+
+      <div class="wrap idx">
         ${best.length ? rail({ title: 'All-time best', sub: 'The vibe-coded games people keep coming back to: jam winners and the ones that went viral.', href: '#/play', more: `All ${DISC.length}`, items: best.map(gcard).join('') }) : ''}
         ${rail({ title: 'New this week', sub: 'Fresh from X, game jams and itch. Every card opens the creator’s own page.', href: '#/play', more: `All ${DISC.length}`, items: fresh.map(gcard).join('') })}
         ${rail({ title: 'Creators to follow', sub: 'The people behind the best vibe games right now.', href: '#/creators', more: `All ${CREATORS.length}`, cls: 'cr', items: followCards })}
 
-        <section class="promo2">
+        <section class="promo2 light">
           <div class="promo-big calm rv">
             <span class="pb-tag"><span class="dot"></span>For vibe coders · free and open source</span>
             <h2>Make yours feel this good<span>Game feel, recipes and search, inside your own coding agent</span></h2>
@@ -578,7 +632,17 @@
   }
 
   function notFound() {
-    app.innerHTML = `<section class="page-head"><div class="wrap"><span class="tag">404</span><h1>Game over.</h1><p>That page does not exist. <a href="#/" style="color:var(--accent)">Back to the wall</a></p></div></section>`;
+    const m = mechBySlug['platformer-controller'] || mechanics[0];
+    app.innerHTML = `
+      <section class="nf wrap"><div class="nf-grid">
+        <div>
+          <span class="tag"><span class="dot"></span>404</span>
+          <h1>Game over.</h1>
+          <p>This page doesn't exist, but this one does. Jump around while you're here: it's ${esc(m.name)}, one of our ${mechanics.length} game-feel parts.</p>
+          <div class="acts"><a class="btn btn-accent" href="#/">Respawn at home</a><a class="btn" href="#/play">Play all games</a></div>
+        </div>
+        <div class="nf-game"><iframe src="mechanics/${m.slug}.html" title="${esc(m.name)}, playable"></iframe></div>
+      </div></section>`;
   }
 
 
@@ -667,7 +731,7 @@
           <span class="playbtn" aria-hidden="true">${playIco}</span>
         </div>
       </a>
-      <div class="gmeta"><h3>${esc(d.title)}</h3><p>${d.creator ? `<a href="${crLink(d.creator)}">${esc(d.creator)}</a>` : 'Unknown creator'}${d.genre ? `<span> · ${esc(d.genre)}</span>` : ''}</p></div>
+      <div class="gmeta">${d.creator ? `<a class="stk-c" href="${crLink(d.creator)}">${esc(d.creator)}</a>` : ''}<h3>${esc(d.title)}</h3><p>${[d.genre, d.model].filter(Boolean).map(esc).join(' · ') || 'Web game'}</p></div>
     </article>`;
   };
   const byNew = (a, b) => (b.date || '').localeCompare(a.date || '') || a.title.localeCompare(b.title);
@@ -1166,6 +1230,7 @@
     const q = e.target.closest('[data-q]'); if (q) { e.preventDefault(); return openSearch(q.dataset.q); }
     const cl = e.target.closest('[data-claim]'); if (cl) return claimModal(+cl.dataset.claim);
     const cc = e.target.closest('[data-claim-creator]'); if (cc) return claimCreatorModal(cc.dataset.claimCreator);
+    if (e.target.closest('[data-top]')) return window.scrollTo({ top: 0, behavior: CALM ? 'auto' : 'smooth' });
     if (e.target.closest('[data-close]')) return closeModal();
     if (e.target.closest('.menu a')) setMenu(false);
     
@@ -1201,6 +1266,7 @@
   window.addEventListener('scroll', navSync, { passive: true });
   window.addEventListener('hashchange', navSync);
   window.addEventListener('hashchange', route);
+  rollify(document.querySelector('#nav')); rollify(document.querySelector('.footer'));
   route();
   navSync();
 })();
