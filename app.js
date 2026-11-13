@@ -233,7 +233,7 @@
   };
   const pick = (d, hero) => `
     <article class="card pick ${hero ? 'pk-hero' : ''} rv">
-      <a class="pick-media" href="${esc(d.url)}" target="_blank" rel="noopener noreferrer" aria-label="Play ${esc(d.title)} on ${esc(host(d.url))} (opens in a new tab)">
+      <a class="pick-media" href="${gLink(d)}" aria-label="${esc(d.title)}: details and play">
         <div class="media ${d.cover ? 'has-cover' : ''}" ${d.cover && d.embeddable && canHover ? `data-ext="${esc(d.url)}"` : ''} style="${calm(d)}">
           <div class="poster"><b class="ptitle">${esc(d.title)}</b></div>${coverImg(d)}<div class="scan"></div>
           <div class="top"><span>${hero ? '<span class="chip hot">Pick of the week</span>' : ''}</span><span><span class="chip">${dIc.out}${esc(host(d.url))}</span></span></div>
@@ -296,20 +296,14 @@
         ${rail({ title: 'Game feel, ready to install', sub: 'What a one-line prompt gets wrong. Poke the live demo, then add it to your game by name.', href: '#/mechanics', more: `All ${mechanics.length}`, cls: 'mech', items: show.map(mcard).join('') })}
 
         <section class="section">
-          <div class="sec-head"><div><h2>Play by genre</h2><p>Hand-picked AI-made games, playable in your browser.</p></div><a class="link" href="#/play">All ${DISC.length} games</a></div>
-          <div class="controls"><div class="pills" id="bestGenres">${HOME_GENRES.map(g => `<button class="pill ${g === hstate.genre ? 'on' : ''}" data-v="${g}">${g}</button>`).join('')}</div></div>
-          <div class="wall" id="bestGrid"></div>
+          <div class="sec-head"><div><h2>Browse by genre</h2><p>${DISC.length} vibe-coded games, sorted the way you like to play.</p></div><a class="link" href="#/play">All ${DISC.length} games</a></div>
+          <div class="gtiles">${genreTiles(8)}</div>
         </section>
 
         ${jams.length ? rail({ title: 'From the game jams', sub: 'Winners and standouts from Cursor Vibe Jam and other AI game jams.', href: '#/play', items: jams.slice(0, 12).map(gcard).join('') }) : ''}
 
         ${contest()}
       </div>`;
-    drawBest();
-    $('#bestGenres').addEventListener('click', e => {
-      const b = e.target.closest('[data-v]'); if (!b) return;
-      hstate.genre = b.dataset.v; $$('#bestGenres .pill').forEach(x => x.classList.toggle('on', x === b)); drawBest();
-    });
     bindRails(app);
   }
 
@@ -590,6 +584,10 @@
 
   // ---------- discover: games from around the web (link + credit only) ----------
   const DISC = (window.PB_DISCOVER || []).filter(d => !d.stale).map((d, i) => ({ ...d, _i: i }));
+  // a page of its own for every listed game: #/g/<slug>
+  const G_BY = {};
+  DISC.forEach(d => { const base = slugify(d.title) || 'game'; let k = base, n = 2; while (G_BY[k]) k = `${base}-${n++}`; d.slug = k; G_BY[k] = d; });
+  const gLink = d => `#/g/${d.slug}`;
   const PLATFORMS = { x: 'X', youtube: 'YouTube', hn: 'Hacker News', reddit: 'Reddit', itch: 'itch.io', jam: 'Game jam', wavedash: 'Wavedash', other: 'Web' };
   const dstate = { genre: 'All', platform: 'All', d3: false, sort: 'new' };
   const hashHue = s => { let h = 0; for (const c of String(s)) h = (h * 31 + c.charCodeAt(0)) % 360; return h; };
@@ -635,7 +633,7 @@
     const hover = d.cover && d.embeddable && canHover;
     return `
     <article class="card dcard rv" style="--d:${Math.min(i, 8) * 30}ms">
-      <a class="dlink" href="${esc(d.url)}" target="_blank" rel="noopener noreferrer" aria-label="Play ${esc(d.title)} on ${esc(host(d.url))} (opens in a new tab)">
+      <a class="dlink" href="${gLink(d)}" aria-label="${esc(d.title)}: details and play">
         <div class="media ${d.cover ? 'has-cover' : ''}" ${auto ? `data-auto="${esc(d.url)}"` : ''} ${hover ? `data-ext="${esc(d.url)}"` : ''} style="${calm(d)}">
           <div class="poster"><b class="ptitle">${esc(d.title)}</b></div>${coverImg(d)}<div class="scan"></div>
           <div class="top">
@@ -662,7 +660,7 @@
     const auto = !d.cover && d.embeddable, hover = d.cover && d.embeddable && canHover;
     return `
     <article class="card dcard gcard rv" style="--d:${Math.min(i, 8) * 30}ms">
-      <a class="dlink" href="${esc(d.url)}" target="_blank" rel="noopener noreferrer" aria-label="Play ${esc(d.title)} on ${esc(host(d.url))} (opens in a new tab)">
+      <a class="dlink" href="${gLink(d)}" aria-label="${esc(d.title)}: details and play">
         <div class="media ${d.cover ? 'has-cover' : ''}" ${auto ? `data-auto="${esc(d.url)}"` : ''} ${hover ? `data-ext="${esc(d.url)}"` : ''} style="${calm(d)}">
           <div class="poster"><b class="ptitle">${esc(d.title)}</b></div>${coverImg(d)}<div class="scan"></div>
           <div class="top"><span>${auto ? '<span class="chip"><i class="livedot"></i>Live</span>' : ''}</span><span><span class="chip host">${dIc.out}${esc(host(d.url))}</span></span></div>
@@ -771,6 +769,62 @@
     $('#discCount').textContent = `${list.length} of ${DISC.length} games`;
     hydrate(grid);
   }
+  // genre tiles: a muted single-colour halftone over one of the genre's own covers; full colour on hover
+  const TINTS = ['#d98a70', '#a3b878', '#9890cf', '#cfae7f', '#6fa9a6', '#c27a8f', '#c4ad5c', '#7f9cc9'];
+  const genreTiles = (max = 12) => {
+    const counts = {};
+    DISC.forEach(d => { if (d.genre) counts[d.genre] = (counts[d.genre] || 0) + 1; });
+    const used = new Set();
+    return Object.entries(counts).sort((a, b) => b[1] - a[1]).slice(0, max).map(([g, n], i) => {
+      const pool = DISC.filter(d => d.genre === g && d.cover && !used.has(d.url)).sort(byNew);
+      const pic = pool.find(d => BEST.includes(d.title)) || pool[0];
+      if (pic) used.add(pic.url);
+      return `<a class="gtile rv" href="#/play/${encodeURIComponent(g)}" style="--tint:${TINTS[i % TINTS.length]};--d:${Math.min(i, 8) * 30}ms">${pic ? `<img src="${esc(pic.cover)}" alt="" loading="lazy" decoding="async" referrerpolicy="no-referrer" onerror="this.remove()">` : ''}<i class="ht" aria-hidden="true"></i><b>${esc(g)}</b><span>${n} games</span></a>`;
+    }).join('');
+  };
+
+  function discGamePage(slug) {
+    const d = G_BY[slug]; if (!d) return notFound();
+    const eng = d.engine && !/unknown/i.test(d.engine) ? d.engine : '';
+    const own = d.creator ? (crBySlug[crSlug(d.creator)]?.games || []).filter(x => x !== d && !x.stale) : [];
+    const like = DISC.filter(x => x !== d && x.genre && x.genre === d.genre && !own.includes(x))
+      .sort((a, b) => (a.cover ? 0 : 1) - (b.cover ? 0 : 1) || byNew(a, b)).slice(0, 8);
+    const h = host(d.url);
+    const facts = [['Made with', d.model], ['Engine', eng], ['Found on', PLATFORMS[d.platform] || 'Web'], ['Shared', dDate(d.date)], ['Link checked', d.verified]].filter(x => x[1]);
+    app.innerHTML = `
+      <section class="gd wrap">
+        <div class="crumbs"><a href="#/play">Play</a><span>/</span>${d.genre ? `<a href="#/play/${encodeURIComponent(d.genre)}">${esc(d.genre)}</a><span>/</span>` : ''}<span>${esc(d.title)}</span></div>
+        <div class="gd-grid">
+          <div class="gd-stage">
+            <div class="media gd-media ${d.cover ? 'has-cover' : ''}" id="gdStage" style="${calm(d)}">
+              <div class="poster"><b class="ptitle">${esc(d.title)}</b></div>${coverImg(d)}
+              <div class="gd-over">${d.embeddable ? `<button class="btn btn-accent btn-lg" id="gdPlay">${playIco}Play here</button>` : ''}<a class="btn btn-lg ${d.embeddable ? '' : 'btn-accent'}" href="${esc(d.url)}" target="_blank" rel="noopener noreferrer">Play on ${esc(h)} ↗</a></div>
+            </div>
+            <p class="gd-hint">${d.embeddable ? 'Play here runs the creator’s own page in a sandboxed frame. ' : ''}Playbook links to the creator’s site and credits them; nothing is copied or hosted here.</p>
+          </div>
+          <aside class="gd-info">
+            <h1>${esc(d.title)}</h1>
+            ${d.creator ? `<a class="gd-by" href="${crLink(d.creator)}">${crAva(d.creator)}<span>${esc(d.creator)}</span></a>` : ''}
+            <p class="gd-note">${esc(d.note || '')}</p>
+            <div class="dtags">${d.genre ? `<span class="chip">${esc(d.genre)}</span>` : ''}${d.is3d ? '<span class="chip">3D</span>' : '<span class="chip">2D</span>'}${eng ? `<span class="chip">${esc(eng)}</span>` : ''}</div>
+            <dl class="gd-facts">${facts.map(([k, v]) => `<dt>${k}</dt><dd>${esc(v)}</dd>`).join('')}</dl>
+            <div class="gd-acts">
+              <a class="btn btn-accent btn-block" href="${esc(d.url)}" target="_blank" rel="noopener noreferrer">Play on ${esc(h)} ↗</a>
+              ${d.source && d.source !== d.url ? `<a class="btn btn-block" href="${esc(d.source)}" target="_blank" rel="noopener noreferrer">Where it was shared ↗</a>` : ''}
+            </div>
+            <button class="dclaim" data-claim="${d._i}">Is this yours? Claim or remove</button>
+          </aside>
+        </div>
+        ${own.length ? `<section class="section tight"><div class="sec-head"><div><h2>More from ${esc(d.creator)}</h2></div><a class="link" href="${crLink(d.creator)}">Profile</a></div><div class="wall">${own.slice(0, 8).map(gcard).join('')}</div></section>` : ''}
+        ${like.length ? `<section class="section tight"><div class="sec-head"><div><h2>More ${esc(d.genre.toLowerCase())} games</h2></div><a class="link" href="#/play/${encodeURIComponent(d.genre)}">All ${esc(d.genre.toLowerCase())}</a></div><div class="wall">${like.map(gcard).join('')}</div></section>` : ''}
+      </section>`;
+    $('#gdPlay')?.addEventListener('click', () => {
+      const st = $('#gdStage');
+      st.classList.add('playing');
+      st.innerHTML = `<iframe src="${esc(d.url)}" title="${esc(d.title)}" sandbox="allow-scripts allow-same-origin allow-pointer-lock allow-popups allow-forms" allow="fullscreen; autoplay; gamepad" referrerpolicy="no-referrer"></iframe>`;
+    });
+  }
+
   function discoverPage(arg = '') {
     const count = k => DISC.reduce((m, d) => (d[k] && (m[d[k]] = (m[d[k]] || 0) + 1), m), {});
     const genres = Object.entries(count('genre')).sort((a, b) => b[1] - a[1]).map(x => x[0]);
@@ -785,6 +839,7 @@
         <div class="acts"><button class="btn btn-accent" data-submit-game>Submit a game</button><a class="btn" href="#/creators">Meet the creators</a></div>
       </div></section>
       <div class="wrap">
+        ${g0 === 'All' ? `<div class="gtiles small">${genreTiles(12)}</div>` : ''}
         <div class="controls">
           <div class="pills" id="dGenres"><button class="pill ${g0 === 'All' ? 'on' : ''}" data-v="All">All</button><button class="pill" id="d3d" aria-pressed="false">3D only</button>${genres.map(g => `<button class="pill ${g === g0 ? 'on' : ''}" data-v="${esc(g)}">${esc(g)}</button>`).join('')}</div>
           <div class="seg" id="dSort"><button data-v="new" class="on">Newest</button><button data-v="az">A–Z</button></div>
@@ -1056,7 +1111,7 @@
     const G = games.filter(g => any ? hit(lc([g.title, g.by, g.genres.join(' '), g.is3d ? '3d three.js' : '2d canvas', g.style, g.parent ? 'remix' : 'original'].join(' '))) : !g.parent)
       .slice(0, any ? 6 : 3).map(g => ({ group: 'Playbook recipes', title: g.title, sub: `${g.by} · ${g.genres.join(' · ')}`, href: `#/game/${g.id}`, c1: g.colors[0], c2: g.colors[1], go: 'Play' }));
     const D = (any ? DISC.filter(d => hit(lc([d.title, d.creator, d.genre, d.engine, d.model, PLATFORMS[d.platform], d.is3d ? '3d' : '', host(d.url), d.note].join(' ')))) : [...DISC].sort(byNew))
-      .slice(0, any ? 8 : 6).map(d => { const h = hashHue(d.title + d.url); return { group: any ? 'From the web' : 'Fresh from the web', title: d.title, sub: [d.creator || host(d.url), d.genre, d.model].filter(Boolean).join(' · '), href: d.url, ext: true, c1: `hsl(${h} 78% 54%)`, c2: `hsl(${(h + 80) % 360} 72% 40%)`, go: host(d.url) + ' ↗' }; });
+      .slice(0, any ? 8 : 6).map(d => { const h = hashHue(d.title + d.url); return { group: any ? 'From the web' : 'Fresh from the web', title: d.title, sub: [d.creator || host(d.url), d.genre, d.model].filter(Boolean).join(' · '), href: gLink(d), c1: `hsl(${h} 78% 54%)`, c2: `hsl(${(h + 80) % 360} 72% 40%)`, go: 'Open' }; });
     const M = any ? mechanics.filter(m => hit(lc([m.name, m.cat, m.desc].join(' ')))).slice(0, 4).map(m => ({ group: 'Mechanics', title: m.name, sub: m.cat, href: `#/mechanic/${m.slug}`, c1: '#4a4337', c2: '#17150f', go: 'Open' })) : [];
     const C = any ? CREATORS.filter(c => hit(lc(c.handle + ' ' + c.games.map(g => g.title).join(' ')))).slice(0, 4).map(c => { const h = hashHue(c.handle); return { group: 'Creators', title: c.handle, sub: `${c.games.length} game${c.games.length > 1 ? 's' : ''} · ${c.games[0].title}`, href: crLink(c.handle), c1: `hsl(${h} 40% 46%)`, c2: `hsl(${(h + 40) % 360} 30% 24%)`, go: 'Profile' }; }) : [];
     const P = PAGES.filter(p => !any || hit(lc(p[0]))).map(p => ({ group: 'Pages', title: p[0], sub: '', href: p[1], go: 'Go' }));
@@ -1127,17 +1182,17 @@
     $$('.media', app).forEach(m => { liveIO.unobserve(m); autoIO.unobserve(m); });
     stopPreview(); closeSearch();
     closeModal();
-    const nav = { '': 'home', play: 'play', discover: 'play', review: 'play', make: 'make', game: 'make', games: 'make', mechanics: 'make', mechanic: 'make', publish: 'make', mcp: 'make', creators: 'creators', c: 'creators', jam: 'jam' }[page];
+    const nav = { '': 'home', play: 'play', g: 'play', discover: 'play', review: 'play', make: 'make', game: 'make', games: 'make', mechanics: 'make', mechanic: 'make', publish: 'make', mcp: 'make', creators: 'creators', c: 'creators', jam: 'jam' }[page];
     $$('[data-nav]').forEach(a => a.classList.toggle('on', a.dataset.nav === nav));
     const tab = { home: 'home', play: 'play', make: 'make', creators: 'creators' }[nav];
     $$('[data-tab]').forEach(a => a.classList.toggle('on', a.dataset.tab === tab));
     const a = decodeURIComponent(arg);
     if (page === 'charts') { location.replace('#/play'); return; }
     if (page === 'creator') { location.replace('#/creators'); return; }
-    ({ '': home, play: () => discoverPage(a), discover: () => discoverPage(a), make: makePage, creators: creatorsPage, c: () => creatorProfile(a), games: () => gamesPage(a), mcp: mcpPage, jam: jamPage, game: () => gamePage(a), mechanics: mechanicsPage, mechanic: () => mechanicPage(a), publish: publishPage, review: LOCAL ? reviewPage : notFound }[page] || notFound)();
+    ({ '': home, g: () => discGamePage(a), play: () => discoverPage(a), discover: () => discoverPage(a), make: makePage, creators: creatorsPage, c: () => creatorProfile(a), games: () => gamesPage(a), mcp: mcpPage, jam: jamPage, game: () => gamePage(a), mechanics: mechanicsPage, mechanic: () => mechanicPage(a), publish: publishPage, review: LOCAL ? reviewPage : notFound }[page] || notFound)();
     window.scrollTo(0, 0);
     hydrate();
-    const ttl = page === 'game' && byId[a] ? byId[a].title : page === 'mechanic' && mechBySlug[a] ? mechBySlug[a].name : page === 'c' && crBySlug[a] ? crBySlug[a].handle
+    const ttl = page === 'game' && byId[a] ? byId[a].title : page === 'mechanic' && mechBySlug[a] ? mechBySlug[a].name : page === 'c' && crBySlug[a] ? crBySlug[a].handle : page === 'g' && G_BY[a] ? G_BY[a].title
       : { play: 'Play', discover: 'Play', make: 'Make', creators: 'Creators', mechanics: 'Game feel', games: 'Recipes', mcp: 'Connect MCP', jam: 'Jam' }[page];
     document.title = ttl ? `${ttl} — Playbook` : 'Playbook — the home of vibe gaming';
   }
