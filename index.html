@@ -21,7 +21,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400..700&family=Geist+Mono:wght@400;500&family=Silkscreen&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="styles.css?v=45">
+<link rel="stylesheet" href="styles.css?v=50">
 </head>
 <body>
 <a class="skip" href="#app">Skip to content</a>
@@ -55,7 +55,7 @@
   <a href="#/make">Make</a>
   <a href="#/creators">Creators</a>
   <a href="#/library">Library</a>
-  <a href="#/jam">Jam</a>
+  <a href="#/weeks">Weekly picks</a>
   <a href="#/mcp">Connect MCP</a>
   <button class="langbtn" data-lang>中文</button>
 </div>
@@ -69,7 +69,7 @@
       <p class="muted">The home of vibe gaming. Play the best AI-made web games, meet the people making them, and make yours feel this good.</p>
     </div>
     <div class="flinks">
-      <div><b>Play</b><a href="#/play">All games</a><a href="#/weeks">Weekly picks</a><a href="#/guides">Guides</a><a href="#/library">Library</a><a href="#/creators">Creators</a><a href="#/jam">Jam</a></div>
+      <div><b>Play</b><a href="#/play">All games</a><a href="#/weeks">Weekly picks</a><a href="#/guides">Guides</a><a href="#/library">Library</a><a href="#/creators">Creators</a></div>
       <div><b>Make</b><a href="#/make">Start here</a><a href="#/mechanics">Game feel</a><a href="#/games">Recipes</a><a href="#/mcp">Connect MCP</a></div>
       <div><b>About</b><a href="#/standards">Quality standards</a><a href="s/">Game index</a><a href="#/play" data-submit-game>Submit a game</a><a href="#/creators">Claim your profile</a><a href="https://github.com/rexgu9911/playbook" target="_blank" rel="noopener">GitHub</a></div>
     </div>
@@ -81,7 +81,7 @@
     <a class="stk s3" href="#/mcp">Connect MCP</a>
   </div>
   <div class="footer-in fbottom">
-    <p class="fnote">Games listed on Playbook belong to their creators. We link to their own pages and show the cover image they publish; nothing is copied or hosted here. Creators can claim or remove a listing at any time. Playbook MCP is free and open source; publishing and the Jam are coming soon.</p>
+    <p class="fnote">Games listed on Playbook belong to their creators. We link to their own pages and show the cover image they publish; nothing is copied or hosted here. Creators can claim or remove a listing at any time. Playbook MCP is free and open source.</p>
     <button class="respawn" data-top>Respawn ↑</button>
   </div>
 </footer>
@@ -104,7 +104,7 @@
   <div class="cmdk-box" role="dialog" aria-modal="true" aria-label="Search">
     <div class="cmdk-in">
       <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
-      <input id="cmdkInput" type="search" placeholder="Search games, creators, mechanics…" autocomplete="off" spellcheck="false" aria-controls="cmdkList">
+      <input id="cmdkInput" type="search" aria-label="Search games, creators, mechanics" placeholder="Search games, creators, mechanics…" autocomplete="off" spellcheck="false" aria-controls="cmdkList">
       <kbd>esc</kbd>
     </div>
     <div class="cmdk-list" id="cmdkList" role="listbox"></div>
@@ -114,10 +114,12 @@
 <div class="toast" id="toast" role="status"></div>
 
 <script src="data.js?v=5"></script>
-<script src="discover.js?v=12"></script>
-<script src="i18n.js?v=8"></script>
+<script src="data-zh.js?v=1"></script>
+<script src="curation.js?v=1"></script>
+<script src="discover.js?v=13"></script>
+<script src="i18n.js?v=11"></script>
 <script src="weeks.js?v=3"></script>
 <script src="guides.js?v=2"></script>
-<script src="app.js?v=52"></script>
+<script src="app.js?v=55"></script>
 </body>
 </html>

@@ -1,5 +1,9 @@
 (() => {
   const { creators, games, mechanics, byId, mechBySlug } = window.PB;
+  // Chinese for recipe and mechanic text (data-zh.js); English everywhere else and in anything copied into an agent
+  const PZ = window.PB_ZH || {}, ZH0 = !!window.PB_I18N?.zh;
+  const zGame = (g, k) => (ZH0 && (k === 'style' ? PZ.styles?.[g.title] : PZ.games?.[g.parent || g.id]?.[k])) || g[k];
+  const zMech = m => ZH0 && PZ.mechanics?.[m.slug] || {};
   // Launch: show no invented numbers or personas. In-house games and mechanics are made by Playbook.
   creators.Playbook = { name: 'Playbook', bio: 'Open recipes for web games, made in-house.', hue: 18 };
   games.forEach(g => { g.by = 'Playbook'; g.plays = 0; g.remixes = 0; });
@@ -10,6 +14,12 @@
   // Visitor stats: GoatCounter (no cookies, no personal data). Empty = off and nothing loads.
   // Set to the site code, e.g. 'playbook-vibe' for https://playbook-vibe.goatcounter.com
   const GOATCOUNTER = '';
+  // Supabase project for the Studio early-access test (URL and anon key are public by design; tables are insert-only)
+  const SUPA_URL = '';
+  const SUPA_ANON = '';
+  const supaInsert = (table, row) => SUPA_URL && SUPA_ANON
+    ? fetch(`${SUPA_URL}/rest/v1/${table}`, { method: 'POST', headers: { apikey: SUPA_ANON, Authorization: `Bearer ${SUPA_ANON}`, 'Content-Type': 'application/json', Prefer: 'return=minimal' }, body: JSON.stringify(row) })
+    : Promise.resolve(null);
   if (GOATCOUNTER && !LOCAL) {
     const gc = document.createElement('script');
     gc.async = true; gc.src = 'https://gc.zgo.at/count.js';
@@ -30,11 +40,8 @@
   const MCP_PKG = 'github:rexgu9911/playbook-mcp';
   const MCP_CMD = `claude mcp add playbook -- npx -y ${MCP_PKG}`;
   const MCP_REPO = 'https://github.com/rexgu9911/playbook-mcp';
-  const SITE = 'playbook.example';
 
   const esc = s => String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
-  const fmt = n => n >= 1e6 ? (n / 1e6).toFixed(n >= 1e7 ? 0 : 1).replace(/\.0$/, '') + 'M'
-    : n >= 1e3 ? (n / 1e3).toFixed(n >= 1e5 ? 0 : 1).replace(/\.0$/, '') + 'k' : String(n);
   const ava = (name, cls = '') => `<i class="ava ${cls}" style="--h:${creators[name]?.hue ?? 20}"></i>`;
   const icon = {
     full: '<svg viewBox="0 0 24 24"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg>',
@@ -131,16 +138,17 @@
     I18N?.apply(root);
     rollify(root); splitify(root);
   };
+  // stop watching nodes that are about to be replaced, so observers never hold detached elements
+  const unhydrate = root => {
+    $$('.media', root).forEach(m => { liveIO.unobserve(m); autoIO.unobserve(m); });
+    $$('.rv:not(.in), .split:not(.in)', root).forEach(r => revIO.unobserve(r));
+  };
+  const swap = (el, html) => { unhydrate(el); el.innerHTML = html; hydrate(el); };
 
   const ic = {
-    game: '<svg viewBox="0 0 24 24"><path d="M6 12h4M8 10v4M15 11h.01M18 13h.01M7 6h10a5 5 0 0 1 5 5v2a5 5 0 0 1-9 3h-2a5 5 0 0 1-9-3v-2a5 5 0 0 1 5-5z"/></svg>',
     code: '<svg viewBox="0 0 24 24"><path d="M8 7l-5 5 5 5M16 7l5 5-5 5M14 4l-4 16"/></svg>',
-    eye: '<svg viewBox="0 0 24 24"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg>',
     remix: '<svg viewBox="0 0 24 24"><path d="M17 2l4 4-4 4M3 11V9a3 3 0 0 1 3-3h15M7 22l-4-4 4-4M21 13v2a3 3 0 0 1-3 3H3"/></svg>',
-    cube: '<svg viewBox="0 0 24 24"><path d="M12 2l9 5v10l-9 5-9-5V7l9-5zM3 7l9 5 9-5M12 12v10"/></svg>',
-    chart: '<svg viewBox="0 0 24 24"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg>',
     up: '<svg viewBox="0 0 24 24"><path d="M12 19V5M5 12l7-7 7 7"/></svg>',
-    plug: '<svg viewBox="0 0 24 24"><path d="M9 2v6M15 2v6M6 8h12v4a6 6 0 0 1-12 0V8zM12 18v4"/></svg>',
   };
   const media = (g, extra = '', cls = '') =>
     `<div class="media ${cls}" data-src="${g.src}&attract=1" style="--c1:${g.colors[0]};--c2:${g.colors[1]}"><div class="poster"></div><div class="scan"></div>${extra}</div>`;
@@ -168,16 +176,10 @@
       <div class="mmeta"><h3>${esc(m.name)}</h3><div class="row"><span>${esc(m.cat)}</span><span>Live demo</span></div></div>
     </a>`;
 
-  const sorters = {
-    played: (a, b) => b.plays - a.plays,
-    remixed: (a, b) => b.remixes - a.remixes,
-    fresh: (a, b) => a.days - b.days,
-    rising: (a, b) => b.remixes / b.days - a.remixes / a.days,
-  };
   const GENRES = ['All', '3D', 'Racing', 'Survivor', 'Platformer', 'Shooter', 'Puzzle', 'Action'];
 
   // ---------- pages ----------
-  const state = { genre: 'All', sort: 'played', mcat: 'All', chart: 'played', client: 'Claude' };
+  const state = { genre: 'All', mcat: 'All', client: 'Claude Code' };
 
   const wallControls = () => `
     <div class="controls">
@@ -190,49 +192,15 @@
   }
   function drawWall() {
     const grid = $('#wallGrid'); if (!grid) return;
-    $$('.media', grid).forEach(m => liveIO.unobserve(m));
     const list = games.filter(g => state.genre === 'All' || g.genres.includes(state.genre)).sort((a, b) => (a.parent ? 1 : 0) - (b.parent ? 1 : 0));
-    grid.innerHTML = list.length
+    swap(grid, list.length
       ? list.map((g, i) => card(g, { delay: Math.min(i, 8) * 30 })).join('')
-      : '<div class="empty">Nothing here yet.</div>';
-    hydrate(grid);
+      : '<div class="empty">Nothing here yet.</div>');
   }
-
-  const contest = () => `
-    <a class="contest calm rv" href="#/jam">
-      <div><span class="tag"><span class="dot"></span>Coming soon</span><div class="money">Jam #1</div><p>Our first vibe gaming jam is coming. Make a game with AI, share it as a link, get picked by the community.</p></div>
-      <div class="right">Community<br>Game Jam<br><span class="btn btn-sm">Get notified</span></div>
-    </a>`;
 
   // ---------- home: maker-first. Hero shows a recipe going into your own agent. ----------
   const poster = g => `<div class="media" style="--c1:${g.colors[0]};--c2:${g.colors[1]}"><div class="poster"></div></div>`;
-  const PAIRS = [['neon-drift', 'neon-drift-2'], ['swarm-arena', 'swarm-arena-1'], ['sky-hop', 'sky-hop-2'], ['tile-forge', 'tile-forge-2']];
   const slugify = t => t.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
-  const flowInner = ([bid, rid]) => {
-    const b = byId[bid], r = byId[rid];
-    const ask = `Remake ${b.title}: ${r.style.replace(/ · /g, ', ').toLowerCase()}`;
-    const lines = [
-      `<span class="u">›</span> ${esc(ask)}`,
-      `<span class="t">⏺</span> playbook.get_recipe(<span class="s">"${b.id}"</span>)`,
-      `  <span class="d">⎿ prompt · ${b.mechanics.length} mechanics · palette · sound</span>`,
-      `<span class="t">⏺</span> playbook.add_mechanic(<span class="s">"${esc(b.mechanics[1] || b.mechanics[0])}"</span>)`,
-      `  <span class="d">⎿ added to src/feel/</span>`,
-      `<span class="t">⏺</span> Write(<span class="s">${slugify(r.title)}.html</span>)`,
-      `  <span class="d">⎿ 1 file · runs offline · in your repo</span>`,
-      `<span class="t">⏺</span> playbook.publish --remix-of ${b.id}`,
-      `  <span class="ok">⎿ ✔ live · credits ${esc(b.by)}</span>`,
-    ];
-    return `
-      <div class="flow-top">
-        <a class="flow-card" href="#/game/${b.id}">${media(b, `<span class="flabel"><span class="chip">Original</span></span>`)}<b>${esc(b.title)}</b><span>by ${esc(b.by)}</span></a>
-        <span class="flow-arrow" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 12h15M13 6l6 6-6 6"/></svg></span>
-        <a class="flow-card" href="#/game/${r.id}">${media(r, `<span class="flabel"><span class="chip hot">Your version</span></span>`)}<b>${esc(r.title)}</b><span>remade by ${esc(r.by)}</span></a>
-      </div>
-      <div class="agent" aria-label="Example agent session">
-        <div class="agent-bar"><i></i><i></i><i></i><span>claude — ~/my-games</span></div>
-        <pre class="agent-log">${lines.map((l, k) => `<span class="l" style="--k:${k}">${l}</span>`).join('\n')}</pre>
-      </div>`;
-  };
 
   // horizontal rail: title row with arrows + a snap-scrolling track
   const chev = d => `<svg viewBox="0 0 24 24"><path d="${d === 'l' ? 'M15 5l-7 7 7 7' : 'M9 5l7 7-7 7'}"/></svg>`;
@@ -258,62 +226,20 @@
   const tabIc = {
     recipes: '<svg viewBox="0 0 24 24"><path d="M6 12h4M8 10v4M15 11h.01M18 13h.01M7 6h10a5 5 0 0 1 5 5v2a5 5 0 0 1-9 3h-2a5 5 0 0 1-9-3v-2a5 5 0 0 1 5-5z"/></svg>',
     mech: '<svg viewBox="0 0 24 24"><path d="M12 3v4M12 17v4M3 12h4M17 12h4M5.6 5.6l2.8 2.8M15.6 15.6l2.8 2.8M5.6 18.4l2.8-2.8M15.6 8.4l2.8-2.8"/></svg>',
-    web: '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/></svg>',
-    fire: '<svg viewBox="0 0 24 24"><path d="M12 3s5 4.5 5 9.5A5 5 0 0 1 7 12.5C7 10 9 8 9 8s.5 2.5 2.5 3C11.5 7.5 12 3 12 3z"/></svg>',
-    chart: '<svg viewBox="0 0 24 24"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg>',
   };
 
   // tiny poster for a Discover game (generated colours, no third-party images)
-  const dposter = d => `<div class="cl-item ${d.cover ? 'has-cover' : ''}" style="${calm(d)}">${coverImg(d)}<b>${esc(d.title)}</b><span>${esc(d.creator || host(d.url))}</span></div>`;
-  const FEATURE = ['Starry Nightrider', 'Oil Paint', 'What the Water Keeps', 'Sunwarden', 'Tennis', 'Evensong'];
 
   // order for "best of the web": hand-picked first, then covered games newest first, then live ones
-  const bestOfWeb = () => {
-    const picked = FEATURE.map(t => DISC.find(d => d.title === t)).filter(Boolean);
-    const rest = [...DISC].sort(byNew).filter(d => !picked.includes(d));
-    return [...picked, ...rest.filter(d => d.cover), ...rest.filter(d => !d.cover && d.embeddable), ...rest.filter(d => !d.cover && !d.embeddable)];
-  };
-  const HOME_GENRES = ['All', 'Shooter', 'Racing', 'Adventure', 'Action', 'Sports', 'Sim', 'Strategy', 'RPG'];
-  const hstate = { genre: 'All' };
-  function drawBest() {
-    const grid = $('#bestGrid'); if (!grid) return;
-    $$('.media', grid).forEach(m => autoIO.unobserve(m)); stopPreview();
-    // 'All' skips games already shown higher up the home page; a genre shows everything in it
-    const list = bestOfWeb().filter(d => hstate.genre === 'All' ? !hstate.seen?.has(d.url) && d.platform !== 'jam' : d.genre === hstate.genre).slice(0, 12);
-    grid.innerHTML = list.length ? list.map(gcard).join('') : '<div class="empty"><b>Nothing here yet</b>Try another genre.</div>';
-    hydrate(grid);
-  }
 
   // ---------- home: this week in vibe gaming. Media first, picked by hand, creators credited. ----------
-  const PICKS = ['Starry Nightrider', 'Oil Paint', 'Evensong', 'What the Water Keeps', 'Rooftop Rally'];
   // all-time best: jam winners and the vibe-coded games that drew the most attention (see notes for sources)
-  const BEST = ['A Game About Capybaras Delivering Food', 'Wildbrush', 'Starfall', 'fly.pieter.com', 'Tiny Skies', 'Sky Reach', "Fanto's Mega-Mart",
-    'The Long Silence', 'Kanso', 'Tidewater', 'HALDANE-4', 'Arkenfall', 'The Great Taxi Assignment', 'DUST FRONT'];
-  const SHOWCASE = ['hit-stop', 'screen-shake', 'dodge-roll', 'combo-window', 'squash-stretch', 'health-bar-lag', 'pickup-magnet', 'procedural-sfx'];
-  const weekOf = () => {
-    const last = DISC.map(d => d.date || '').filter(x => x.length === 10).sort().pop(); if (!last) return '';
-    const t = new Date(last + 'T00:00:00'); t.setDate(t.getDate() - ((t.getDay() + 6) % 7));
-    return t.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
-  };
-  const pick = (d, hero, why = '') => `
-    <article class="card pick ${hero ? 'pk-hero' : ''} rv">
-      <a class="pick-media" href="${gLink(d)}" aria-label="${esc(d.title)}: details and play">
-        <div class="media ${d.cover ? 'has-cover' : ''}" ${d.cover && d.embeddable && canHover ? `data-ext="${esc(d.url)}"` : ''} style="${calm(d)}">
-          <div class="poster"><b class="ptitle">${esc(d.title)}</b></div>${coverImg(d)}<div class="scan"></div>
-          <div class="top"><span>${hero ? '<span class="chip hot">Pick of the week</span>' : ''}</span><span><span class="chip">${dIc.out}${esc(host(d.url))}</span>${favBtn(d)}</span></div>
-          <span class="playbtn" aria-hidden="true">${playIco}</span>
-        </div>
-      </a>
-      <div class="pick-meta">
-        <h3>${esc(d.title)}</h3>
-        ${hero ? `<p>${esc(why || d.note || '')}</p>` : ''}
-        ${d.creator ? `<a class="pick-by" href="${crLink(d.creator)}">${crAva(d.creator)}<span>${esc(d.creator)}</span></a>` : ''}
-      </div>
-    </article>`;
-
+  // hand-picked lists live in curation.js (shared with tools/build_guides.py)
+  const BEST = window.PB_CURATION?.best || [];
+  const SHOWCASE = window.PB_CURATION?.showcase || [];
   function home() {
     const issue = WEEKS[0];
-    const picks = issue ? issue.games.map(p => p.d) : PICKS.map(t => DISC.find(d => d.title === t)).filter(Boolean);
+    const picks = issue ? issue.games.map(p => p.d) : [];
     const whyOf = d => issue?.games.find(p => p.d === d)?.why;
     const heroGames = [...picks.filter(d => d.cover), ...BEST.map(t => DISC.find(d => d.title === t)).filter(d => d && d.cover && !picks.includes(d))].slice(0, 9);
     const best = BEST.map(t => DISC.find(d => d.title === t)).filter(d => d && !picks.includes(d) && !heroGames.includes(d));
@@ -321,17 +247,14 @@
     const newest = [...DISC].sort(byNew).filter(d => !picks.includes(d) && !best.includes(d)).slice(0, 18);
     const fresh = [...newest.filter(d => d.cover), ...newest.filter(d => !d.cover)].slice(0, 12);
     const seen = new Set([...picks, ...heroGames, ...best, ...fresh].map(d => d.url));
-    hstate.seen = seen;   // the genre grid skips these too
     const newCover = c => c.games.some(g => !seen.has(g.url) && g.cover) ? 1 : 0;
     const follow = CREATORS.filter(c => c.games.some(g => !seen.has(g.url) && (g.cover || g.embeddable)))
       .sort((x, y) => newCover(y) - newCover(x) || y.games.length - x.games.length).slice(0, 10);
     const followCards = follow.map((c, i) => crcard(c, i, seen)).join('');
     const avoid0 = new Set(seen); follow.forEach(c => seen.add(crTop(c, avoid0).url));
-    const reel = DISC.filter(d => d.cover && !seen.has(d.url) && d.platform !== 'jam').sort(byNew).slice(0, 10);
-    reel.forEach(d => seen.add(d.url));
     const jams = DISC.filter(d => d.platform === 'jam' && !seen.has(d.url)).sort((a, b) => (a.cover ? 0 : 1) - (b.cover ? 0 : 1) || byNew(a, b));
     const show = SHOWCASE.map(s => mechBySlug[s]).filter(Boolean);
-    const wk = issue ? weekName(issue.id).replace(/, \d{4}$/, '') : weekOf();
+    const wk = issue ? weekName(issue.id).replace(/, \d{4}$/, '') : '';
     const tiles = [
       ['#/mechanics', tabIc.mech, 'Game feel', `${mechanics.length} parts`, 'Hit-stop, shake, dodge roll, combos'],
       ['#/games', tabIc.recipes, 'Recipes', `${games.filter(g => !g.parent).length} games`, 'Open games you can remake'],
@@ -342,7 +265,7 @@
       <section class="hx2">
         <div class="wrap hx2-head">
           <span class="tag"><span class="dot"></span>The home of vibe gaming</span>
-          <h1 class="hx2-h" data-noi18n>${ZH ? `玩最好的<span class="hx2-rot">${['vibe', 'AI 做的', '一句话做出的', '一个周末做完的'].map((w, i) => `<b class="${i ? '' : 'on'}">${w}</b>`).join('')}</span>网页游戏`
+          <h1 class="hx2-h" data-noi18n aria-label="${ZH ? '玩最好的 AI 网页游戏' : 'Play the best AI-made web games'}">${ZH ? `玩最好的<span class="hx2-rot">${['vibe', 'AI 做的', '一句话做出的', '一个周末做完的'].map((w, i) => `<b class="${i ? '' : 'on'}">${w}</b>`).join('')}</span>网页游戏`
             : `Play the best <span class="hx2-rot">${['vibe-coded', 'AI-made', 'one-prompt', 'weekend-built'].map((w, i) => `<b class="${i ? '' : 'on'}">${w}</b>`).join('')}</span> games`}</h1>
           <p>Hand-picked web games made with AI. Free, no download, and every one credited to the person who made it.</p>
           <div class="hx2-acts"><a class="btn btn-accent" href="#/play">Play now</a><a class="btn" href="#/make">Make one</a></div>
@@ -367,16 +290,6 @@
         return `<div class="ticker-run">${run}</div><div class="ticker-run" aria-hidden="true">${run}</div>`;
       })()}</div></div>
 
-      ${reel.length > 2 ? `<section class="reel" id="reel" aria-label="Showreel">
-        <div class="reel-stick"><div class="wrap">
-          <a class="reel-card" id="reelCard" href="${gLink(reel[0])}">
-            ${reel.map((d, i) => `<img class="${i ? '' : 'on'}" src="${esc(d.cover)}" alt="" loading="${i < 2 ? 'eager' : 'lazy'}" decoding="async" referrerpolicy="no-referrer" onerror="this.remove()">`).join('')}
-            <span class="reel-shade"></span>
-            <span class="reel-top"><span class="tag"><span class="dot"></span>Showreel</span><span class="reel-tc" id="reelTc">00:00 · 1/${reel.length}</span></span>
-            <span class="reel-cap"><b id="reelTitle">${esc(reel[0].title)}</b><span id="reelBy">${esc(reel[0].creator || host(reel[0].url))}${reel[0].genre ? ` · ${esc(reel[0].genre)}` : ''}</span></span>
-          </a>
-        </div></div>
-      </section>` : ''}
 
       <div class="wrap idx">
         ${best.length ? rail({ title: 'All-time best', sub: 'The vibe-coded games people keep coming back to: jam winners and the ones that went viral.', href: '#/play', more: `All ${DISC.length}`, items: best.map(gcard).join('') }) : ''}
@@ -402,10 +315,8 @@
 
         ${jams.length ? rail({ title: 'From the game jams', sub: 'Winners and standouts from Cursor Vibe Jam and other AI game jams.', href: '#/play', items: jams.slice(0, 12).map(gcard).join('') }) : ''}
 
-        ${contest()}
       </div>`;
     bindRails(app);
-    bindReel(reel);
     bindHero(heroGames, picks, whyOf);
   }
 
@@ -448,46 +359,6 @@
     if (!CALM) cfTimer = setInterval(() => { if (!cf.isConnected) return clearInterval(cfTimer); if (!hover && !document.hidden && cf.getBoundingClientRect().bottom > 0) show(c + 1); }, 5000);
   }
 
-  // ---- showreel: grows from a tilted card to full width as you scroll; crossfades while on screen ----
-  let reelTimer = null, reelIO = null;
-  function bindReel(list) {
-    clearInterval(reelTimer); reelIO?.disconnect();
-    const sec = $('#reel'), card = $('#reelCard'); if (!sec || !card) return;
-    const imgs = () => $$('img', card);
-    let i = 0, secs = 0, playing = false;
-    const show = k => {
-      const all = imgs(); if (!all.length) return;
-      i = (k + list.length) % list.length;
-      all.forEach((im, n) => im.classList.toggle('on', n === i % all.length));
-      const d = list[i];
-      card.href = gLink(d);
-      $('#reelTitle').textContent = d.title;
-      $('#reelBy').textContent = (d.creator || host(d.url)) + (d.genre ? ` · ${d.genre}` : '');
-    };
-    const tick = () => {
-      if (!playing || !sec.isConnected) return;
-      secs++;
-      if (secs % 3 === 0) show(i + 1);
-      const tc = $('#reelTc'); if (tc) tc.textContent = `00:${String(secs % 60).padStart(2, '0')} · ${i + 1}/${list.length}`;
-    };
-    if (!CALM) {
-      reelIO = new IntersectionObserver(es => { playing = es[0].isIntersecting; }, { threshold: 0.25 });
-      reelIO.observe(card);
-      reelTimer = setInterval(tick, 1000);
-    }
-    reelScroll();
-  }
-  const reelScroll = () => {
-    const sec = $('#reel'), card = $('#reelCard'); if (!sec || !card) return;
-    if (CALM || innerWidth < 861) { card.style.setProperty('--p', 1); return; }
-    const r = sec.getBoundingClientRect(), total = Math.max(1, r.height - innerHeight);
-    const t = Math.min(1, Math.max(0, -r.top / total / 0.65));
-    card.style.setProperty('--p', (1 - Math.pow(1 - t, 3)).toFixed(4));  // ease-out
-  };
-  let reelRaf = 0;
-  window.addEventListener('scroll', () => { if (!reelRaf) reelRaf = requestAnimationFrame(() => { reelRaf = 0; reelScroll(); }); }, { passive: true });
-  window.addEventListener('resize', reelScroll);
-
   // ---------- make: the toolkit hub for vibe coders ----------
   function makePage() {
     const originals = games.filter(g => !g.parent);
@@ -510,7 +381,8 @@
           <form class="idea-r" id="ideaForm"><div class="idea-row"><input id="ideaIn" maxlength="200" required autocomplete="off" placeholder="${ZH ? '比如：一个鱼会反击的治愈钓鱼游戏' : 'e.g. a cozy fishing game where the fish fight back'}"><button class="btn btn-accent" type="submit">Write my prompt</button></div>
             <div class="idea-ex">${(ZH ? ['沉没城市里的魂系 Boss 战', '会漂移的超市购物车赛车', '在云上跳跃的猫咪平台跳跃', '一波波怪物的割草肉鸽'] : ['a souls-like boss fight in a sunken city', 'a shopping-cart drift racer', 'a cat platformer above the clouds', 'a horde survivor with weird upgrades']).map(t => `<button type="button" class="chip" data-idea="${esc(t)}">${esc(t)}</button>`).join('')}</div>
             <div id="ideaOut" hidden><div class="prompt" id="ideaPrompt" data-noi18n></div><div class="idea-parts" id="ideaParts"></div>
-              <div class="prompt-row"><a class="link" href="#/mcp">Connect the Playbook MCP first</a><button class="copy" type="button" id="ideaCopy">Copy prompt</button></div></div>
+              <div class="prompt-row"><a class="link" href="#/mcp">Connect the Playbook MCP first</a><button class="copy" type="button" id="ideaCopy">Copy prompt</button></div>
+              ${STUDIO_EXAMPLES.length ? '<a class="st-hook" href="#/studio?make">Need the art and sound too? Studio early access →</a>' : ''}</div>
           </form>
         </section>
         <div class="stack">${steps.map((x, k) => `<div class="scard c${k}" style="--k:${k}"><div class="scard-l"><span class="n">${String(k + 1).padStart(2, '0')} / ${String(steps.length).padStart(2, '0')}</span><h3>${x[0]}</h3></div><div class="scard-r"><p>${x[1]}</p><div class="sx">${x[2]}</div></div></div>`).join('')}</div>
@@ -601,26 +473,12 @@
         <p class="note">Then just ask: “Add hit-stop to my game” · “Remake Neon Drift, but underwater” · “Find AI-made racing games for inspiration”.</p>
       </div></section>
       <div class="wrap">
-        <div class="sec-head plain"><h2>Recipes with <span style="color:#ff6a3d">✺</span> Fable 5.2</h2></div>
-        <div class="pills" style="margin-bottom:16px"><button class="pill on">Popular</button><a class="pill" style="display:inline-flex;align-items:center" href="#/games/3D">3D</a><a class="pill" style="display:inline-flex;align-items:center" href="#/games/Puzzle">Puzzle</a><a class="pill" style="display:inline-flex;align-items:center" href="#/mechanics">Mechanics</a></div>
+        <div class="sec-head plain"><div><h2>Open recipes to start from</h2><p>Ask your agent to remake one with get_recipe.</p></div><a class="link" href="#/games">All recipes</a></div>
         <div class="wall three">${originals.map(g => card(g, { verb: true })).join('')}</div>
-        <section class="section"><div class="sec-head plain"><h2>One-click mechanics for ${esc(state.client)}</h2></div>
-          <div class="mgrid">${mechanics.slice(0, 5).map(mcard).join('')}</div></section>
+        <section class="section"><div class="sec-head plain"><div><h2>Game feel to add by name</h2><p>Ask your agent to add one with get_mechanic.</p></div><a class="link" href="#/mechanics">All mechanics</a></div>
+          <div class="mgrid">${SHOWCASE.map(x => mechBySlug[x]).filter(Boolean).slice(0, 5).map(mcard).join('')}</div></section>
       </div>`;
-    $('#clients').onclick = e => { const b = e.target.closest('[data-client]'); if (!b) return; state.client = b.dataset.client; mcpPage(); hydrate(); };
-  }
-
-  function jamPage() {
-    app.innerHTML = `
-      <section class="page-head dots"><div class="wrap">
-        <span class="tag"><span class="dot"></span>Coming soon</span>
-        <h1>Playbook <em>Jam #1</em></h1>
-        <p>Pick any game on the wall, remake it in your agent, publish it as a link. Dates, rules and prizes will be announced here first.</p>
-      </div></section>
-      <div class="wrap">${contest()}
-        <section class="section"><div class="sec-head"><div><h2>Start from one of these</h2></div></div>
-        <div class="wall">${games.filter(g => !g.parent).slice(0, 4).map(g => card(g, { verb: true })).join('')}</div></section>
-      </div>`;
+    $('#clients').onclick = e => { const b = e.target.closest('[data-client]'); if (!b) return; state.client = b.dataset.client; unhydrate(app); mcpPage(); hydrate(); };
   }
 
   function gamePage(id) {
@@ -639,20 +497,20 @@
                 <div class="by">${ava(g.by)}<a href="#/games">Playbook ${g.parent ? 'remix' : 'original'}</a>${g.parent ? `<span>· remix of <a href="#/game/${root.id}" style="color:var(--ink)">${esc(root.title)}</a></span>` : ''}</div></div>
               <div class="pact">
                 <button class="icon-btn" id="redo" aria-label="Restart">${icon.redo}</button>
-                <button class="icon-btn" data-copy="https://${SITE}/g/${g.id}" aria-label="Copy link">${icon.link}</button>
+                <button class="icon-btn" data-copy="${LIVE}#/game/${g.id}" aria-label="Copy link">${icon.link}</button>
                 <button class="icon-btn" id="full" aria-label="Fullscreen">${icon.full}</button>
               </div>
             </div>
-            <div class="hint">${esc(g.controls)}</div>
+            <div class="hint">${esc(zGame(g, 'controls'))}</div>
           </div>
 
           <aside class="recipe bezel rv" style="--d:100ms"><div class="core">
             <h2>Recipe <span class="chip">${g.is3d ? 'Three.js' : 'Canvas 2D'} · 1 file</span></h2>
             <p class="lead">What this game is made of. Take all of it, or just the parts you want.</p>
             <button class="btn btn-accent btn-lg btn-block" data-remake="${g.id}"><span>Remake this game</span><span class="btn-ico">↗</span></button>
-            <div class="rsec"><label>Mechanics</label><div class="mchips">${g.mechanics.map(s => `<a class="mchip" href="#/mechanic/${s}">${esc(mechBySlug[s].name)}</a>`).join('')}</div></div>
-            <div class="rsec"><label>Art direction</label><div class="sw"><i style="background:${g.colors[0]}"></i><i style="background:${g.colors[1]}"></i><span>${esc(g.style)}</span></div></div>
-            <div class="rsec"><label>Sound</label><div style="font-size:14px">${esc(g.audio)}</div></div>
+            <div class="rsec"><label>Mechanics</label><div class="mchips">${g.mechanics.map(s => `<a class="mchip" href="#/mechanic/${esc(s)}">${esc(mechBySlug[s]?.name || s)}</a>`).join('')}</div></div>
+            <div class="rsec"><label>Art direction</label><div class="sw"><i style="background:${g.colors[0]}"></i><i style="background:${g.colors[1]}"></i><span>${esc(zGame(g, 'style'))}</span></div></div>
+            <div class="rsec"><label>Sound</label><div style="font-size:14px">${esc(zGame(g, 'audio'))}</div></div>
             <div class="rsec"><label>Prompt</label><div class="prompt">${esc(g.prompt)}</div><div class="prompt-row"><button class="copy" data-copy="${esc(g.prompt)}">Copy prompt</button></div></div>
           </div></aside>
         </div>
@@ -692,10 +550,8 @@
       </div></section>`;
     const draw = () => {
       const grid = $('#mgrid');
-      $$('.media', grid).forEach(m => liveIO.unobserve(m));
-      grid.innerHTML = mechanics.filter(m => state.mcat === 'All' || m.cat === state.mcat).sort((a, b) => b.installs - a.installs).map(mcard).join('');
+      swap(grid, mechanics.filter(m => state.mcat === 'All' || m.cat === state.mcat).map(mcard).join(''));
       $$('.media', grid).forEach(m => m.style.pointerEvents = 'none');
-      hydrate(grid);
     };
     draw();
     $('#mcats').addEventListener('click', e => { const b = e.target.closest('[data-cat]'); if (!b) return; state.mcat = b.dataset.cat; $$('#mcats .pill').forEach(p => p.classList.toggle('on', p === b)); draw(); });
@@ -716,9 +572,9 @@
           </div>
           <aside class="recipe bezel rv" style="--d:100ms"><div class="core">
             <h2>Install <span class="chip">${esc(m.cat)}</span></h2>
-            <p class="lead">${esc(m.desc)}</p>
-            <div class="cmd" style="margin-top:0"><code><b>›</b> ${cmd}</code><button class="copy" data-copy="${cmd}">Copy</button></div>
-            ${m.keys?.length ? `<div class="rsec" style="margin-top:18px"><label>Key numbers</label><div class="keys">${m.keys.map(k => `<div><code>${esc(k.name)}</code><b>${esc(String(k.value))}${k.unit ? ` <span>${esc(k.unit)}</span>` : ''}</b><p>${esc(k.note)}</p></div>`).join('')}</div></div>` : ''}
+            <p class="lead">${esc(zMech(m).desc || m.desc)}</p>
+            <div class="cmd" style="margin-top:0"><code><b>›</b> ${esc(cmd)}</code><button class="copy" data-copy="${esc(cmd)}">Copy</button></div>
+            ${m.keys?.length ? `<div class="rsec" style="margin-top:18px"><label>Key numbers</label><div class="keys">${m.keys.map(k => `<div><code>${esc(k.name)}</code><b>${esc(String(k.value))}${k.unit ? ` <span>${esc(k.unit)}</span>` : ''}</b><p>${esc(zMech(m).keys?.[k.name] || k.note)}</p></div>`).join('')}</div></div>` : ''}
             <div class="rsec" style="margin-top:18px"><label>Or paste into your agent</label><div class="prompt">${esc(m.prompt)}</div><div class="prompt-row"><button class="copy" data-copy="${esc(m.prompt)}">Copy prompt</button></div></div>
             <div class="rsec"><label>Works with</label><div class="mchips"><span class="mchip">Canvas 2D</span><span class="mchip">Three.js</span><span class="mchip">Phaser</span></div></div>
             <p class="note">The first line works once <a class="link" href="#/mcp">Playbook MCP</a> is installed; the prompt works in any coding agent as is.</p>
@@ -729,78 +585,6 @@
         <div class="sec-head"><div><span class="tag rv">In the wild</span><h2 class="rv" style="--d:60ms">Games using it.</h2></div></div>
         <div class="wall">${used.map(g => card(g)).join('')}</div>
       </div></section>`;
-  }
-
-  function publishPage() {
-    app.innerHTML = `
-      <section class="page-head"><div class="wrap">
-        <span class="tag rv">Publish</span>
-        <h1 class="rv" style="--d:60ms">One file in.<br>One link out.</h1>
-        <p class="rv" style="--d:120ms">Drop the HTML file your agent made. You get a game page, a share link and a spot on the charts.</p>
-      </div></section>
-      <section class="section tight" style="padding-top:20px"><div class="wrap">
-        <div class="pubgrid">
-          <div class="drop bezel rv" id="drop"><div class="core"><div>
-            <span class="tag">.html · up to 5 MB</span>
-            <h3>Drop your game here</h3>
-            <p class="muted">Publishing opens soon. For now this preview runs only in your browser tab; nothing is uploaded.</p>
-            <div class="or">or</div>
-            <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap">
-              <label class="btn btn-plain" style="cursor:pointer">Choose file<input id="file" type="file" accept=".html,text/html" hidden></label>
-              <button class="btn btn-accent btn-plain" id="sample">Try with a sample</button>
-            </div>
-          </div></div></div>
-          <div class="term bezel rv" style="--d:100ms"><div class="core">
-            <div class="bar3"><i></i><i></i><i></i></div>
-            <pre id="term"><span class="d"># or straight from your agent</span>
-<span class="p">$</span> playbook publish ./my-game.html
-<span class="d">waiting for a file…</span></pre>
-          </div></div>
-        </div>
-        <div class="result bezel" id="result"><div class="core">
-          <div class="screen"><iframe id="preview" title="Your game"></iframe></div>
-          <div class="info">
-            <span class="tag"><span class="dot"></span>Preview</span>
-            <h3 id="rtitle">Your game</h3>
-            <div class="cmd" style="margin:0"><code id="rlink"></code><button class="copy" id="rcopy">Copy</button></div>
-            <p class="muted small">When publishing opens, this link will work anywhere, embed in any site, and credit the game you remixed from.</p>
-          </div>
-        </div></div>
-      </div></section>`;
-    const term = $('#term'), drop = $('#drop'), result = $('#result');
-    let blobUrl = null;
-    const run = (name, url, sizeKb) => {
-      const slug = name.replace(/\.html?$/i, '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') || 'my-game';
-      const lines = [
-        `<span class="p">$</span> playbook publish ./${esc(name)}`,
-        `<span class="d">→</span> reading file <span class="y">${sizeKb} KB</span>`,
-        `<span class="d">→</span> checking: single file, no trackers, runs offline <span class="ok">ok</span>`,
-        `<span class="d">→</span> recording 6s attract loop for the wall <span class="ok">ok</span>`,
-        `<span class="d">→</span> extracting recipe: mechanics, palette, prompt <span class="ok">ok</span>`,
-        `<span class="ok">✔ published</span>  https://${SITE}/g/${esc(slug)}`,
-      ];
-      term.innerHTML = ''; result.classList.remove('on');
-      lines.forEach((l, i) => setTimeout(() => {
-        term.innerHTML += l + '\n';
-        if (i === lines.length - 1) {
-          $('#preview').src = url; $('#rtitle').textContent = slug.replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
-          $('#rlink').textContent = `${SITE}/g/${slug}`; $('#rcopy').dataset.copy = `https://${SITE}/g/${slug}`;
-          result.classList.add('on'); result.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        }
-      }, 450 * (i + 1)));
-    };
-    const take = file => {
-      if (!file) return;
-      if (!/\.html?$/i.test(file.name)) return toast('Please choose an .html file');
-      if (blobUrl) URL.revokeObjectURL(blobUrl);
-      blobUrl = URL.createObjectURL(new Blob([file], { type: 'text/html' }));
-      run(file.name, blobUrl, Math.max(1, Math.round(file.size / 1024)));
-    };
-    $('#file').onchange = e => take(e.target.files[0]);
-    $('#sample').onclick = () => run('tile-forge.html', 'games/tile-forge.html?theme=2', 38);
-    ['dragenter', 'dragover'].forEach(ev => drop.addEventListener(ev, e => { e.preventDefault(); drop.classList.add('over'); }));
-    ['dragleave', 'drop'].forEach(ev => drop.addEventListener(ev, e => { e.preventDefault(); drop.classList.remove('over'); }));
-    drop.addEventListener('drop', e => take(e.dataTransfer.files[0]));
   }
 
   function notFound() {
@@ -819,10 +603,12 @@
 
 
   // ---------- discover: games from around the web (link + credit only) ----------
-  const DISC = (window.PB_DISCOVER || []).filter(d => !d.stale).map((d, i) => ({ ...d, _i: i }));
+  // note: our one-line description, in Chinese on the Chinese site when we have it (note_en keeps the English for search)
+  const DISC = (window.PB_DISCOVER || []).filter(d => !d.stale).map((d, i) => ({ ...d, _i: i, note_en: d.note, note: ZH && d.note_zh ? d.note_zh : d.note }));
   // a page of its own for every listed game: #/g/<slug>
   const G_BY = {};
-  DISC.forEach(d => { const base = slugify(d.title) || 'game'; let k = base, n = 2; while (G_BY[k]) k = `${base}-${n++}`; d.slug = k; G_BY[k] = d; });
+  // slugs are fixed in discover.js (tools/pbcommon.py assign_slugs); the title rule is only a fallback for entries without one
+  DISC.forEach(d => { if (d.slug && !G_BY[d.slug]) { G_BY[d.slug] = d; return; } const base = slugify(d.title) || 'game'; let k = base, n = 2; while (G_BY[k]) k = `${base}-${n++}`; d.slug = k; G_BY[k] = d; });
   const gLink = d => `#/g/${d.slug}`;
   // favorites: kept in this browser only, no account
   const G_URL = new Set(DISC.map(d => d.url));
@@ -839,7 +625,7 @@
   const recentGames = () => RECENT.map(r => DISC.find(d => d.url === r.u)).filter(Boolean);
   const saveFavs = () => { try { localStorage.setItem(FAV_KEY, JSON.stringify([...FAVS])); } catch {} };
   const heart = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z"/></svg>';
-  const favBtn = d => `<button class="fav ${FAVS.has(d.url) ? 'on' : ''}" data-fav="${esc(d.url)}" aria-pressed="${FAVS.has(d.url)}" aria-label="${FAVS.has(d.url) ? 'Saved' : 'Save'}">${heart}</button>`;
+  const favBtn = (d, cls = '') => `<button class="fav ${cls} ${FAVS.has(d.url) ? 'on' : ''}" data-fav="${esc(d.url)}" aria-pressed="${FAVS.has(d.url)}" aria-label="${FAVS.has(d.url) ? 'Saved' : 'Save'}">${heart}</button>`;
   // guides: editorial lists built by tools/build_guides.py
   const GUIDES = (window.PB_GUIDES || []).map(g => ({ ...g, title: ZH && g.title_zh ? g.title_zh : g.title, intro: ZH && g.intro_zh ? g.intro_zh : g.intro,
     games: g.urls.map(u => DISC.find(d => d.url === u)).filter(Boolean) })).filter(g => g.games.length >= 3);
@@ -852,17 +638,20 @@
   const weekName = id => { const d = new Date(id + 'T00:00:00'); return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }); };
   const xPost = w => [`This week in vibe gaming · ${weekName(w.id)}`, '', ...w.games.map((p, i) => `${i + 1}. ${p.d.title}${p.d.creator ? ` by ${p.d.creator}` : ''}`), '', `Play them all: ${LIVE}s/week/${w.id}/`].join('\n');
   const PLATFORMS = { x: 'X', youtube: 'YouTube', hn: 'Hacker News', reddit: 'Reddit', itch: 'itch.io', jam: 'Game jam', wavedash: 'Wavedash', other: 'Web' };
-  const dstate = { genre: 'All', platform: 'All', d3: false, sort: 'new' };
+  const NARROW = matchMedia('(max-width: 700px)').matches;
+  const DPAGE = NARROW ? 24 : 48;   // cards per "Show more" step on Play (full cards are tall on a phone)
+  const dstate = { genre: 'All', platform: 'All', d3: false, touch: false, sort: 'new', n: DPAGE };
   const hashHue = s => { let h = 0; for (const c of String(s)) h = (h * 31 + c.charCodeAt(0)) % 360; return h; };
   const host = u => { try { return new URL(u).hostname.replace(/^www\./, ''); } catch { return ''; } };
   const dDate = d => { if (!d) return ''; const [y, m] = d.split('-'); return m ? ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'][+m - 1] + ' ' + y : y; };
   const dIc = {
     out: '<svg viewBox="0 0 24 24"><path d="M14 4h6v6M20 4l-9 9M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/></svg>',
-    live: '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M5 5a10 10 0 0 0 0 14M19 5a10 10 0 0 1 0 14"/></svg>',
   };
   // external previews: only on hover (desktop), one at a time, sandboxed, removed on leave.
   // Keeps third-party cookie banners, audio and CPU out of the grid; touch devices see the poster.
   const canHover = matchMedia('(hover: hover) and (pointer: fine)').matches;
+  // live game thumbnails (no cover image) only on desktop with a mouse, never on phones or with Data Saver on
+  const AUTO_OK = canHover && !navigator.connection?.saveData;
   let hoverT = null, liveEl = null;
   const stopPreview = () => {
     clearTimeout(hoverT);
@@ -892,7 +681,7 @@
   const calm = d => { const h = hashHue(d.title + d.url); return `--c1:hsl(${h} 32% 30%);--c2:hsl(${(h + 40) % 360} 24% 16%)`; };
   const dcard = (d, i = 0) => {
     const eng = d.engine && d.engine.toLowerCase() !== 'unknown' ? d.engine : '';
-    const auto = !d.cover && d.embeddable;
+    const auto = !d.cover && d.embeddable && AUTO_OK;
     const hover = d.cover && d.embeddable && canHover;
     return `
     <article class="card dcard rv" style="--d:${Math.min(i, 8) * 30}ms">
@@ -901,11 +690,12 @@
           <div class="poster"><b class="ptitle">${esc(d.title)}</b></div>${coverImg(d)}<div class="scan"></div>
           <div class="top">
             <span>${auto ? '<span class="chip"><i class="livedot"></i>Live</span>' : ''}</span>
-            <span><span class="chip">${dIc.out}${esc(host(d.url))}</span>${favBtn(d)}</span>
+            <span><span class="chip">${dIc.out}${esc(host(d.url))}</span></span>
           </div>
           <span class="playbtn" aria-hidden="true">${playIco}</span>
         </div>
       </a>
+      ${favBtn(d, 'card-fav')}
       <div class="dmeta">
         <h3>${esc(d.title)}</h3>
         <div class="dtags">${d.genre ? `<span class="chip">${esc(d.genre)}</span>` : ''}${eng ? `<span class="chip">${esc(eng)}</span>` : ''}${d.is3d ? '<span class="chip">3D</span>' : ''}${d.touch === true ? '<span class="chip">Touch</span>' : ''}${d.date ? `<span class="chip">${esc(dDate(d.date))}</span>` : ''}</div>
@@ -920,16 +710,17 @@
   };
   // compact card for browsing (home rails, genre grid): picture, title, creator. Full details live on Play.
   const gcard = (d, i = 0) => {
-    const auto = !d.cover && d.embeddable, hover = d.cover && d.embeddable && canHover;
+    const auto = !d.cover && d.embeddable && AUTO_OK, hover = d.cover && d.embeddable && canHover;
     return `
     <article class="card dcard gcard rv" style="--d:${Math.min(i, 8) * 30}ms">
       <a class="dlink" href="${gLink(d)}" aria-label="${esc(d.title)}: details and play">
         <div class="media ${d.cover ? 'has-cover' : ''}" ${auto ? `data-auto="${esc(d.url)}"` : ''} ${hover ? `data-ext="${esc(d.url)}"` : ''} style="${calm(d)}">
           <div class="poster"><b class="ptitle">${esc(d.title)}</b></div>${coverImg(d)}<div class="scan"></div>
-          <div class="top"><span>${auto ? '<span class="chip"><i class="livedot"></i>Live</span>' : ''}</span><span><span class="chip host">${dIc.out}${esc(host(d.url))}</span>${favBtn(d)}</span></div>
+          <div class="top"><span>${auto ? '<span class="chip"><i class="livedot"></i>Live</span>' : ''}</span><span><span class="chip host">${dIc.out}${esc(host(d.url))}</span></span></div>
           <span class="playbtn" aria-hidden="true">${playIco}</span>
         </div>
       </a>
+      ${favBtn(d, 'card-fav')}
       <div class="gmeta">${d.creator ? `<a class="stk-c" href="${crLink(d.creator)}">${esc(d.creator)}</a>` : ''}<h3>${esc(d.title)}</h3><p>${[d.genre, d.model].filter(Boolean).map(esc).join(' · ') || 'Web game'}</p></div>
     </article>`;
   };
@@ -965,11 +756,12 @@
     const top = crTop(c, avoid);
     return `
     <a class="card crcard rv" href="${crLink(c.handle)}" style="--d:${Math.min(i, 8) * 30}ms">
-      <div class="media ${top.cover ? 'has-cover' : ''}" ${!top.cover && top.embeddable ? `data-auto="${esc(top.url)}"` : ''} style="${calm(top)}"><div class="poster"><b class="ptitle">${esc(top.title)}</b></div>${coverImg(top)}<div class="scan"></div></div>
+      <div class="media ${top.cover ? 'has-cover' : ''}" ${!top.cover && top.embeddable && AUTO_OK ? `data-auto="${esc(top.url)}"` : ''} style="${calm(top)}"><div class="poster"><b class="ptitle">${esc(top.title)}</b></div>${coverImg(top)}<div class="scan"></div></div>
       <div class="crmeta">${crAva(c.handle)}<div><b>${esc(c.handle)}</b><span>${c.games.length} game${c.games.length > 1 ? 's' : ''} · ${esc(top.title)}</span></div></div>
     </a>`;
   };
 
+  const CPAGE = 36;   // creator cards per "Show more" step
   function creatorsPage() {
     app.innerHTML = `
       <section class="page-head dots"><div class="wrap">
@@ -978,9 +770,18 @@
         <p>Everyone behind a game we list, linked to their own pages. Is one of them you? Open your profile to claim it, fix the details or take it down.</p>
       </div></section>
       <div class="wrap">
-        <div class="crgrid">${CREATORS.map((c, i) => crcard(c, i)).join('')}</div>
+        <div class="crgrid" id="crGrid">${CREATORS.slice(0, CPAGE).map((c, i) => crcard(c, i)).join('')}</div>
+        ${CREATORS.length > CPAGE ? '<div class="more-row"><button class="btn" id="crMore">Show more</button></div>' : ''}
         <p class="note dfoot">Profiles are built from the public posts where creators shared their games. Nothing is copied or hosted here.</p>
       </div>`;
+    let shown = CPAGE;
+    $('#crMore')?.addEventListener('click', e => {
+      const grid = $('#crGrid'), box = document.createElement('div');
+      box.innerHTML = CREATORS.slice(shown, shown + CPAGE).map((c, k) => crcard(c, k)).join('');
+      const added = [...box.children]; grid.append(...added); hydrate(grid);
+      shown += CPAGE; if (shown >= CREATORS.length) e.currentTarget.parentElement.remove();
+      added[0]?.focus({ preventScroll: true });
+    });
   }
 
   function creatorProfile(slug) {
@@ -1022,16 +823,32 @@
     });
   }
 
-  function drawDiscover() {
+  function drawDiscover(append = false) {
     const grid = $('#discGrid'); if (!grid) return;
     stopPreview();
     const list = DISC.filter(d => (dstate.genre === 'All' || d.genre === dstate.genre)
       && (dstate.platform === 'All' || d.platform === dstate.platform)
       && (!dstate.d3 || d.is3d) && (!dstate.touch || d.touch === true))
       .sort(dstate.sort === 'new' ? byNew : (a, b) => a.title.localeCompare(b.title));
-    grid.innerHTML = list.length ? list.map(dcard).join('') : '<div class="empty"><b>Nothing matches yet</b>Try fewer filters, or <button class="link" data-submit-game>submit a game you found</button>.</div>';
+    const shown = list.slice(0, dstate.n);
+    if (append) {   // "Show more": add the next cards without rebuilding the ones already on screen
+      const have = grid.querySelectorAll('.dcard').length, box = document.createElement('div');
+      box.innerHTML = shown.slice(have).map((d, i) => dcard(d, i)).join('');
+      const added = [...box.children]; grid.append(...added); hydrate(grid);
+      added[0]?.querySelector('a')?.focus({ preventScroll: true });
+    } else {
+      swap(grid, list.length ? shown.map(dcard).join('') : '<div class="empty"><b>Nothing matches yet</b>Try fewer filters, or <button class="link" data-submit-game>submit a game you found</button>.</div>');
+    }
+    $('#discMore').hidden = shown.length >= list.length;
     $('#discCount').textContent = I18N ? I18N.tr(`${list.length} of ${DISC.length} games`) : `${list.length} of ${DISC.length} games`;
-    hydrate(grid);
+    const p = new URLSearchParams();
+    if (dstate.platform !== 'All') p.set('p', dstate.platform);
+    if (dstate.d3) p.set('3d', ''); if (dstate.touch) p.set('touch', '');
+    if (dstate.sort === 'az') p.set('sort', 'az');
+    if (dstate.n > DPAGE) p.set('n', dstate.n);
+    const qs = p.toString().replace(/=(?=&|$)/g, '');
+    const h = `#/play${dstate.genre !== 'All' ? '/' + encodeURIComponent(dstate.genre) : ''}${qs ? '?' + qs : ''}`;
+    if (location.hash !== h) { history.replaceState(null, '', h); curHash = h; }
   }
   // genre tiles: a muted single-colour halftone over one of the genre's own covers; full colour on hover
   const TINTS = ['#d98a70', '#a3b878', '#9890cf', '#cfae7f', '#6fa9a6', '#c27a8f', '#c4ad5c', '#7f9cc9'];
@@ -1173,6 +990,73 @@
       </div>`;
   }
 
+  // ---------- studio: early-access test for one-sentence, game-ready characters ----------
+  // Examples must be real generations (prompt, sheet, playable demo) before this page is linked publicly.
+  const STUDIO_EXAMPLES = [];
+  function studioPage() {
+    const src = (location.hash.split('?')[1] || '').replace(/[^a-z0-9_-]/gi, '').slice(0, 40) || 'direct';
+    supaInsert('events', { kind: 'view', source: src });
+    const gets = [
+      ['Drawn', 'A character in the style you describe, on a clean transparent background.'],
+      ['Animated', 'Idle, run, jump and attack, cut into sprite sheets with frames that line up.'],
+      ['Voiced', 'A matching set of sound effects: steps, jump, hit and a short victory sting.'],
+      ['Ready to load', 'Files and a manifest that Phaser and three.js games can read as they are.'],
+      ['Dropped into your project', 'Your own agent pulls it in through the Playbook MCP, next to the game-feel parts.'],
+    ];
+    app.innerHTML = `
+      <section class="page-head dots"><div class="wrap">
+        <span class="tag"><span class="dot"></span>Playbook Studio · early access</span>
+        <h1>One sentence. A game-ready character.</h1>
+        <p>Describe a character. Get it drawn, animated and given sound effects in one style, as files your game can load. Then publish the game on Playbook.</p>
+        <div class="acts"><a class="btn btn-accent" href="#studioForm" data-studio-cta>Request early access</a><a class="btn" href="#/make">How making works</a></div>
+      </div></section>
+      <div class="wrap">
+        <section class="section tight">
+          <div class="sec-head"><div><h2>Examples</h2><p>Each one: the sentence, the sheet it made, and a small demo you can play.</p></div></div>
+          ${STUDIO_EXAMPLES.length ? `<div class="st-ex">${STUDIO_EXAMPLES.map(x => `<figure class="st-card"><img src="${esc(x.sheet)}" alt="${esc(x.prompt)}" loading="lazy"><figcaption><b data-noi18n>“${esc(x.prompt)}”</b>${x.demo ? `<a class="link" href="${esc(x.demo)}">Play the demo</a>` : ''}</figcaption></figure>`).join('')}</div>`
+            : `<div class="empty"><b>Examples are being made</b>Real examples go here before this page is shared.</div>`}
+        </section>
+        <section class="section tight">
+          <div class="sec-head"><div><h2>What you get</h2></div></div>
+          <ol class="st-gets">${gets.map(([t, p], i) => `<li class="rv"><span class="wkp-n">${String(i + 1).padStart(2, '0')}</span><h3>${esc(t)}</h3><p>${esc(p)}</p></li>`).join('')}</ol>
+        </section>
+        <section class="section tight">
+          <div class="sec-head"><div><h2>Price at launch</h2><p>Not on sale yet. Prepaid credits, no subscription.</p></div></div>
+          <div class="st-tiers">
+            <div class="st-tier"><span>Starter</span><b>$5</b><p>10 characters</p></div>
+            <div class="st-tier hot"><span>Creator</span><b>$15</b><p>40 characters</p></div>
+          </div>
+          <p class="note">The first 100 people on the early-access list get 20 free characters at launch.</p>
+        </section>
+        <section class="section tight" id="studioForm">
+          <form class="st-form" id="stForm">
+            <h2>Request early access</h2>
+            <div class="field"><label for="stEmail">Email</label><input id="stEmail" type="email" required maxlength="200" autocomplete="email" placeholder="you@example.com"></div>
+            <fieldset class="field st-pick"><legend>Which would you buy?</legend>
+              <label><input type="radio" name="stTier" value="starter" checked> Starter · $5</label>
+              <label><input type="radio" name="stTier" value="creator"> Creator · $15</label>
+              <label><input type="radio" name="stTier" value="curious"> Just curious</label>
+            </fieldset>
+            <div class="field"><label for="stMaking">What are you making? (optional)</label><input id="stMaking" maxlength="300" placeholder="${ZH ? '比如：一个像素风平台跳跃' : 'e.g. a pixel-art platformer'}"></div>
+            <button class="btn btn-accent btn-block" type="submit">Request early access</button>
+            <p class="note">We only use your email to tell you when Studio opens. It is never shared, and you can ask us to delete it at any time.</p>
+          </form>
+        </section>
+      </div>`;
+    $$('[data-studio-cta]').forEach(a => a.addEventListener('click', e => { e.preventDefault(); supaInsert('events', { kind: 'cta', source: src }); $('#studioForm').scrollIntoView({ behavior: CALM ? 'auto' : 'smooth', block: 'start' }); }));
+    $('#stForm').addEventListener('submit', async e => {
+      e.preventDefault();
+      if (!SUPA_URL) return toast('Early access is not open yet');
+      const btn = $('#stForm button[type=submit]'); btn.disabled = true;
+      const row = { email: $('#stEmail').value.trim(), tier: $('input[name=stTier]:checked').value, making: $('#stMaking').value.trim() || null, source: src, lang: ZH ? 'zh' : 'en' };
+      try {
+        const r = await supaInsert('waitlist', row);
+        if (r && (r.ok || r.status === 409)) { $('#stForm').innerHTML = `<h2>${I18N ? I18N.tr("You're on the list") : "You're on the list"}</h2><p>${I18N ? I18N.tr("We'll email you when Studio opens.") : "We'll email you when Studio opens."}</p>`; track('studio/join', row.tier, true); }
+        else { btn.disabled = false; toast('Could not save. Please try again.'); }
+      } catch { btn.disabled = false; toast('Could not save. Please try again.'); }
+    });
+  }
+
   function savedPage() {
     const saved = DISC.filter(d => FAVS.has(d.url)), rec = recentGames();
     const picks = (WEEKS[0]?.games || []).map(p => p.d);
@@ -1189,7 +1073,7 @@
           ${saved.length ? `<div class="wall">${saved.map(gcard).join('')}</div>` : `<div class="empty"><b>Nothing saved yet</b>Tap ♡ on any game to save it here.</div>`}</section>
         ${!rec.length && !saved.length && picks.length ? `<section class="section tight"><div class="sec-head"><div><h2>Start with this week's picks</h2></div><a class="link" href="#/play">Play all games</a></div><div class="wall">${picks.map(gcard).join('')}</div></section>` : ''}
       </div>`;
-    $('#libClear')?.addEventListener('click', () => { RECENT.length = 0; try { localStorage.removeItem(REC_KEY); } catch {} savedPage(); hydrate(); });
+    $('#libClear')?.addEventListener('click', () => { RECENT.length = 0; try { localStorage.removeItem(REC_KEY); } catch {} unhydrate(app); savedPage(); hydrate(); });
   }
 
   function guidesPage() {
@@ -1239,6 +1123,10 @@
     const plats = Object.keys(PLATFORMS).filter(p => count('platform')[p]);
     const live = DISC.filter(d => d.embeddable).length;
     const g0 = genres.includes(arg) ? arg : 'All';
+    // filters live in the address (#/play/Racing?p=itch&3d&touch&sort=az&n=96) so Back and shared links keep them
+    const q = new URLSearchParams(location.hash.split('?')[1] || '');
+    Object.assign(dstate, { genre: g0, platform: plats.includes(q.get('p')) ? q.get('p') : 'All', d3: q.has('3d'), touch: q.has('touch'),
+      sort: q.get('sort') === 'az' ? 'az' : 'new', n: Math.min(Math.max(+q.get('n') || DPAGE, DPAGE), 2000) });
     app.innerHTML = `
       <section class="page-head dots"><div class="wrap">
         <span class="tag"><span class="dot"></span>Updated every week</span>
@@ -1250,39 +1138,34 @@
         ${g0 === 'All' ? `<section class="rand"><div class="sec-head"><div><h2>Three at random</h2><p>Not sure what to play? Let the arcade pick.</p></div><button class="btn" id="randBtn">Shuffle ↻</button></div><div class="wall three" id="rand3"></div></section>
         <div class="gtiles small">${genreTiles(12)}</div>` : ''}
         <div class="controls">
-          <div class="pills" id="dGenres"><button class="pill ${g0 === 'All' ? 'on' : ''}" data-v="All">All</button><button class="pill" id="d3d" aria-pressed="false">3D only</button><button class="pill" id="dtouch" aria-pressed="false">Touch-friendly</button>${genres.map(g => `<button class="pill ${g === g0 ? 'on' : ''}" data-v="${esc(g)}">${esc(g)}</button>`).join('')}</div>
-          <div class="seg" id="dSort"><button data-v="new" class="on">Newest</button><button data-v="az">A–Z</button></div>
+          <div class="pills" id="dGenres"><button class="pill ${g0 === 'All' ? 'on' : ''}" data-v="All">All</button><button class="pill ${dstate.d3 ? 'on' : ''}" id="d3d" aria-pressed="${dstate.d3}">3D only</button><button class="pill ${dstate.touch ? 'on' : ''}" id="dtouch" aria-pressed="${dstate.touch}">Touch-friendly</button>${genres.map(g => `<button class="pill ${g === g0 ? 'on' : ''}" data-v="${esc(g)}">${esc(g)}</button>`).join('')}</div>
+          <div class="seg" id="dSort"><button data-v="new" class="${dstate.sort === 'new' ? 'on' : ''}">Newest</button><button data-v="az" class="${dstate.sort === 'az' ? 'on' : ''}">A–Z</button></div>
         </div>
         <div class="controls">
-          <div class="pills" id="dPlats"><span class="plabel">Found on</span><button class="pill on" data-v="All">Anywhere</button>${plats.map(p => `<button class="pill" data-v="${p}">${PLATFORMS[p]}</button>`).join('')}</div>
+          <div class="pills" id="dPlats"><span class="plabel">Found on</span><button class="pill ${dstate.platform === 'All' ? 'on' : ''}" data-v="All">Anywhere</button>${plats.map(p => `<button class="pill ${dstate.platform === p ? 'on' : ''}" data-v="${p}">${PLATFORMS[p]}</button>`).join('')}</div>
           <span class="dcount"><span id="discCount"></span>${canHover ? ` · ${live} preview on hover` : ''}</span>
         </div>
         <div class="wall" id="discGrid"></div>
+        <div class="more-row"><button class="btn" id="discMore" hidden>Show more</button></div>
         <p class="note dfoot">Listings are links to third-party pages that their creators made public. Titles and credits are shown as given at the source; each link was last checked on the date in our index. Creators can claim or remove a listing from its card at any time.${LOCAL ? ' <a href="#/review" class="dclaim">Review queue</a>' : ''}</p>
       </div>`;
-    Object.assign(dstate, { genre: g0, platform: 'All', d3: false, touch: false, sort: 'new' });
     const pick = (id, key) => $(id).addEventListener('click', e => {
       const b = e.target.closest('[data-v]'); if (!b) return;
-      dstate[key] = b.dataset.v; $$(id + ' [data-v]').forEach(x => x.classList.toggle('on', x === b)); drawDiscover();
+      dstate[key] = b.dataset.v; dstate.n = DPAGE; $$(id + ' [data-v]').forEach(x => x.classList.toggle('on', x === b)); drawDiscover();
     });
     pick('#dGenres', 'genre'); pick('#dPlats', 'platform'); pick('#dSort', 'sort');
-    $('#d3d').addEventListener('click', e => { dstate.d3 = !dstate.d3; e.currentTarget.classList.toggle('on', dstate.d3); e.currentTarget.setAttribute('aria-pressed', dstate.d3); drawDiscover(); });
-    $('#dtouch').addEventListener('click', e => { dstate.touch = !dstate.touch; e.currentTarget.classList.toggle('on', dstate.touch); e.currentTarget.setAttribute('aria-pressed', dstate.touch); drawDiscover(); });
+    $('#d3d').addEventListener('click', e => { dstate.d3 = !dstate.d3; dstate.n = DPAGE; e.currentTarget.classList.toggle('on', dstate.d3); e.currentTarget.setAttribute('aria-pressed', dstate.d3); drawDiscover(); });
+    $('#dtouch').addEventListener('click', e => { dstate.touch = !dstate.touch; dstate.n = DPAGE; e.currentTarget.classList.toggle('on', dstate.touch); e.currentTarget.setAttribute('aria-pressed', dstate.touch); drawDiscover(); });
+    $('#discMore').addEventListener('click', () => { dstate.n += DPAGE; drawDiscover(true); });
     const rand = () => {
       const pool = DISC.filter(d => d.cover), pickN = [];
       while (pickN.length < 3 && pool.length) pickN.push(pool.splice(Math.floor(Math.random() * pool.length), 1)[0]);
       const box = $('#rand3'); if (!box) return;
-      box.innerHTML = pickN.map(gcard).join(''); hydrate(box);
+      swap(box, pickN.map(gcard).join(''));
     };
     if ($('#randBtn')) { $('#randBtn').addEventListener('click', rand); rand(); }
     drawDiscover();
   }
-  const freshRow = () => DISC.length ? `
-        <section class="section tight fresh">
-          <div class="sec-head"><div><span class="tag"><span class="dot"></span>Updated weekly</span><h2>Ideas from around the web</h2><p>The newest AI-made games people shared on X, Hacker News, itch and in jams. Play them for inspiration; each card opens the creator's own page, and the code stays theirs.</p></div><a class="link" href="#/play">All ${DISC.length} games →</a></div>
-          <div class="wall" id="freshGrid">${[...DISC].sort(byNew).slice(0, 4).map(dcard).join('')}</div>
-        </section>` : '';
-
   function submitGameModal() {
     openModal(`
       <span class="tag"><span class="dot"></span>Discover</span>
@@ -1328,7 +1211,6 @@
   const rqSave = () => { try { localStorage.setItem(RQ_KEY, JSON.stringify(rq.dec)); } catch {} };
   const RQ_GENRES = ['', 'Action', 'Adventure', 'Arcade', 'Flight', 'Platformer', 'Puzzle', 'Racing', 'RPG', 'Roguelike', 'Shooter', 'Sim', 'Sports', 'Strategy'];
   const RQ_REASONS = ['Not a game', 'Not clearly AI-made', "Someone else's IP", 'Too thin or unfinished', 'Needs login or payment', 'Unsafe or spammy', 'Duplicate'];
-  const RQ_EDIT = ['title', 'creator', 'genre', 'engine', 'model', 'note'];
   const rq = { tab: 'todo', items: [], dec: {}, generated: '', since: '' };
   const rqLoadQueue = () => new Promise(res => {
     delete window.PB_CANDIDATES;
@@ -1468,27 +1350,23 @@
 
   // ---------- modals ----------
   const modal = $('#modal'), modalBody = $('#modalBody');
-  const openModal = html => { modalBody.innerHTML = `<button class="icon-btn x" data-close aria-label="Close">${icon.close}</button>` + html; I18N?.apply(modalBody); modal.classList.add('open'); modal.setAttribute('aria-hidden', 'false'); };
-  const closeModal = () => { modal.classList.remove('open'); modal.setAttribute('aria-hidden', 'true'); };
+  // dialogs: focus moves in, the page behind is inert while open, focus returns to the opener on close
+  const behind = () => [$('#nav'), app, $('.footer'), $('.tabbar')];
+  let opener = null;
+  const setInert = on => behind().forEach(el => { if (el) el.inert = on; });
+  const openModal = html => {
+    modalBody.innerHTML = `<button class="icon-btn x" data-close aria-label="Close">${icon.close}</button>` + html; I18N?.apply(modalBody);
+    if (!modal.classList.contains('open')) opener = document.activeElement;
+    modal.classList.add('open'); modal.setAttribute('aria-hidden', 'false'); setInert(true);
+    $('.modal-card', modal).setAttribute('aria-label', $('h2', modalBody)?.textContent.trim() || 'Dialog');
+    requestAnimationFrame(() => ($('input, select, textarea', modalBody) || $('[data-close]', modalBody)).focus());
+  };
+  const closeModal = () => {
+    if (!modal.classList.contains('open')) return;
+    modal.classList.remove('open'); modal.setAttribute('aria-hidden', 'true'); setInert(false);
+    if (opener?.isConnected) opener.focus({ preventScroll: true }); opener = null;
+  };
 
-  function mcpModal() {
-    const tabs = {
-      'Claude Code': CLIENTS['Claude Code'].cmd,
-      'Cursor': CLIENTS['Cursor'].cmd,
-      'Codex': CLIENTS['Codex'].cmd,
-    };
-    openModal(`
-      <span class="tag"><span class="dot"></span>Playbook MCP</span>
-      <h2>Bring the wall into your agent.</h2>
-      <p class="lead">Search games and mechanics and pull a recipe, without leaving your editor.</p>
-      <div class="tabs" id="mtabs">${Object.keys(tabs).map((t, i) => `<button class="${i ? '' : 'on'}" data-t="${t}">${t}</button>`).join('')}</div>
-      <div class="prompt" id="mcode">${esc(tabs['Claude Code'])}</div>
-      <div class="prompt-row"><button class="copy" id="mcopy" data-copy="${esc(tabs['Claude Code'])}">Copy</button></div>
-      <div class="rsec" style="margin-top:16px"><label>Then just ask</label>
-        <div class="mchips"><span class="mchip">“Remake Neon Drift but underwater”</span><span class="mchip">“Add hit-stop to my game”</span><span class="mchip">“Find racing games for ideas”</span></div></div>
-      <p class="note">Free and open source. Needs Node 18+. <a class="link" href="${MCP_REPO}" target="_blank" rel="noopener">Source on GitHub</a></p>`);
-    $('#mtabs').onclick = e => { const b = e.target.closest('[data-t]'); if (!b) return; $$('#mtabs button').forEach(x => x.classList.toggle('on', x === b)); $('#mcode').textContent = tabs[b.dataset.t]; $('#mcopy').dataset.copy = tabs[b.dataset.t]; };
-  }
 
   function remakeModal(id) {
     const g = byId[id];
@@ -1520,7 +1398,7 @@
 
   // ---------- search palette (⌘K or /) ----------
   const cmdk = $('#cmdk'), cmdkIn = $('#cmdkInput'), cmdkList = $('#cmdkList');
-  const PAGES = [['Weekly picks', '#/weeks'], ['Quality standards', '#/standards'], ['Guides', '#/guides'], ['Library', '#/library'], ['Play all games', '#/play'], ['Creators', '#/creators'], ['Make: start here', '#/make'], ['Game feel (mechanics)', '#/mechanics'], ['Open recipes', '#/games'], ['Connect Playbook MCP', '#/mcp'], ['Playbook Jam', '#/jam']];
+  const PAGES = [['Weekly picks', '#/weeks'], ['Quality standards', '#/standards'], ['Guides', '#/guides'], ['Library', '#/library'], ['Play all games', '#/play'], ['Creators', '#/creators'], ['Make: start here', '#/make'], ['Game feel (mechanics)', '#/mechanics'], ['Open recipes', '#/games'], ['Connect Playbook MCP', '#/mcp']];
   let cmdkItems = [], cmdkSel = 0;
   const lc = s => String(s || '').toLowerCase();
   function searchAll(q) {
@@ -1528,7 +1406,7 @@
     const hit = hay => words.every(w => hay.includes(w));
     const G = games.filter(g => any ? hit(lc([g.title, g.by, g.genres.join(' '), g.is3d ? '3d three.js' : '2d canvas', g.style, g.parent ? 'remix' : 'original'].join(' '))) : !g.parent)
       .slice(0, any ? 6 : 3).map(g => ({ group: 'Playbook recipes', title: g.title, sub: `${g.by} · ${g.genres.join(' · ')}`, href: `#/game/${g.id}`, c1: g.colors[0], c2: g.colors[1], go: 'Play' }));
-    const D = (any ? DISC.filter(d => hit(lc([d.title, d.creator, d.genre, d.engine, d.model, PLATFORMS[d.platform], d.is3d ? '3d' : '', host(d.url), d.note].join(' ')))) : [...DISC].sort(byNew))
+    const D = (any ? DISC.filter(d => hit(lc([d.title, d.creator, d.genre, d.engine, d.model, PLATFORMS[d.platform], d.is3d ? '3d' : '', host(d.url), d.note, d.note_en].join(' ')))) : [...DISC].sort(byNew))
       .slice(0, any ? 8 : 6).map(d => { const h = hashHue(d.title + d.url); return { group: any ? 'From the web' : 'Fresh from the web', title: d.title, sub: [d.creator || host(d.url), d.genre, d.model].filter(Boolean).join(' · '), href: gLink(d), c1: `hsl(${h} 78% 54%)`, c2: `hsl(${(h + 80) % 360} 72% 40%)`, go: 'Open' }; });
     const M = any ? mechanics.filter(m => hit(lc([m.name, m.cat, m.desc].join(' ')))).slice(0, 4).map(m => ({ group: 'Mechanics', title: m.name, sub: m.cat, href: `#/mechanic/${m.slug}`, c1: '#4a4337', c2: '#17150f', go: 'Open' })) : [];
     const C = any ? CREATORS.filter(c => hit(lc(c.handle + ' ' + c.games.map(g => g.title).join(' ')))).slice(0, 4).map(c => { const h = hashHue(c.handle); return { group: 'Creators', title: c.handle, sub: `${c.games.length} game${c.games.length > 1 ? 's' : ''} · ${c.games[0].title}`, href: crLink(c.handle), c1: `hsl(${h} 40% 46%)`, c2: `hsl(${(h + 40) % 360} 30% 24%)`, go: 'Profile' }; }) : [];
@@ -1547,12 +1425,19 @@
     I18N?.apply(cmdkList);
     $('.cmdk-item.sel', cmdkList)?.scrollIntoView({ block: 'nearest' });
   }
+  let searchOpener = null;
   function openSearch(q = '') {
-    cmdk.classList.add('open'); cmdk.setAttribute('aria-hidden', 'false');
+    if (modal.classList.contains('open')) return;
+    if (!cmdk.classList.contains('open')) searchOpener = document.activeElement;
+    cmdk.classList.add('open'); cmdk.setAttribute('aria-hidden', 'false'); setInert(true);
     cmdkIn.value = q; cmdkSel = 0; drawSearch(); setTimeout(() => cmdkIn.focus(), 30);
   }
-  const closeSearch = () => { cmdk.classList.remove('open'); cmdk.setAttribute('aria-hidden', 'true'); };
-  const goItem = it => { if (!it) return; closeSearch(); if (it.ext) window.open(it.href, '_blank', 'noopener,noreferrer'); else location.hash = it.href; };
+  const closeSearch = () => {
+    if (!cmdk.classList.contains('open')) return;
+    cmdk.classList.remove('open'); cmdk.setAttribute('aria-hidden', 'true'); setInert(false);
+    if (searchOpener?.isConnected) searchOpener.focus({ preventScroll: true }); searchOpener = null;
+  };
+  const goItem = it => { if (!it) return; closeSearch(); clickNav = Date.now(); location.hash = it.href; };
   cmdkIn.addEventListener('input', () => { cmdkSel = 0; drawSearch(); });
   cmdkIn.addEventListener('keydown', e => {
     if (e.key === 'ArrowDown') { e.preventDefault(); cmdkSel = Math.min(cmdkSel + 1, cmdkItems.length - 1); drawSearch(); }
@@ -1573,10 +1458,12 @@
     if (btn?.classList.contains('copy')) { const old = btn.textContent; btn.textContent = I18N ? I18N.tr('Copied') : 'Copied'; btn.classList.add('done'); setTimeout(() => { btn.textContent = old; btn.classList.remove('done'); }, 1400); }
   }
   const burger = $('#burger'), menu = $('#menu');
-  const setMenu = on => { menu.classList.toggle('open', on); burger.setAttribute('aria-expanded', on); menu.setAttribute('aria-hidden', !on); };
+  const setMenu = on => { menu.classList.toggle('open', on); burger.setAttribute('aria-expanded', on); menu.setAttribute('aria-hidden', !on); menu.inert = !on; };
+  menu.inert = true;
   burger.onclick = () => setMenu(!menu.classList.contains('open'));
 
   document.addEventListener('click', e => {
+    if (e.target.closest('.skip')) { e.preventDefault(); app.focus(); return; }
     const fv = e.target.closest('[data-fav]');
     if (fv) {
       e.preventDefault(); e.stopPropagation();
@@ -1589,18 +1476,16 @@
       });
       toast(on ? 'Saved' : 'Removed from saved');
       track(`${on ? 'save' : 'unsave'}/${u.replace(/^https?:\/\//, '')}`, '', true);
-      if (/^#\/(saved|library)$/.test(location.hash) && !on) savedPage();
+      if (/^#\/(saved|library)$/.test(location.hash) && !on) { unhydrate(app); savedPage(); hydrate(); }
       return;
     }
     const out = e.target.closest('a[href^="http"]');
     if (out && G_URL.has(out.getAttribute('href'))) played(out.getAttribute('href'));
     if (out && out.hostname !== location.hostname) track(`out/${out.hostname}${out.pathname}`.replace(/\/$/, ''), out.textContent.trim().slice(0, 80) || out.hostname, true);
     const c = e.target.closest('[data-copy]'); if (c) { e.preventDefault(); return copy(c.dataset.copy, c); }
-    if (e.target.closest('[data-open-mcp]')) { e.preventDefault(); setMenu(false); return mcpModal(); }
     const r = e.target.closest('[data-remake]'); if (r) return remakeModal(r.dataset.remake);
     if (e.target.closest('[data-submit-game]')) { e.preventDefault(); return submitGameModal(); }
     if (e.target.closest('[data-search]')) { e.preventDefault(); setMenu(false); return openSearch(); }
-    const q = e.target.closest('[data-q]'); if (q) { e.preventDefault(); return openSearch(q.dataset.q); }
     const cl = e.target.closest('[data-claim]'); if (cl) return claimModal(+cl.dataset.claim);
     const cc = e.target.closest('[data-claim-creator]'); if (cc) return claimCreatorModal(cc.dataset.claimCreator);
     if (e.target.closest('[data-lang]')) { try { localStorage.setItem('pb-lang', ZH ? 'en' : 'zh'); } catch {} return location.reload(); }
@@ -1616,38 +1501,45 @@
   });
 
   // ---------- router ----------
+  // scroll positions per page, so Back returns to where you were; a click on a link starts at the top
+  const SCROLL = {}; let curHash = null, clickNav = 0;
+  if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
+  document.addEventListener('click', e => { if (e.target.closest?.('a[href^="#/"]')) clickNav = Date.now(); }, true);
   function route() {
-    const [, page = '', arg = ''] = location.hash.replace(/^#/, '').split('/');
-    $$('.media', app).forEach(m => { liveIO.unobserve(m); autoIO.unobserve(m); });
+    // in-page anchors (the skip link, #studioForm) are not routes: leave the current page alone
+    if (location.hash && !location.hash.startsWith('#/') && app.childElementCount) return;
+    const hash = location.hash.startsWith('#/') ? location.hash : '';
+    const path = hash.replace(/^#/, '').split('?')[0];
+    const [, page = '', arg = '', sub = ''] = path.split('/');
+    // old or retired routes (the Jam and Publish pages return when they are real)
+    const moved = { charts: '#/play', creator: '#/creators', jam: '#/play', publish: '#/make' }[page];
+    if (moved) { location.replace(moved); return; }
+    if (curHash !== null) SCROLL[curHash] = scrollY;
+    const back = Date.now() - clickNav > 700 ? SCROLL[hash] : undefined;
+    curHash = hash;
+    unhydrate(app);
     stopPreview(); closeSearch();
     closeModal();
-    const nav = { '': 'home', library: 'library', standards: 'play', play: 'play', g: 'play', week: 'play', weeks: 'play', saved: 'library', guides: 'play', guide: 'play', discover: 'play', review: 'play', make: 'make', game: 'make', games: 'make', mechanics: 'make', mechanic: 'make', publish: 'make', mcp: 'make', creators: 'creators', c: 'creators', jam: 'jam' }[page];
+    const nav = { '': 'home', library: 'library', studio: 'make', standards: 'play', play: 'play', g: 'play', week: 'play', weeks: 'play', saved: 'library', guides: 'play', guide: 'play', discover: 'play', review: 'play', make: 'make', game: 'make', games: 'make', mechanics: 'make', mechanic: 'make', mcp: 'make', creators: 'creators', c: 'creators' }[page];
     $$('[data-nav]').forEach(a => a.classList.toggle('on', a.dataset.nav === nav));
     const tab = { home: 'home', play: 'play', make: 'make', creators: 'creators', library: 'library' }[nav];
     $$('[data-tab]').forEach(a => a.classList.toggle('on', a.dataset.tab === tab));
     const a = decodeURIComponent(arg);
-    if (page === 'charts') { location.replace('#/play'); return; }
-    if (page === 'creator') { location.replace('#/creators'); return; }
-    ({ '': home, library: savedPage, standards: standardsPage, saved: savedPage, guides: guidesPage, guide: () => guidePage(a), week: () => weekPage(a), weeks: weeksPage, g: () => discGamePage(a), play: () => discoverPage(a), discover: () => discoverPage(a), make: makePage, creators: creatorsPage, c: () => creatorProfile(a), games: () => gamesPage(a), mcp: mcpPage, jam: jamPage, game: () => gamePage(a), mechanics: mechanicsPage, mechanic: () => mechanicPage(a), publish: publishPage, review: LOCAL ? reviewPage : notFound }[page] || notFound)();
-    window.scrollTo(0, 0);
+    // Studio stays local until it has real examples to show
+    ({ '': home, studio: LOCAL || STUDIO_EXAMPLES.length ? studioPage : notFound, library: savedPage, standards: standardsPage, saved: savedPage, guides: guidesPage, guide: () => guidePage(a), week: () => weekPage(a), weeks: weeksPage, g: () => discGamePage(a), play: () => discoverPage(a), discover: () => discoverPage(a), make: makePage, creators: creatorsPage, c: () => creatorProfile(a), games: () => gamesPage(a), mcp: mcpPage, game: () => gamePage(a), mechanics: mechanicsPage, mechanic: () => mechanicPage(a), review: LOCAL ? reviewPage : notFound }[page] || notFound)();
     hydrate();
-    const sub = location.hash.split('/')[3];
+    window.scrollTo(0, back || 0);
     if (sub === 'kit') requestAnimationFrame(() => $('.kit')?.scrollIntoView({ block: 'start' }));
     if (sub === 'claim') { if (page === 'g' && G_BY[a]) claimModal(G_BY[a]._i); if (page === 'c' && crBySlug[a]) claimCreatorModal(a); }
     const ttl = page === 'game' && byId[a] ? byId[a].title : page === 'mechanic' && mechBySlug[a] ? mechBySlug[a].name : page === 'c' && crBySlug[a] ? crBySlug[a].handle : page === 'g' && G_BY[a] ? G_BY[a].title : page === 'week' && WEEKS.find(w => w.id === a) ? `Week of ${weekName(a)}` : page === 'guide' && GUIDES.find(x => x.slug === a) ? GUIDES.find(x => x.slug === a).title
-      : { library: 'Library', standards: 'Quality standards', saved: 'Library', guides: 'Guides', weeks: 'Weekly picks', play: 'Play', discover: 'Play', make: 'Make', creators: 'Creators', mechanics: 'Game feel', games: 'Recipes', mcp: 'Connect MCP', jam: 'Jam' }[page];
+      : { studio: 'Studio', library: 'Library', standards: 'Quality standards', saved: 'Library', guides: 'Guides', weeks: 'Weekly picks', play: 'Play', discover: 'Play', make: 'Make', creators: 'Creators', mechanics: 'Game feel', games: 'Recipes', mcp: 'Connect MCP' }[page];
     document.title = ttl ? `${ttl} — Playbook` : 'Playbook — the home of vibe gaming';
-    track('/' + (location.hash.replace(/^#\/?/, '') || ''), document.title);
+    track('/' + path.replace(/^\//, ''), document.title);
     if (I18N) document.title = I18N.tr(document.title);
   }
-  const navEl = $('#nav');
-  const navSync = () => navEl.classList.toggle('over', !!document.querySelector('.hx') && scrollY < 40);
-  window.addEventListener('scroll', navSync, { passive: true });
-  window.addEventListener('hashchange', navSync);
   window.addEventListener('hashchange', route);
   I18N?.apply(document.body);
   $$('[data-lang]').forEach(b => { b.textContent = ZH ? 'EN' : '中文'; b.setAttribute('aria-label', ZH ? 'Switch to English' : '切换到中文'); });
   rollify(document.querySelector('#nav')); rollify(document.querySelector('.footer'));
   route();
-  navSync();
 })();
