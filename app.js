@@ -416,7 +416,7 @@
     const rot = $$('.hx2-rot b');
     const fit = b => { const box = b.parentElement; if (box) box.style.width = b.offsetWidth + 'px'; };
     if (rot.length) requestAnimationFrame(() => fit(rot[0]));
-    if (rot.length && !CALM) { let r = 0; rotTimer = setInterval(() => { if (!rot[0].isConnected) return clearInterval(rotTimer); rot[r].classList.remove('on'); r = (r + 1) % rot.length; rot[r].classList.add('on'); fit(rot[r]); }, 2200); }
+    if (rot.length && !CALM) { let r = 0; rotTimer = setInterval(() => { if (!rot[0].isConnected) return clearInterval(rotTimer); rot[r].classList.remove('on'); r = (r + 1) % rot.length; const nx = rot[r]; fit(nx); setTimeout(() => nx.classList.add('on'), 260); }, 2400); }
     const cf = $('#cf'); if (!cf) return;
     const cards = $$('.cf-card', cf), n = cards.length, cap = $('#cfCap');
     let c = 0, hover = false;

@@ -1261,10 +1261,10 @@ html[lang="zh-CN"] .tag, html[lang="zh-CN"] .chip.hot { letter-spacing: .04em; }
 .hx2 { padding: 54px 0 8px; text-align: center; overflow: hidden; }
 .hx2-head { display: grid; justify-items: center; gap: 16px; }
 .hx2-h { font-size: clamp(38px, 6.4vw, 84px); line-height: 1.02; letter-spacing: -.045em; max-width: 14em; text-wrap: balance; }
-.hx2-rot { display: inline-grid; justify-items: center; vertical-align: bottom; margin: 0 .18em; transition: width .32s cubic-bezier(.2, .8, .2, 1); }
+.hx2-rot { display: inline-grid; grid-template-columns: minmax(0, 1fr); justify-items: center; vertical-align: bottom; margin: 0 .18em; }
 .hx2-rot b { grid-area: 1 / 1; justify-self: center; font-family: var(--pixel); font-weight: 400; font-size: .74em; letter-spacing: 0; color: #140b06; background: var(--accent); padding: .08em .3em .14em; border-radius: .18em; white-space: nowrap;
   opacity: 0; transform: translateY(.35em) scale(.96); transition: opacity .35s ease, transform .5s cubic-bezier(.2, .8, .2, 1); }
-.hx2-rot b.on { opacity: 1; transform: none; transition-delay: .16s; }
+.hx2-rot b.on { opacity: 1; transform: none; }
 .cf:not(.ready) .cf-card { transition: none; }
 :lang(zh) .hx2-rot b { font-family: inherit; font-weight: 700; font-size: .86em; }
 :lang(zh) .hx2-rot { display: grid; width: auto !important; margin: .1em auto .12em; }
