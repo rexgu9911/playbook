@@ -17,7 +17,7 @@ window.PB_DISCOVER = [
   "note": "A 3D action game packed into one 30 MB HTML file, built in an afternoon.",
   "cover": "",
   "embeddable": true,
-  "verified": "2026-11-13",
+  "verified": "2026-11-16",
   "touch": true
  },
  {
@@ -34,8 +34,9 @@ window.PB_DISCOVER = [
   "note": "Four single-file FPS experiments that rebuild the one-prompt FPS idea, with models, sound and textures all made in code; open source.",
   "cover": "",
   "embeddable": true,
-  "verified": "2026-11-13",
-  "touch": false
+  "verified": "2026-11-16",
+  "touch": false,
+  "code": "https://github.com/wquguru/fable52-fps-repro"
  },
  {
   "title": "Oil Paint",
@@ -49,9 +50,9 @@ window.PB_DISCOVER = [
   "is3d": true,
   "date": "2026-11-11",
   "note": "A walkable scene drawn as thick oil paint, about 1.5 million brush strokes a frame at 200 fps; open source.",
-  "cover": "https://patch.gg/api/cards/block/blendi/oil-paint?v=88dd7e36c7364acf",
+  "cover": "https://patch.gg/api/cards/block/blendi/oil-paint?v=dc461e8a06f4208d",
   "embeddable": true,
-  "verified": "2026-11-13",
+  "verified": "2026-11-16",
   "touch": ""
  },
  {
@@ -68,7 +69,7 @@ window.PB_DISCOVER = [
   "note": "Looks like a Pong clone until you play it; a joke post that people shared widely.",
   "cover": "https://tennis.sixfingerpunch.com/og.jpg",
   "embeddable": true,
-  "verified": "2026-11-13",
+  "verified": "2026-11-16",
   "touch": false
  },
  {
@@ -85,7 +86,7 @@ window.PB_DISCOVER = [
   "note": "Ride a bicycle through Van Gogh's The Starry Night, collect orbs and post a score.",
   "cover": "https://starrynightrider.com/og-painting.jpg",
   "embeddable": false,
-  "verified": "2026-11-13",
+  "verified": "2026-11-16",
   "touch": true
  },
  {
@@ -102,7 +103,7 @@ window.PB_DISCOVER = [
   "note": "Early preview of a photoreal open-world Manhattan: drive, fly a helicopter or walk, in Chrome.",
   "cover": "https://nyc.somethingbig.ai/og.jpg",
   "embeddable": true,
-  "verified": "2026-11-13",
+  "verified": "2026-11-16",
   "touch": false
  },
  {
@@ -119,7 +120,7 @@ window.PB_DISCOVER = [
   "note": "A souls-like boss duel in a drowned cathedral.",
   "cover": "https://evensong-phi.vercel.app/assets/share/card.jpg",
   "embeddable": true,
-  "verified": "2026-11-13",
+  "verified": "2026-11-16",
   "touch": false
  },
  {
@@ -136,7 +137,7 @@ window.PB_DISCOVER = [
   "note": "Action game where every animation, model and enemy death effect came from the model.",
   "cover": "",
   "embeddable": true,
-  "verified": "2026-11-13",
+  "verified": "2026-11-16",
   "touch": false
  },
  {
@@ -153,7 +154,7 @@ window.PB_DISCOVER = [
   "note": "Singles pickleball on a toy rooftop court, made in Unreal 5.9 and played in the browser on Wavedash.",
   "cover": "https://uploads.wavedash.com/cdn-cgi/image/dpr=1,width=1200,height=675,fit=cover,format=jpeg/jd75665dn6y5z8t51f7xgv0yax8drs7x/j97f5z6pcezey4t7ww01qfq99h8j0x2n/assets/wideCover-1794389143866-b8fdb1be.webp",
   "embeddable": false,
-  "verified": "2026-11-13",
+  "verified": "2026-11-16",
   "touch": ""
  },
  {
@@ -170,7 +171,7 @@ window.PB_DISCOVER = [
   "note": "Third-person boss-fight action RPG: a panda warrior with a bamboo staff, two stances, perfect dodges and a temple boss.",
   "cover": "https://d2ol7oe51mr4n9.cloudfront.net/user_3F618kxxnh0N3gYgUuqNnkKCcN5/336bdb4d-7c9b-49b0-be49-a8197b5bb68a.png",
   "embeddable": false,
-  "verified": "2026-11-13",
+  "verified": "2026-11-16",
   "touch": false
  },
  {
@@ -187,7 +188,7 @@ window.PB_DISCOVER = [
   "note": "A fantasy transport and logistics sim where good logistics defeats evil, built by agents arguing about art, lore and jokes.",
   "cover": "https://dread-and-district.netlify.app/art/og.jpg",
   "embeddable": true,
-  "verified": "2026-11-13",
+  "verified": "2026-11-16",
   "touch": false
  },
  {
@@ -204,9 +205,8 @@ window.PB_DISCOVER = [
   "note": "Neighborhood 7v7 football with many characters, league progression and play with friends.",
   "cover": "https://yardclash.vercel.app/og.jpg",
   "embeddable": true,
-  "verified": "2026-11-13",
-  "touch": "",
-  "stale": true
+  "verified": "2026-11-16",
+  "touch": ""
  },
  {
   "title": "Saltfire Offshore Racing",
@@ -222,7 +222,7 @@ window.PB_DISCOVER = [
   "note": "Armed powerboat racing on heavy seas: four tracks, three hulls, machine guns, homing rockets and five AI rivals.",
   "cover": "https://d2ol7oe51mr4n9.cloudfront.net/user_3F618kxxnh0N3gYgUuqNnkKCcN5/8ce9990b-16ca-4f8a-aa11-f2b95556583c.png",
   "embeddable": false,
-  "verified": "2026-11-13",
+  "verified": "2026-11-16",
   "touch": true
  },
  {
@@ -239,7 +239,7 @@ window.PB_DISCOVER = [
   "note": "The breakout hit of the week: a one-prompt FPS set in a rainy container port, with every model, sound and texture made in code. It took 8 hours and about $550.",
   "cover": "",
   "embeddable": false,
-  "verified": "2026-11-13",
+  "verified": "2026-11-16",
   "touch": false
  },
  {
@@ -256,7 +256,7 @@ window.PB_DISCOVER = [
   "note": "Open-world 3D action-adventure with temple puzzles, cutscenes and a 3-act boss fight against the Hollow King.",
   "cover": "https://d2ol7oe51mr4n9.cloudfront.net/user_3F618kxxnh0N3gYgUuqNnkKCcN5/e1ebfae6-f9e6-4d7c-9ead-cfb52bb8df86.png",
   "embeddable": false,
-  "verified": "2026-11-13",
+  "verified": "2026-11-16",
   "touch": false
  },
  {
@@ -273,7 +273,7 @@ window.PB_DISCOVER = [
   "note": "A 1v1 first-person arena duel: one life a round, twelve brass-and-iron weapons, first to five.",
   "cover": "https://gilt-and-gutter.vercel.app/assets/share/card.jpg",
   "embeddable": true,
-  "verified": "2026-11-13",
+  "verified": "2026-11-16",
   "touch": false
  },
  {
@@ -290,7 +290,7 @@ window.PB_DISCOVER = [
   "note": "3D kart racer with six racers, drifting, ramps and items, in single player and multiplayer.",
   "cover": "",
   "embeddable": true,
-  "verified": "2026-11-13",
+  "verified": "2026-11-16",
   "touch": true
  },
  {
@@ -307,7 +307,7 @@ window.PB_DISCOVER = [
   "note": "The whole planet as a destructible sandbox, with weather that matches the real Earth live.",
   "cover": "https://www.spawn.co/api/og/box?owner=mattshumer&game=earth&pic=shot&k=gplpt2",
   "embeddable": false,
-  "verified": "2026-11-13",
+  "verified": "2026-11-16",
   "touch": ""
  },
  {
@@ -324,7 +324,7 @@ window.PB_DISCOVER = [
   "note": "A slow lantern-lit boat ride through eight dreamlike realms; one of the first Fable 5.2 demos after launch.",
   "cover": "https://what-the-water-keeps.vercel.app/assets/share/card.jpg?v=74c13609",
   "embeddable": true,
-  "verified": "2026-11-13",
+  "verified": "2026-11-16",
   "touch": false
  },
  {
@@ -341,7 +341,7 @@ window.PB_DISCOVER = [
   "note": "Silver ($10,000) at Cursor Vibe Jam 2026: a rocket-speed shopping dash through a haunted grocery store, with multiplayer.",
   "cover": "https://fantos-megamart.vercel.app/fanto-thumbnail-b.png",
   "embeddable": true,
-  "verified": "2026-11-13",
+  "verified": "2026-11-16",
   "touch": false
  },
  {
@@ -358,7 +358,7 @@ window.PB_DISCOVER = [
   "note": "Bronze ($5,000) plus the Most Played award at Cursor Vibe Jam 2026: a GeoGuessr-style game where you guess both the place and the year of a 360-degree historical scene.",
   "cover": "",
   "embeddable": false,
-  "verified": "2026-11-13",
+  "verified": "2026-11-16",
   "touch": true
  },
  {
@@ -375,7 +375,7 @@ window.PB_DISCOVER = [
   "note": "Ranked 4th and won Best Art Direction at Cursor Vibe Jam 2026: first-person multiplayer space dogfighting.",
   "cover": "",
   "embeddable": false,
-  "verified": "2026-11-13",
+  "verified": "2026-11-16",
   "touch": true
  },
  {
@@ -392,7 +392,7 @@ window.PB_DISCOVER = [
   "note": "Ranked 5th and won Most Original at Cursor Vibe Jam 2026: a short ASCII horror story about a solo descent under the Antarctic ice.",
   "cover": "https://haldane4.denisbondare.com/haldane4_preview_x.png",
   "embeddable": true,
-  "verified": "2026-11-13",
+  "verified": "2026-11-16",
   "touch": true
  },
  {
@@ -426,7 +426,7 @@ window.PB_DISCOVER = [
   "note": "Ranked 7th and won Most Polished at Cursor Vibe Jam 2026: a cosy exploration game set on a small world facing an apocalypse.",
   "cover": "https://tinyskies.vercel.app/social-card.png?v=2",
   "embeddable": true,
-  "verified": "2026-11-13",
+  "verified": "2026-11-16",
   "touch": true
  },
  {
@@ -443,7 +443,7 @@ window.PB_DISCOVER = [
   "note": "Ranked 8th of 945 entries at Cursor Vibe Jam 2026: climb toward a tower while staying out of the guards' sight.",
   "cover": "https://sunset-city.didof.dev/og.jpg",
   "embeddable": true,
-  "verified": "2026-11-13",
+  "verified": "2026-11-16",
   "touch": true
  },
  {
@@ -460,7 +460,7 @@ window.PB_DISCOVER = [
   "note": "Ranked 9th and won Most Zen at Cursor Vibe Jam 2026: a calm bonsai-growing game.",
   "cover": "https://www.kansogame.com/kanso_snippet.png",
   "embeddable": true,
-  "verified": "2026-11-13",
+  "verified": "2026-11-16",
   "touch": true
  },
  {
@@ -477,7 +477,7 @@ window.PB_DISCOVER = [
   "note": "Ranked 11th of 945 entries at Cursor Vibe Jam 2026: an atmospheric burger-making sim where you cook to earn your freedom.",
   "cover": "https://bungr.net/embed.jpg",
   "embeddable": true,
-  "verified": "2026-11-13",
+  "verified": "2026-11-16",
   "touch": false
  },
  {
@@ -494,7 +494,7 @@ window.PB_DISCOVER = [
   "note": "Ranked 12th of 945 entries at Cursor Vibe Jam 2026: five minutes to reach a storm shelter before an Oklahoma tornado hits.",
   "cover": "",
   "embeddable": true,
-  "verified": "2026-11-13",
+  "verified": "2026-11-16",
   "touch": true
  },
  {
@@ -511,7 +511,7 @@ window.PB_DISCOVER = [
   "note": "Ranked 13th at Cursor Vibe Jam 2026: a physics-based multiplayer fighting game, also listed among the jam's Colyseus-powered entries.",
   "cover": "https://floppybrawler.vercel.app/ogicon.png",
   "embeddable": true,
-  "verified": "2026-11-13",
+  "verified": "2026-11-16",
   "touch": true
  },
  {
@@ -528,7 +528,7 @@ window.PB_DISCOVER = [
   "note": "Ranked 14th and won Unique Concept at Cursor Vibe Jam 2026: a multiplayer FPS fought on the inside of a sphere with shifting gravity.",
   "cover": "https://www.playundersphere.com/thumbnail.png",
   "embeddable": true,
-  "verified": "2026-11-13",
+  "verified": "2026-11-16",
   "touch": true
  },
  {
@@ -545,7 +545,7 @@ window.PB_DISCOVER = [
   "note": "Ranked 17th and won Most Unhinged at Cursor Vibe Jam 2026: swing around with friends and compete on damage caused to infrastructure.",
   "cover": "",
   "embeddable": true,
-  "verified": "2026-11-13",
+  "verified": "2026-11-16",
   "touch": true
  },
  {
@@ -562,7 +562,7 @@ window.PB_DISCOVER = [
   "note": "Ranked 19th and won Most Portal Transfers at Cursor Vibe Jam 2026: a fast-loading 2D racer.",
   "cover": "https://fullsend.game/og-image.jpg?v=c205df89b0eec8c1fb9d396e3c54e32ec945fd06",
   "embeddable": true,
-  "verified": "2026-11-13",
+  "verified": "2026-11-16",
   "touch": true
  },
  {
@@ -579,7 +579,7 @@ window.PB_DISCOVER = [
   "note": "Ranked 20th and won the Rage-Quit Award at Cursor Vibe Jam 2026: a climb-to-the-top platformer.",
   "cover": "https://beetlejump.com/preview.png",
   "embeddable": true,
-  "verified": "2026-11-13",
+  "verified": "2026-11-16",
   "touch": true
  },
  {
@@ -596,7 +596,7 @@ window.PB_DISCOVER = [
   "note": "Ranked 21st at Cursor Vibe Jam 2026: multiplayer chaos where toddlers brawl in a giant living room over the TV remote.",
   "cover": "",
   "embeddable": true,
-  "verified": "2026-11-13",
+  "verified": "2026-11-16",
   "touch": true
  },
  {
@@ -613,7 +613,7 @@ window.PB_DISCOVER = [
   "note": "Ranked 22nd and won Funniest Game at Cursor Vibe Jam 2026: a mosh-pit survival game built around death-metal lyrics made of furniture product names.",
   "cover": "",
   "embeddable": true,
-  "verified": "2026-11-13",
+  "verified": "2026-11-16",
   "touch": true
  },
  {
@@ -630,7 +630,7 @@ window.PB_DISCOVER = [
   "note": "Ranked 28th and won Most Cursed at Cursor Vibe Jam 2026: a horror-tinged surgery sim, and one of the few awarded entries built in Godot.",
   "cover": "https://almostsurgery.ragim.dev/social-image-v2.jpg",
   "embeddable": true,
-  "verified": "2026-11-13",
+  "verified": "2026-11-16",
   "touch": true
  },
  {
@@ -647,7 +647,7 @@ window.PB_DISCOVER = [
   "note": "MMO survival game with an endless world; topped the Colyseus write-up's list of multiplayer Vibe Jam 2026 entries, which was sorted by likes on makers' posts.",
   "cover": "https://hollowlands.andreelias.dev/assets/images/hollowlands-menu-screen.webp",
   "embeddable": true,
-  "verified": "2026-11-13",
+  "verified": "2026-11-16",
   "touch": true
  },
  {
@@ -664,7 +664,7 @@ window.PB_DISCOVER = [
   "note": "Gold ($10,000) at the first Vibe Coding Game Jam in 2025, which drew over 1,000 entries: a rhythm-flavoured taxi driving game set in Vibe City.",
   "cover": "https://great-taxi-assignment.netlify.app/assets/social-preview.jpg",
   "embeddable": true,
-  "verified": "2026-11-13",
+  "verified": "2026-11-16",
   "touch": true
  },
  {
@@ -681,7 +681,7 @@ window.PB_DISCOVER = [
   "note": "Silver ($5,000) at the 2025 Vibe Coding Game Jam: rapid-fire microgames based on everyday phone and web chores. The page now opens with a skippable promo screen.",
   "cover": "https://vibeware.vercel.app/social-card.jpg",
   "embeddable": true,
-  "verified": "2026-11-13",
+  "verified": "2026-11-16",
   "touch": true
  },
  {
@@ -698,7 +698,7 @@ window.PB_DISCOVER = [
   "note": "A relaxed browser sailing sim from the 2025 jam that is still maintained, with daily races; its maker became a judge of the 2026 jam.",
   "cover": "https://vibesail.com/assets/thumbnail.png",
   "embeddable": false,
-  "verified": "2026-11-13",
+  "verified": "2026-11-16",
   "touch": false
  },
  {
@@ -715,7 +715,7 @@ window.PB_DISCOVER = [
   "note": "A dogfight combat flight sim entered in the 2025 jam; its maker says it was built entirely with AI in about 500 prompts.",
   "cover": "",
   "embeddable": true,
-  "verified": "2026-11-13",
+  "verified": "2026-11-16",
   "touch": true
  },
  {
@@ -732,7 +732,7 @@ window.PB_DISCOVER = [
   "note": "Top-ranked overall in itch.io's AI Browser Game Jam 2 (42 entries): a Box2D pinball table with multiball and a boss mode.",
   "cover": "https://img.itch.zone/aW1nLzI2OTY0OTMxLnBuZw==/original/waPVht.png",
   "embeddable": false,
-  "verified": "2026-11-13",
+  "verified": "2026-11-16",
   "touch": ""
  },
  {
@@ -749,7 +749,7 @@ window.PB_DISCOVER = [
   "note": "Second overall in itch.io's AI Browser Game Jam 2: a vertical shoot-'em-up built around one escalating boss fight.",
   "cover": "https://img.itch.zone/aW1nLzI2OTczODMwLnBuZw==/original/PSyiVP.png",
   "embeddable": false,
-  "verified": "2026-11-13",
+  "verified": "2026-11-16",
   "touch": ""
  },
  {
@@ -766,7 +766,7 @@ window.PB_DISCOVER = [
   "note": "The multiplayer flight sim that kicked off the vibe-coded game wave; still live and regularly cited as the reference example.",
   "cover": "http://fly.pieter.com/assets/fly_social_image.png?1234",
   "embeddable": true,
-  "verified": "2026-11-13",
+  "verified": "2026-11-16",
   "touch": true
  },
  {
@@ -783,7 +783,7 @@ window.PB_DISCOVER = [
   "note": "Quake's shareware episode ported to the browser by the creator of Three.js, working with Claude.",
   "cover": "",
   "embeddable": true,
-  "verified": "2026-11-13",
+  "verified": "2026-11-16",
   "touch": false
  },
  {
@@ -800,7 +800,7 @@ window.PB_DISCOVER = [
   "note": "Doom ported to Three.js, started as a test of an autonomous Claude Code goal command and then polished into a playable release.",
   "cover": "",
   "embeddable": true,
-  "verified": "2026-11-13",
+  "verified": "2026-11-16",
   "touch": false
  },
  {
@@ -817,7 +817,7 @@ window.PB_DISCOVER = [
   "note": "Kart racer with a track editor and VR/MR support, grown from a fork of mrdoob's Three.js port of a Kenney racing kit.",
   "cover": "https://cdn.dmnshd.gg/uploads/thumbnails/shed-racer.webp",
   "embeddable": false,
-  "verified": "2026-11-13",
+  "verified": "2026-11-16",
   "touch": true
  },
  {
@@ -834,7 +834,7 @@ window.PB_DISCOVER = [
   "note": "A grime-scrubbing cleaning sim built from prompts in about two days.",
   "cover": "",
   "embeddable": true,
-  "verified": "2026-11-13",
+  "verified": "2026-11-16",
   "touch": true
  },
  {
@@ -851,7 +851,7 @@ window.PB_DISCOVER = [
   "note": "Ridge Racer-style neon drift racer made as a launch-week test of Fable 5 with an open-source game-director skill set.",
   "cover": "",
   "embeddable": true,
-  "verified": "2026-11-13",
+  "verified": "2026-11-16",
   "touch": true
  },
  {
@@ -868,7 +868,7 @@ window.PB_DISCOVER = [
   "note": "Space dogfighting game with AI-generated 3D and audio assets, built by Fable 5.",
   "cover": "",
   "embeddable": true,
-  "verified": "2026-11-13",
+  "verified": "2026-11-16",
   "touch": false
  },
  {
@@ -885,7 +885,7 @@ window.PB_DISCOVER = [
   "note": "Arena battler made to show the game-director skills also work with a model other than Fable.",
   "cover": "",
   "embeddable": true,
-  "verified": "2026-11-13",
+  "verified": "2026-11-16",
   "touch": true
  },
  {
@@ -902,8 +902,9 @@ window.PB_DISCOVER = [
   "note": "Open-source classic-style browser MMORPG whose playable foundation was built in a weekend; widely covered and debated. Online play needs an account, but an instant offline single-player world is offered.",
   "cover": "",
   "embeddable": false,
-  "verified": "2026-11-13",
-  "touch": true
+  "verified": "2026-11-16",
+  "touch": true,
+  "code": "https://github.com/levy-street/world-of-claudecraft"
  },
  {
   "title": "Dust Corridor",
@@ -919,7 +920,7 @@ window.PB_DISCOVER = [
   "note": "Tactical FPS produced by reverse-engineering the prompt behind Matt Shumer's viral 'Claude of Duty' demo, with no subagents.",
   "cover": "",
   "embeddable": true,
-  "verified": "2026-11-13",
+  "verified": "2026-11-16",
   "touch": false
  },
  {
@@ -936,7 +937,7 @@ window.PB_DISCOVER = [
   "note": "Call of Duty-style FPS generated in a ten-hour run of Matt Shumer's published prompt, with all assets created in code.",
   "cover": "",
   "embeddable": true,
-  "verified": "2026-11-13",
+  "verified": "2026-11-16",
   "touch": false
  },
  {
@@ -953,7 +954,7 @@ window.PB_DISCOVER = [
   "note": "A 3D raccoon heist game one-shotted from a single prompt in about half an hour, based on a 2022 GPT-3 game premise.",
   "cover": "",
   "embeddable": true,
-  "verified": "2026-11-13",
+  "verified": "2026-11-16",
   "touch": false
  },
  {
@@ -970,7 +971,7 @@ window.PB_DISCOVER = [
   "note": "3D procedurally generated roguelite with bosses, disasters and meta progression, made with zero asset files by a popular AI YouTuber.",
   "cover": "https://the-librarian-2.mreflow.chatgpt.site/key-art-wolfe-v2.png",
   "embeddable": true,
-  "verified": "2026-11-13",
+  "verified": "2026-11-16",
   "touch": false
  },
  {
@@ -987,7 +988,7 @@ window.PB_DISCOVER = [
   "note": "Top-down physics sword-dueling game where the human did design and testing and Claude wrote all the code.",
   "cover": "https://satsumacreative.tw/games/kw/cover-forge.jpg",
   "embeddable": false,
-  "verified": "2026-11-13",
+  "verified": "2026-11-16",
   "touch": true
  },
  {
@@ -1004,7 +1005,7 @@ window.PB_DISCOVER = [
   "note": "Two-year solo project combining six modes (campaign, action runs, skilling, card game, 5v5 arena, 1v1 RTS) in one tab. Asks for a display name before playing.",
   "cover": "https://danmanreal.com/realgrind/og-image.jpg",
   "embeddable": false,
-  "verified": "2026-11-13",
+  "verified": "2026-11-16",
   "touch": false
  },
  {
@@ -1021,7 +1022,7 @@ window.PB_DISCOVER = [
   "note": "Command & Conquer-style RTS with online and sound-based multiplayer, built over 12 iterations of almost entirely unreviewed agent code.",
   "cover": "",
   "embeddable": true,
-  "verified": "2026-11-13",
+  "verified": "2026-11-16",
   "touch": true
  },
  {
@@ -1038,7 +1039,7 @@ window.PB_DISCOVER = [
   "note": "A small 3D adventure iterated through eleven versions entirely inside the regular Claude chat app, with a public transcript.",
   "cover": "",
   "embeddable": true,
-  "verified": "2026-11-13",
+  "verified": "2026-11-16",
   "touch": true
  },
  {
@@ -1055,7 +1056,7 @@ window.PB_DISCOVER = [
   "note": "ChatGPT's answer to the Emberwick experiment, published straight from ChatGPT to a public site.",
   "cover": "",
   "embeddable": true,
-  "verified": "2026-11-13",
+  "verified": "2026-11-16",
   "touch": true
  },
  {
@@ -1072,7 +1073,7 @@ window.PB_DISCOVER = [
   "note": "Cozy farming game built from a written spec by an orchestrated multi-agent Claude Code run.",
   "cover": "",
   "embeddable": true,
-  "verified": "2026-11-13",
+  "verified": "2026-11-16",
   "touch": false
  },
  {
@@ -1089,7 +1090,7 @@ window.PB_DISCOVER = [
   "note": "Low-poly SimCity 2000 clone whose game logic was translated from the decompiled original and checked against an emulator run.",
   "cover": "",
   "embeddable": true,
-  "verified": "2026-11-13",
+  "verified": "2026-11-16",
   "touch": true
  },
  {
@@ -1106,7 +1107,7 @@ window.PB_DISCOVER = [
   "note": "Multiplayer aerial brawler with propeller cats fighting over tropical islands; built in about a week on top of an earlier project.",
   "cover": "https://catcopter.com/opengraph-image.png?opengraph-image.41b5mp_ao2j63.png",
   "embeddable": true,
-  "verified": "2026-11-13",
+  "verified": "2026-11-16",
   "touch": true
  },
  {
@@ -1123,7 +1124,7 @@ window.PB_DISCOVER = [
   "note": "Retro biplane stunt game (pop balloons, dive through barns) made in roughly four hours of conversation with Gemini.",
   "cover": "",
   "embeddable": true,
-  "verified": "2026-11-13",
+  "verified": "2026-11-16",
   "touch": true
  },
  {
@@ -1140,7 +1141,7 @@ window.PB_DISCOVER = [
   "note": "Slope-style endless descent with a new track every day, served in under 100 KB with no ads or login.",
   "cover": "https://hurtle.site/og.png",
   "embeddable": true,
-  "verified": "2026-11-13",
+  "verified": "2026-11-16",
   "touch": false
  },
  {
@@ -1157,7 +1158,7 @@ window.PB_DISCOVER = [
   "note": "SimTower-style tower builder where you are an elected steward and the economy runs on co-op rules instead of landlord profit.",
   "cover": "https://intergalacticrobots.app/skyline-coop/assets/og-image.png",
   "embeddable": false,
-  "verified": "2026-11-13",
+  "verified": "2026-11-16",
   "touch": false
  },
  {
@@ -1174,7 +1175,7 @@ window.PB_DISCOVER = [
   "note": "Browser multiplayer FPS a father built with his kids as the product managers; peer-to-peer WebRTC, works on phones too.",
   "cover": "",
   "embeddable": true,
-  "verified": "2026-11-13",
+  "verified": "2026-11-16",
   "touch": true
  },
  {
@@ -1191,7 +1192,7 @@ window.PB_DISCOVER = [
   "note": "Time-rewind tower defense made for a beginners' jam, with every prompt published alongside the code; one of the most upvoted AI-game Show HNs.",
   "cover": "https://img.itch.zone/aW1nLzIxOTkyNzAxLnBuZw==/original/nylYw3.png",
   "embeddable": false,
-  "verified": "2026-11-13",
+  "verified": "2026-11-16",
   "touch": ""
  },
  {
@@ -1208,7 +1209,7 @@ window.PB_DISCOVER = [
   "note": "Warcraft-2-style RTS with 9 factions, 200+ units, fog of war, multiplayer and an optional LLM commander, built in spare minutes by a non-game-dev.",
   "cover": "https://www.shardsofstone.com/og/index.jpg?v=1",
   "embeddable": false,
-  "verified": "2026-11-13",
+  "verified": "2026-11-16",
   "touch": true
  },
  {
@@ -1225,7 +1226,7 @@ window.PB_DISCOVER = [
   "note": "Mercenary-company autobattler roguelike with Diablo-style item affixes, made by someone who says they cannot code.",
   "cover": "https://img.itch.zone/aW1nLzI1Njc2NDA2LnBuZw==/original/Lvot6l.png",
   "embeddable": false,
-  "verified": "2026-11-13",
+  "verified": "2026-11-16",
   "touch": ""
  },
  {
@@ -1242,7 +1243,7 @@ window.PB_DISCOVER = [
   "note": "3D chess roguelike inspired by Slay the Spire and Balatro, made for Vibe Jam without the author reading the code.",
   "cover": "",
   "embeddable": true,
-  "verified": "2026-11-13",
+  "verified": "2026-11-16",
   "touch": true
  },
  {
@@ -1259,7 +1260,7 @@ window.PB_DISCOVER = [
   "note": "Drifting game with network multiplayer and leaderboards; the author's first vibe-coded browser game.",
   "cover": "",
   "embeddable": false,
-  "verified": "2026-11-13",
+  "verified": "2026-11-16",
   "touch": false
  },
  {
@@ -1276,7 +1277,7 @@ window.PB_DISCOVER = [
   "note": "Open-source multiplayer naval combat for up to 16 players with charged cannon shots, mines and ramming; has mobile controls.",
   "cover": "",
   "embeddable": true,
-  "verified": "2026-11-13",
+  "verified": "2026-11-16",
   "touch": true
  },
  {
@@ -1293,7 +1294,7 @@ window.PB_DISCOVER = [
   "note": "Red Alert-style browser RTS in about 10 MB with base building, three factions and nuclear superweapons.",
   "cover": "https://img.itch.zone/aW1nLzI5MDg0NjcwLmdpZg==/original/FZiEaA.gif",
   "embeddable": false,
-  "verified": "2026-11-13",
+  "verified": "2026-11-16",
   "touch": ""
  },
  {
@@ -1310,7 +1311,7 @@ window.PB_DISCOVER = [
   "note": "Retro tower defense that its author says took just two requests to Claude's free tier.",
   "cover": "https://img.itch.zone/aW1nLzMxODg5NjkyLnBuZw==/original/%2BjEipg.png",
   "embeddable": false,
-  "verified": "2026-11-13",
+  "verified": "2026-11-16",
   "touch": ""
  },
  {
@@ -1327,7 +1328,7 @@ window.PB_DISCOVER = [
   "note": "Cyberpunk ramen-shop game about balancing flavour attributes for customers, made for a noodle-themed jam with no prior Phaser experience.",
   "cover": "https://img.itch.zone/aW1nLzIwODk0ODYzLnBuZw==/original/Jy2vFX.png",
   "embeddable": false,
-  "verified": "2026-11-13",
+  "verified": "2026-11-16",
   "touch": ""
  },
  {
@@ -1344,7 +1345,7 @@ window.PB_DISCOVER = [
   "note": "Gold winner of Cursor Vibe Jam 2026: a PS1-styled delivery run where capybaras drive food across town.",
   "cover": "https://capybara-vibejam26.leocoout.dev/images/capybara_thumbnail.png?v=1",
   "embeddable": true,
-  "verified": "2026-11-13",
+  "verified": "2026-11-16",
   "touch": true
  },
  {
@@ -1361,7 +1362,7 @@ window.PB_DISCOVER = [
   "note": "Ranked 10th of 945 at Cursor Vibe Jam 2026. The invasion that never was.",
   "cover": "https://www.fieldofcommand.com/media/v1/brand/search-card-v4.jpg",
   "embeddable": false,
-  "verified": "2026-11-13",
+  "verified": "2026-11-16",
   "touch": true
  },
  {
@@ -1378,7 +1379,7 @@ window.PB_DISCOVER = [
   "note": "Ranked 16th of 945 at Cursor Vibe Jam 2026. PvP Arena Shooter.",
   "cover": "https://therite.magooney.org/twitter.jpg",
   "embeddable": true,
-  "verified": "2026-11-13",
+  "verified": "2026-11-16",
   "touch": true
  },
  {
@@ -1395,7 +1396,7 @@ window.PB_DISCOVER = [
   "note": "Ranked 23rd of 945 at Cursor Vibe Jam 2026. Blockzilla — a Vampire Survivors meets Rampage roguelike where you finally get to play the bad guy - a giant Kaiju monster destroying NYC and…",
   "cover": "https://blockzilla.io/og-image.png",
   "embeddable": true,
-  "verified": "2026-11-13",
+  "verified": "2026-11-16",
   "touch": true
  },
  {
@@ -1412,7 +1413,7 @@ window.PB_DISCOVER = [
   "note": "Ranked 24th of 945 at Cursor Vibe Jam 2026. Pilot a drone over a cute pixel world and hand out freedom.",
   "cover": "https://cozydrone.com/images/social-card.png",
   "embeddable": true,
-  "verified": "2026-11-13",
+  "verified": "2026-11-16",
   "touch": true
  },
  {
@@ -1429,7 +1430,7 @@ window.PB_DISCOVER = [
   "note": "Ranked 25th of 945 at Cursor Vibe Jam 2026. A surreal office shooter where a burned-out worker fights through a collapsing corporate nightmare to escape before the system consumes him.",
   "cover": "",
   "embeddable": true,
-  "verified": "2026-11-13",
+  "verified": "2026-11-16",
   "touch": true
  },
  {
@@ -1446,7 +1447,7 @@ window.PB_DISCOVER = [
   "note": "Ranked 26th of 945 at Cursor Vibe Jam 2026. You and a bunch of strangers ram cars in a dusty arena, just dumb fun.",
   "cover": "https://demolition-derby.xyz/brand/og-image.png",
   "embeddable": false,
-  "verified": "2026-11-13",
+  "verified": "2026-11-16",
   "touch": true
  },
  {
@@ -1463,7 +1464,7 @@ window.PB_DISCOVER = [
   "note": "Ranked 27th of 945 at Cursor Vibe Jam 2026. The first co-op game made for strangers.",
   "cover": "https://upwithastranger.com/og-image.jpg",
   "embeddable": true,
-  "verified": "2026-11-13",
+  "verified": "2026-11-16",
   "touch": true
  },
  {
@@ -1480,7 +1481,7 @@ window.PB_DISCOVER = [
   "note": "Ranked 30th of 945 at Cursor Vibe Jam 2026. Loot extraction tom and jerry.",
   "cover": "https://mouse.ryanfitzpatrick.io/og-card.jpg",
   "embeddable": false,
-  "verified": "2026-11-13",
+  "verified": "2026-11-16",
   "touch": true
  },
  {
@@ -1497,7 +1498,7 @@ window.PB_DISCOVER = [
   "note": "Ranked 31st of 945 at Cursor Vibe Jam 2026. Pick any spot on Earth, drop in, and drive through a living open world of quests, hidden treasures, and legendary rides.",
   "cover": "",
   "embeddable": true,
-  "verified": "2026-11-13",
+  "verified": "2026-11-16",
   "touch": true
  },
  {
@@ -1514,7 +1515,7 @@ window.PB_DISCOVER = [
   "note": "Ranked 32nd of 945 at Cursor Vibe Jam 2026. High stakes hacking simulator.",
   "cover": "",
   "embeddable": true,
-  "verified": "2026-11-13",
+  "verified": "2026-11-16",
   "touch": true
  },
  {
@@ -1531,7 +1532,7 @@ window.PB_DISCOVER = [
   "note": "Ranked 33rd of 945 at Cursor Vibe Jam 2026. Leviathan is a mythic reverse-Moby-Dick action game where you play the whale, rising from the black deep to smash whaling fleets, snap harpoon lines…",
   "cover": "https://leviathan.timothybauman.com/cover-image.png",
   "embeddable": true,
-  "verified": "2026-11-13",
+  "verified": "2026-11-16",
   "touch": false
  },
  {
@@ -1548,7 +1549,7 @@ window.PB_DISCOVER = [
   "note": "Ranked 34th of 945 at Cursor Vibe Jam 2026. Descent with stealth and rogue-like mechanics.",
   "cover": "https://www.roguelith.com/social-preview.jpg",
   "embeddable": true,
-  "verified": "2026-11-13",
+  "verified": "2026-11-16",
   "touch": true
  },
  {
@@ -1565,7 +1566,7 @@ window.PB_DISCOVER = [
   "note": "Ranked 35th of 945 at Cursor Vibe Jam 2026. Soar among the Gods and strike down your foes in this mythological airborne fighting game.",
   "cover": "https://pub-1bcd105380b447799dc637211f8ceb8f.r2.dev/banner-aerobolt.png",
   "embeddable": true,
-  "verified": "2026-11-13",
+  "verified": "2026-11-16",
   "touch": true
  },
  {
@@ -1582,7 +1583,7 @@ window.PB_DISCOVER = [
   "note": "Ranked 36th of 945 at Cursor Vibe Jam 2026. Resident Evil Meets Vampire Survivors- Third person zombie shooting fun.",
   "cover": "",
   "embeddable": true,
-  "verified": "2026-11-13",
+  "verified": "2026-11-16",
   "touch": true
  },
  {
@@ -1599,7 +1600,7 @@ window.PB_DISCOVER = [
   "note": "Ranked 38th of 945 at Cursor Vibe Jam 2026. Stoke Slopes is a multiplayer arcade skiing game where players spawn in a mountain lodge, pick a slope, race downhill collecting tokens, and compete…",
   "cover": "",
   "embeddable": true,
-  "verified": "2026-11-13",
+  "verified": "2026-11-16",
   "touch": true
  },
  {
@@ -1616,7 +1617,7 @@ window.PB_DISCOVER = [
   "note": "Ranked 39th of 945 at Cursor Vibe Jam 2026. You're a roomba.",
   "cover": "https://roomba-wars.com/assets/images/xcomcard1.png",
   "embeddable": true,
-  "verified": "2026-11-13",
+  "verified": "2026-11-16",
   "touch": true
  },
  {
@@ -1633,7 +1634,7 @@ window.PB_DISCOVER = [
   "note": "Ranked 41st of 945 at Cursor Vibe Jam 2026. Quadron X is a full 15-mission X-wing dogfight campaign with a voice-acted story, 360° procedural cockpit, and over 200 Grok-generated video comms.",
   "cover": "https://x.danielfarina.com/assets/og-preview.jpg",
   "embeddable": true,
-  "verified": "2026-11-13",
+  "verified": "2026-11-16",
   "touch": true
  },
  {
@@ -1650,7 +1651,7 @@ window.PB_DISCOVER = [
   "note": "Ranked 42nd of 945 at Cursor Vibe Jam 2026. Enjoy a race through the scenic region of Positano.",
   "cover": "",
   "embeddable": true,
-  "verified": "2026-11-13",
+  "verified": "2026-11-16",
   "touch": true
  },
  {
@@ -1667,7 +1668,7 @@ window.PB_DISCOVER = [
   "note": "Ranked 43rd of 945 at Cursor Vibe Jam 2026. A prehistoric arena game where clay characters fight, gather resources, and race to bring them back to their caves first.",
   "cover": "",
   "embeddable": true,
-  "verified": "2026-11-13",
+  "verified": "2026-11-16",
   "touch": true
  },
  {
@@ -1684,7 +1685,7 @@ window.PB_DISCOVER = [
   "note": "Ranked 45th of 945 at Cursor Vibe Jam 2026. Be a fly, taste the dung, avoid the splat.",
   "cover": "https://bolt.new/static/og_default.png",
   "embeddable": true,
-  "verified": "2026-11-13",
+  "verified": "2026-11-16",
   "touch": true
  },
  {
@@ -1701,7 +1702,7 @@ window.PB_DISCOVER = [
   "note": "Ranked 46th of 945 at Cursor Vibe Jam 2026. A multiplayer life sim where you farm, hack, and hustle your way through a pixelated world — every choice is a 1 or a 0.",
   "cover": "",
   "embeddable": true,
-  "verified": "2026-11-13",
+  "verified": "2026-11-16",
   "touch": true
  },
  {
@@ -1718,7 +1719,7 @@ window.PB_DISCOVER = [
   "note": "Ranked 47th of 945 at Cursor Vibe Jam 2026. Survives waves of Zombie Levelsio attacking you on the moon.",
   "cover": "",
   "embeddable": true,
-  "verified": "2026-11-13",
+  "verified": "2026-11-16",
   "touch": true
  },
  {
@@ -1735,7 +1736,7 @@ window.PB_DISCOVER = [
   "note": "Ranked 48th of 945 at Cursor Vibe Jam 2026. Collect flowers and return safely to the hive, without being killed by angry wasps.",
   "cover": "",
   "embeddable": true,
-  "verified": "2026-11-13",
+  "verified": "2026-11-16",
   "touch": true
  },
  {
@@ -1752,7 +1753,7 @@ window.PB_DISCOVER = [
   "note": "Ranked 49th of 945 at Cursor Vibe Jam 2026. A lunar colony organism grows from a damaged alien seed, spreading organs through the dust while human machines try to burn it out.",
   "cover": "",
   "embeddable": true,
-  "verified": "2026-11-13",
+  "verified": "2026-11-16",
   "touch": false
  },
  {
@@ -1769,7 +1770,7 @@ window.PB_DISCOVER = [
   "note": "Ranked 51st of 945 at Cursor Vibe Jam 2026. Race to $10K in a seedy multiplayer motel — steal, hustle, or gamble your way out.",
   "cover": "https://motel.floorsjs.com/og-image2.png",
   "embeddable": false,
-  "verified": "2026-11-13",
+  "verified": "2026-11-16",
   "touch": true
  },
  {
@@ -1786,7 +1787,7 @@ window.PB_DISCOVER = [
   "note": "Ranked 52nd of 945 at Cursor Vibe Jam 2026. A fast-paced movement shooter built around parkour, firefights, and titan-scale combat.",
   "cover": "",
   "embeddable": true,
-  "verified": "2026-11-13",
+  "verified": "2026-11-16",
   "touch": true
  },
  {
@@ -1803,7 +1804,7 @@ window.PB_DISCOVER = [
   "note": "Ranked 53rd of 945 at Cursor Vibe Jam 2026. Multiplayer sword fighting game - Chivalry on the browser.",
   "cover": "",
   "embeddable": true,
-  "verified": "2026-11-13",
+  "verified": "2026-11-16",
   "touch": true
  },
  {
@@ -1820,7 +1821,7 @@ window.PB_DISCOVER = [
   "note": "Ranked 54th of 945 at Cursor Vibe Jam 2026. Play virtual Foosball with mouse and keyboard.",
   "cover": "http://kicker.nc.hn/og-image.jpg",
   "embeddable": true,
-  "verified": "2026-11-13",
+  "verified": "2026-11-16",
   "touch": false
  },
  {
@@ -1837,7 +1838,7 @@ window.PB_DISCOVER = [
   "note": "Ranked 56th of 945 at Cursor Vibe Jam 2026. 6 DoF arena shooter w/ generated art, sound, & music.",
   "cover": "https://banished.smsithlord.com/meta-image.jpg",
   "embeddable": true,
-  "verified": "2026-11-13",
+  "verified": "2026-11-16",
   "touch": true
  },
  {
@@ -1854,7 +1855,7 @@ window.PB_DISCOVER = [
   "note": "Ranked 57th of 945 at Cursor Vibe Jam 2026. A Love Letter to 80s Dungeon Crawlers.",
   "cover": "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/52d1020b-6ba0-4ed5-bf60-87e01234a2d6/id-preview-2075b2a7--33a4f47a-5231-45a3-8e46-9d7c8eeb3d33.lovable.app-1775772695327.png",
   "embeddable": true,
-  "verified": "2026-11-13",
+  "verified": "2026-11-16",
   "touch": true
  },
  {
@@ -1871,7 +1872,7 @@ window.PB_DISCOVER = [
   "note": "Ranked 59th of 945 at Cursor Vibe Jam 2026. An orbital mechanics game where you slingshot around planets using gravity to escape the solar system.",
   "cover": "https://slingshot.indiega.me/og-image.jpg",
   "embeddable": true,
-  "verified": "2026-11-13",
+  "verified": "2026-11-16",
   "touch": true
  },
  {
@@ -1888,7 +1889,7 @@ window.PB_DISCOVER = [
   "note": "Ranked 60th of 945 at Cursor Vibe Jam 2026. ChooseYourOwnAdventure.",
   "cover": "https://videovideogames.com/opengraph-image?feddcdde297a35bb",
   "embeddable": true,
-  "verified": "2026-11-13",
+  "verified": "2026-11-16",
   "touch": true
  },
  {
@@ -1905,7 +1906,7 @@ window.PB_DISCOVER = [
   "note": "Ranked 61st of 945 at Cursor Vibe Jam 2026. A fast-paced MMOTPS on ThreeJS.",
   "cover": "",
   "embeddable": true,
-  "verified": "2026-11-13",
+  "verified": "2026-11-16",
   "touch": false
  },
  {
@@ -1922,7 +1923,7 @@ window.PB_DISCOVER = [
   "note": "Ranked 62nd of 945 at Cursor Vibe Jam 2026. A \"Cyber-Odyssey\": adventure and find companionship in the digital void.",
   "cover": "",
   "embeddable": true,
-  "verified": "2026-11-13",
+  "verified": "2026-11-16",
   "touch": false
  },
  {
@@ -1939,7 +1940,7 @@ window.PB_DISCOVER = [
   "note": "Ranked 63rd of 945 at Cursor Vibe Jam 2026. A satire-heavy, story-oriented survivor's-like based on famous technocrats as players and bosses.",
   "cover": "https://tech-bros-c98f2.web.app/assets/tech_bros_cover_art.png",
   "embeddable": true,
-  "verified": "2026-11-13",
+  "verified": "2026-11-16",
   "touch": false
  },
  {
@@ -1956,7 +1957,7 @@ window.PB_DISCOVER = [
   "note": "Ranked 64th of 945 at Cursor Vibe Jam 2026. Kerbal Space Program for building your AI data-center in space.",
   "cover": "https://aispaceagency.com/opengraph.jpg",
   "embeddable": true,
-  "verified": "2026-11-13",
+  "verified": "2026-11-16",
   "touch": true
  },
  {
@@ -1973,7 +1974,7 @@ window.PB_DISCOVER = [
   "note": "Ranked 65th of 945 at Cursor Vibe Jam 2026. Turn-based RPG in the ruins of an AI apocalypse.",
   "cover": "https://reach-the-relay.pages.dev/og-image.png",
   "embeddable": true,
-  "verified": "2026-11-13",
+  "verified": "2026-11-16",
   "touch": true
  },
  {
@@ -1990,7 +1991,7 @@ window.PB_DISCOVER = [
   "note": "Ranked 66th of 945 at Cursor Vibe Jam 2026. 1v1 Voice based FPS Smash bros.",
   "cover": "",
   "embeddable": true,
-  "verified": "2026-11-13",
+  "verified": "2026-11-16",
   "touch": false
  },
  {
@@ -2007,7 +2008,7 @@ window.PB_DISCOVER = [
   "note": "Ranked 67th of 945 at Cursor Vibe Jam 2026. Space Survival.",
   "cover": "",
   "embeddable": true,
-  "verified": "2026-11-13",
+  "verified": "2026-11-16",
   "touch": true
  },
  {
@@ -2024,7 +2025,7 @@ window.PB_DISCOVER = [
   "note": "Ranked 68th of 945 at Cursor Vibe Jam 2026. Build the ultimate team and master synergies as you battle the ghosts of other human players on your way to the top.",
   "cover": "",
   "embeddable": true,
-  "verified": "2026-11-13",
+  "verified": "2026-11-16",
   "touch": true
  },
  {
@@ -2041,7 +2042,7 @@ window.PB_DISCOVER = [
   "note": "Ranked 69th of 945 at Cursor Vibe Jam 2026. An agent is sent to investigate a strange occurance but soon realises he's in the midst of a war with aliens, and he must also fight with his inner…",
   "cover": "",
   "embeddable": true,
-  "verified": "2026-11-13",
+  "verified": "2026-11-16",
   "touch": false
  },
  {
@@ -2058,7 +2059,7 @@ window.PB_DISCOVER = [
   "note": "Ranked 70th of 945 at Cursor Vibe Jam 2026. A first-person roguelike where you fight your way deck-by-deck through a derelict space station, scavenging weapons and perks, killing whatever's…",
   "cover": "",
   "embeddable": true,
-  "verified": "2026-11-13",
+  "verified": "2026-11-16",
   "touch": true
  },
  {
@@ -2075,7 +2076,7 @@ window.PB_DISCOVER = [
   "note": "Ranked 72nd of 945 at Cursor Vibe Jam 2026. A fast, chaotic multiplayer survival showdown where you roll, dodge, and outlast your rivals on collapsing tiles until someone takes the plunge.",
   "cover": "https://ballfall.net/img/app-icon-1024.png",
   "embeddable": true,
-  "verified": "2026-11-13",
+  "verified": "2026-11-16",
   "touch": true
  },
  {
@@ -2092,7 +2093,7 @@ window.PB_DISCOVER = [
   "note": "Ranked 73rd of 945 at Cursor Vibe Jam 2026. Build your cafe empire.",
   "cover": "",
   "embeddable": true,
-  "verified": "2026-11-13",
+  "verified": "2026-11-16",
   "touch": false
  },
  {
@@ -2109,7 +2110,7 @@ window.PB_DISCOVER = [
   "note": "Ranked 74th of 945 at Cursor Vibe Jam 2026. Swing, smash, and shatter your way to the top of the global leaderboard in this satisfying demolition simulator.",
   "cover": "",
   "embeddable": true,
-  "verified": "2026-11-13",
+  "verified": "2026-11-16",
   "touch": true
  },
  {
@@ -2126,7 +2127,7 @@ window.PB_DISCOVER = [
   "note": "Ranked 76th of 945 at Cursor Vibe Jam 2026. Tear through Port Royal in 1691 as a pirate armed with ten brutal weapons, destroying buildings, battling NPCs, and turning the richest city in the…",
   "cover": "",
   "embeddable": true,
-  "verified": "2026-11-13",
+  "verified": "2026-11-16",
   "touch": true
  },
  {
@@ -2143,7 +2144,7 @@ window.PB_DISCOVER = [
   "note": "Ranked 77th of 945 at Cursor Vibe Jam 2026. A free-to-play tactical card game with 4,276 unique cards, real-time ranked multiplayer, and 6-tier AI — built in < 15 days by one developer using AI…",
   "cover": "",
   "embeddable": false,
-  "verified": "2026-11-13",
+  "verified": "2026-11-16",
   "touch": true
  },
  {
@@ -2160,7 +2161,7 @@ window.PB_DISCOVER = [
   "note": "Ranked 79th of 945 at Cursor Vibe Jam 2026. A cozy open-world bike adventure where you pedal through a chibi anime city — take missions, buy bikes.",
   "cover": "",
   "embeddable": true,
-  "verified": "2026-11-13",
+  "verified": "2026-11-16",
   "touch": true
  },
  {
@@ -2177,7 +2178,7 @@ window.PB_DISCOVER = [
   "note": "Ranked 80th of 945 at Cursor Vibe Jam 2026. Paddle into massive waves, carve across the breaking face, and collect stars before the foam swallows you.",
   "cover": "",
   "embeddable": true,
-  "verified": "2026-11-13",
+  "verified": "2026-11-16",
   "touch": true
  },
  {
@@ -2194,7 +2195,7 @@ window.PB_DISCOVER = [
   "note": "Ranked 81st of 945 at Cursor Vibe Jam 2026. Post apocalyptic point and click adventure game with multiple ending.",
   "cover": "",
   "embeddable": true,
-  "verified": "2026-11-13",
+  "verified": "2026-11-16",
   "touch": true
  },
  {
@@ -2211,7 +2212,7 @@ window.PB_DISCOVER = [
   "note": "Ranked 82nd of 945 at Cursor Vibe Jam 2026. Ship It is a meta game jam game about having too many ideas, too little time, and the courage to submit something anyway.",
   "cover": "",
   "embeddable": true,
-  "verified": "2026-11-13",
+  "verified": "2026-11-16",
   "touch": false
  },
  {
@@ -2228,7 +2229,7 @@ window.PB_DISCOVER = [
   "note": "Ranked 83rd of 945 at Cursor Vibe Jam 2026. Survive ten mutant slime waves, beat the boss, and escape through a portal that definitely should not be trusted.",
   "cover": "https://slimeescape.com/images/slime-escape-og.jpg",
   "embeddable": true,
-  "verified": "2026-11-13",
+  "verified": "2026-11-16",
   "touch": true
  },
  {
@@ -2245,7 +2246,7 @@ window.PB_DISCOVER = [
   "note": "Ranked 85th of 945 at Cursor Vibe Jam 2026. A two-device delivery game in post-apocalyptic Hanoi: walk with WASD on the desktop while your phone handles buttons, briefings and tilt.",
   "cover": "https://echo9.tonnoz.com/title-card.jpg",
   "embeddable": false,
-  "verified": "2026-11-13",
+  "verified": "2026-11-16",
   "touch": true
  },
  {
@@ -2262,7 +2263,7 @@ window.PB_DISCOVER = [
   "note": "Ranked 86th of 945 at Cursor Vibe Jam 2026. Steal from tourists, poop with prejudice, dive for bagels.",
   "cover": "https://grand-theft-bagel.pages.dev/og.png",
   "embeddable": true,
-  "verified": "2026-11-13",
+  "verified": "2026-11-16",
   "touch": true
  },
  {
@@ -2279,7 +2280,7 @@ window.PB_DISCOVER = [
   "note": "Ranked 87th of 945 at Cursor Vibe Jam 2026. Escape the clutches of a rogue AI in this immersive OS-simulator where you gamble your soul to survive.",
   "cover": "",
   "embeddable": true,
-  "verified": "2026-11-13",
+  "verified": "2026-11-16",
   "touch": true
  },
  {
@@ -2296,7 +2297,7 @@ window.PB_DISCOVER = [
   "note": "Ranked 88th of 945 at Cursor Vibe Jam 2026. A playable, photorealistic boxing game rendered entirely from AI videos.",
   "cover": "",
   "embeddable": true,
-  "verified": "2026-11-13",
+  "verified": "2026-11-16",
   "touch": true
  },
  {
@@ -2313,7 +2314,7 @@ window.PB_DISCOVER = [
   "note": "Ranked 89th of 945 at Cursor Vibe Jam 2026. Horror roguelite card game where you negotiate ritual offerings with a corrupted Andean abundance deity.",
   "cover": "https://img.itch.zone/aW1nLzI2OTAyMDA4LnBuZw==/original/mbuhi5.png",
   "embeddable": false,
-  "verified": "2026-11-13",
+  "verified": "2026-11-16",
   "touch": ""
  },
  {
@@ -2330,7 +2331,7 @@ window.PB_DISCOVER = [
   "note": "Ranked 90th of 945 at Cursor Vibe Jam 2026. Trianguloid is a 3D arena shooter — every input tuned for feel, every byte tuned for size — zero external assets shipped, ~350KB gzipped, smooth…",
   "cover": "",
   "embeddable": false,
-  "verified": "2026-11-13",
+  "verified": "2026-11-16",
   "touch": true
  },
  {
@@ -2347,7 +2348,7 @@ window.PB_DISCOVER = [
   "note": "Ranked 91st of 945 at Cursor Vibe Jam 2026. Ultimate Drone v Full Arsenal Wars.",
   "cover": "",
   "embeddable": true,
-  "verified": "2026-11-13",
+  "verified": "2026-11-16",
   "touch": true
  },
  {
@@ -2364,7 +2365,7 @@ window.PB_DISCOVER = [
   "note": "Ranked 93rd of 945 at Cursor Vibe Jam 2026. Game Dev Story meets MADtv.",
   "cover": "https://www.prime-time-panic.com/opengraph.jpg",
   "embeddable": true,
-  "verified": "2026-11-13",
+  "verified": "2026-11-16",
   "touch": true
  },
  {
@@ -2381,7 +2382,7 @@ window.PB_DISCOVER = [
   "note": "Ranked 96th of 945 at Cursor Vibe Jam 2026. A Stylized Melee PvP.",
   "cover": "",
   "embeddable": true,
-  "verified": "2026-11-13",
+  "verified": "2026-11-16",
   "touch": false
  },
  {
@@ -2398,7 +2399,7 @@ window.PB_DISCOVER = [
   "note": "Ranked 97th of 945 at Cursor Vibe Jam 2026. An arcade-action survival game where you captain a massive oil tanker through the world's deadliest strait.",
   "cover": "https://hormuzy.com/og.png",
   "embeddable": true,
-  "verified": "2026-11-13",
+  "verified": "2026-11-16",
   "touch": true
  },
  {
@@ -2415,7 +2416,7 @@ window.PB_DISCOVER = [
   "note": "Ranked 98th of 945 at Cursor Vibe Jam 2026. Fly through gates, don't get caught, collect score multipliers, and climb the leaderboard.",
   "cover": "",
   "embeddable": false,
-  "verified": "2026-11-13",
+  "verified": "2026-11-16",
   "touch": true
  },
  {
@@ -2432,7 +2433,7 @@ window.PB_DISCOVER = [
   "note": "Ranked 99th of 945 at Cursor Vibe Jam 2026. Hue is a fearless young painter who travels through ruined, colorless Canvaria to restore stolen colors, fight color-hungry creatures, and bring life…",
   "cover": "",
   "embeddable": true,
-  "verified": "2026-11-13",
+  "verified": "2026-11-16",
   "touch": false
  },
  {
@@ -2449,7 +2450,7 @@ window.PB_DISCOVER = [
   "note": "Ranked 100th of 945 at Cursor Vibe Jam 2026. Slay the spire meets Spore.",
   "cover": "",
   "embeddable": true,
-  "verified": "2026-11-13",
+  "verified": "2026-11-16",
   "touch": true
  },
  {
@@ -2466,7 +2467,7 @@ window.PB_DISCOVER = [
   "note": "Ranked 101st of 945 at Cursor Vibe Jam 2026. A free card game for indie hackers.",
   "cover": "https://mrrbattle.com/images/social-sharing.png",
   "embeddable": true,
-  "verified": "2026-11-13",
+  "verified": "2026-11-16",
   "touch": true
  },
  {
@@ -2483,7 +2484,7 @@ window.PB_DISCOVER = [
   "note": "Ranked 103rd of 945 at Cursor Vibe Jam 2026. FPS in a real place - a browser game built inside a Gaussian Splat scan.",
   "cover": "",
   "embeddable": false,
-  "verified": "2026-11-13",
+  "verified": "2026-11-16",
   "touch": true
  },
  {
@@ -2500,7 +2501,7 @@ window.PB_DISCOVER = [
   "note": "Ranked 104th of 945 at Cursor Vibe Jam 2026. Pixel-art beatmaking RPG where you produce real beats in cities around the world, get reviewed by hometown critics, and earn each city's iconic…",
   "cover": "",
   "embeddable": true,
-  "verified": "2026-11-13",
+  "verified": "2026-11-16",
   "touch": true
  },
  {
@@ -2517,7 +2518,7 @@ window.PB_DISCOVER = [
   "note": "Ranked 105th of 945 at Cursor Vibe Jam 2026. What if Pokémon and Sudoku had a baby.",
   "cover": "",
   "embeddable": true,
-  "verified": "2026-11-13",
+  "verified": "2026-11-16",
   "touch": true
  },
  {
@@ -2534,7 +2535,7 @@ window.PB_DISCOVER = [
   "note": "Ranked 106th of 945 at Cursor Vibe Jam 2026. A hardcore ASCII roguelike with enormous replayability and huge amount of content.",
   "cover": "",
   "embeddable": true,
-  "verified": "2026-11-13",
+  "verified": "2026-11-16",
   "touch": false
  },
  {
@@ -2551,7 +2552,7 @@ window.PB_DISCOVER = [
   "note": "Ranked 107th of 945 at Cursor Vibe Jam 2026. Ship Snatch is a browser-based, top-down hex tower defense and base builder with a claymation pirate vibe - you grow an archipelago hex by hex, place…",
   "cover": "https://shipsnatch.com/images/landing/social.jpg",
   "embeddable": true,
-  "verified": "2026-11-13",
+  "verified": "2026-11-16",
   "touch": true
  },
  {
@@ -2568,7 +2569,7 @@ window.PB_DISCOVER = [
   "note": "Ranked 108th of 945 at Cursor Vibe Jam 2026. A daily symbol-decoding puzzle where each symbol is a consistent instruction — learn the language, crack the phrase.",
   "cover": "https://symblify.app/og-image.jpg",
   "embeddable": true,
-  "verified": "2026-11-13",
+  "verified": "2026-11-16",
   "touch": true
  },
  {
@@ -2585,7 +2586,7 @@ window.PB_DISCOVER = [
   "note": "Ranked 109th of 945 at Cursor Vibe Jam 2026. A fast, strategic 2-player card battle on a 3×5 grid where micro-wins compound into momentum and every move shifts the game.",
   "cover": "https://www.smashandclash.in/cover.jpg",
   "embeddable": false,
-  "verified": "2026-11-13",
+  "verified": "2026-11-16",
   "touch": true
  },
  {
@@ -2602,7 +2603,7 @@ window.PB_DISCOVER = [
   "note": "Ranked 110th of 945 at Cursor Vibe Jam 2026. Defend the skies.",
   "cover": "https://media.base44.com/images/public/69b8a15550d3ca1718a64908/afaf0b9be_1000481731.jpg/v1/fill/w_1200,h_630/afaf0b9be_1000481731.jpg",
   "embeddable": false,
-  "verified": "2026-11-13",
+  "verified": "2026-11-16",
   "touch": true
  },
  {
@@ -2619,7 +2620,7 @@ window.PB_DISCOVER = [
   "note": "Ranked 111th of 945 at Cursor Vibe Jam 2026. A competitive multiplayer game where you fight for influence inside a neural network.",
   "cover": "https://nodecontrol.gg/keyart-branded.png",
   "embeddable": true,
-  "verified": "2026-11-13",
+  "verified": "2026-11-16",
   "touch": true
  },
  {
@@ -2636,7 +2637,7 @@ window.PB_DISCOVER = [
   "note": "Ranked 112th of 945 at Cursor Vibe Jam 2026. Stop prompting language models and start being one.",
   "cover": "",
   "embeddable": false,
-  "verified": "2026-11-13",
+  "verified": "2026-11-16",
   "touch": true
  },
  {
@@ -2653,7 +2654,7 @@ window.PB_DISCOVER = [
   "note": "Ranked 116th of 945 at Cursor Vibe Jam 2026. Hamsters go boom.",
   "cover": "https://pzlgames.com/shared/assets/images/og-new.png",
   "embeddable": true,
-  "verified": "2026-11-13",
+  "verified": "2026-11-16",
   "touch": true
  },
  {
@@ -2670,7 +2671,7 @@ window.PB_DISCOVER = [
   "note": "Ranked 117th of 945 at Cursor Vibe Jam 2026. Multiplayer wizard arena where you prompt AI-generated spells and fight with chaotic, physics-driven magic.",
   "cover": "",
   "embeddable": true,
-  "verified": "2026-11-13",
+  "verified": "2026-11-16",
   "touch": true
  },
  {
@@ -2687,7 +2688,7 @@ window.PB_DISCOVER = [
   "note": "Ranked 119th of 945 at Cursor Vibe Jam 2026. Control two quantum entities simultaneously across parallel dimensions: guide both to their escape portals while evading Void Agents, with your Echo…",
   "cover": "",
   "embeddable": true,
-  "verified": "2026-11-13",
+  "verified": "2026-11-16",
   "touch": true
  },
  {
@@ -2704,7 +2705,7 @@ window.PB_DISCOVER = [
   "note": "A body-cam tactical FPS in the browser with bots, peer-to-peer multiplayer and two maps; built in plain three.js with a lot of help from Claude Code.",
   "cover": "https://elitewarfare.fun/og-image.jpg",
   "embeddable": true,
-  "verified": "2026-11-13",
+  "verified": "2026-11-16",
   "touch": false
  },
  {
@@ -2721,7 +2722,7 @@ window.PB_DISCOVER = [
   "note": "A game that plays out inside a simulated late-90s desktop; best on a computer. Claude Code wrote a good chunk of it.",
   "cover": "https://makeworks98.com/og-image.png",
   "embeddable": true,
-  "verified": "2026-11-13",
+  "verified": "2026-11-16",
   "touch": false
  },
  {
@@ -2738,7 +2739,7 @@ window.PB_DISCOVER = [
   "note": "A daily game: guess what most people would answer, or what nobody would. Much of the code was written with AI tools; design and art are human.",
   "cover": "https://wonderhop.io/og/en.png?v=2",
   "embeddable": true,
-  "verified": "2026-11-13",
+  "verified": "2026-11-16",
   "touch": true
  },
  {
@@ -2755,7 +2756,7 @@ window.PB_DISCOVER = [
   "note": "An online multiplayer game you play by sending a room link to friends; built in two days with Claude Code.",
   "cover": "https://pawnrush.xiaohan.dev/og-image.png",
   "embeddable": true,
-  "verified": "2026-11-13",
+  "verified": "2026-11-16",
   "touch": false
  },
  {
@@ -2772,7 +2773,7 @@ window.PB_DISCOVER = [
   "note": "A daily tile-rotation puzzle that never requires guessing; Claude implemented almost all of the code.",
   "cover": "https://daily-pipes.com/og-image-v2.png",
   "embeddable": true,
-  "verified": "2026-11-13",
+  "verified": "2026-11-16",
   "touch": false
  },
  {
@@ -2789,7 +2790,7 @@ window.PB_DISCOVER = [
   "note": "A nearly impossible daily trivia game: one wrong answer or one timeout and you are out. Built with Claude Code.",
   "cover": "https://outclocked.com/og.png",
   "embeddable": false,
-  "verified": "2026-11-13",
+  "verified": "2026-11-16",
   "touch": false
  },
  {
@@ -2806,7 +2807,7 @@ window.PB_DISCOVER = [
   "note": "You are lost somewhere in the Milky Way and have to read pulsars in the sky to navigate back to Earth; vibe-coded by its creator.",
   "cover": "",
   "embeddable": true,
-  "verified": "2026-11-13",
+  "verified": "2026-11-16",
   "touch": false
  },
  {
@@ -2823,7 +2824,7 @@ window.PB_DISCOVER = [
   "note": "A pixel-art platformer from the Common Crawl team starring its web crawler, CCBot; the credits list Claude among its makers.",
   "cover": "https://game.commoncrawl.org/og-image.png",
   "embeddable": true,
-  "verified": "2026-11-13",
+  "verified": "2026-11-16",
   "touch": true
  },
  {
@@ -2840,7 +2841,7 @@ window.PB_DISCOVER = [
   "note": "A voxel Bay Area on real map data: plan the line, pick the boring machine and cut the red tape to build transit at Polish prices. Made with Fable 5.2 from a few prompts.",
   "cover": "",
   "embeddable": true,
-  "verified": "2026-11-13",
+  "verified": "2026-11-16",
   "touch": true
  },
  {
@@ -2857,7 +2858,7 @@ window.PB_DISCOVER = [
   "note": "Grow your own alum crystal in an educational crystallography game, in four languages; made with Fable 5.2.",
   "cover": "",
   "embeddable": true,
-  "verified": "2026-11-13",
+  "verified": "2026-11-16",
   "touch": false
  },
  {
@@ -2874,7 +2875,7 @@ window.PB_DISCOVER = [
   "note": "Air traffic control sim that took 3rd place ($2,500) at the 2025 Vibe Coding Game Jam (1,000+ entries); free browser 'Classic' version.",
   "cover": "",
   "embeddable": true,
-  "verified": "2026-11-13",
+  "verified": "2026-11-16",
   "touch": true
  },
  {
@@ -2891,7 +2892,7 @@ window.PB_DISCOVER = [
   "note": "Beat 'em up made for the author's nephew; the write-up hit 504 points on Hacker News.",
   "cover": "",
   "embeddable": true,
-  "verified": "2026-11-13",
+  "verified": "2026-11-16",
   "touch": true
  },
  {
@@ -2908,7 +2909,7 @@ window.PB_DISCOVER = [
   "note": "Herding game the author had imagined for years, built in one 2,319-line index.html; 186 points on Hacker News.",
   "cover": "",
   "embeddable": true,
-  "verified": "2026-11-13",
+  "verified": "2026-11-16",
   "touch": false
  },
  {
@@ -2925,7 +2926,7 @@ window.PB_DISCOVER = [
   "note": "Five-minute refinery game a chemical engineer made to explain his job to his kids; 127 points on Show HN.",
   "cover": "https://www.fuelingcuriosity.com/social-preview.jpg",
   "embeddable": true,
-  "verified": "2026-11-13",
+  "verified": "2026-11-16",
   "touch": true
  },
  {
@@ -2942,7 +2943,7 @@ window.PB_DISCOVER = [
   "note": "Daily survey-guessing puzzle where today's answers come from yesterday's players, made by a non-developer.",
   "cover": "",
   "embeddable": true,
-  "verified": "2026-11-13",
+  "verified": "2026-11-16",
   "touch": true
  },
  {
@@ -2959,7 +2960,7 @@ window.PB_DISCOVER = [
   "note": "Open-world adventure built with his kids where a giant paintbrush is the weapon; post drew ~4.6K likes and 1.2M views.",
   "cover": "",
   "embeddable": true,
-  "verified": "2026-11-13",
+  "verified": "2026-11-16",
   "touch": false
  },
  {
@@ -2976,7 +2977,7 @@ window.PB_DISCOVER = [
   "note": "Starship exploration game with 80+ planets you can land on and explore; post drew ~4K likes and 420K views.",
   "cover": "https://tesana.com/cdn-cgi/image/width=1200,height=630,fit=cover,format=jpeg,quality=85/https://cdn.tesana.ai/one-tap/media/game_posters/2026/09/27/game-20260927-b815915b-poster-shot.jpg",
   "embeddable": false,
-  "verified": "2026-11-13",
+  "verified": "2026-11-16",
   "touch": ""
  },
  {
@@ -2993,7 +2994,7 @@ window.PB_DISCOVER = [
   "note": "Multiplayer lawn-mowing sim; the launch post drew ~3.9K likes and ~197K views.",
   "cover": "",
   "embeddable": true,
-  "verified": "2026-11-13",
+  "verified": "2026-11-16",
   "touch": false
  },
  {
@@ -3010,7 +3011,7 @@ window.PB_DISCOVER = [
   "note": "Homeworld-style space RTS with no external assets; post drew ~2.5K likes and 223K views.",
   "cover": "https://e01.ai/starfall/og.jpg",
   "embeddable": true,
-  "verified": "2026-11-13",
+  "verified": "2026-11-16",
   "touch": false
  },
  {
@@ -3027,7 +3028,7 @@ window.PB_DISCOVER = [
   "note": "Robot dueling game with dashes, homing shots and laser blades; post drew ~1.9K likes and 430K views.",
   "cover": "",
   "embeddable": true,
-  "verified": "2026-11-13",
+  "verified": "2026-11-16",
   "touch": true
  },
  {
@@ -3044,7 +3045,7 @@ window.PB_DISCOVER = [
   "note": "Single-player browser RTS built in about 40 prompts including all assets; ~1.3K likes.",
   "cover": "https://dust-front.mustafaakin.dev/share-card.jpg",
   "embeddable": false,
-  "verified": "2026-11-13",
+  "verified": "2026-11-16",
   "touch": false
  },
  {
@@ -3061,7 +3062,7 @@ window.PB_DISCOVER = [
   "note": "Open-world browser game built end to end by an agent for ~$2,000 of credits; shared by Perplexity's CEO (~890 likes).",
   "cover": "",
   "embeddable": false,
-  "verified": "2026-11-13",
+  "verified": "2026-11-16",
   "touch": false
  },
  {
@@ -3078,7 +3079,7 @@ window.PB_DISCOVER = [
   "note": "Cozy island fishing game with an FFT ocean, built on raw WebGPU by a well-known Three.js developer; ~890 likes.",
   "cover": "",
   "embeddable": true,
-  "verified": "2026-11-13",
+  "verified": "2026-11-16",
   "touch": false
  },
  {
@@ -3095,7 +3096,7 @@ window.PB_DISCOVER = [
   "note": "Space exploration game with open-source code, built 'almost entirely hands-off' with an adversarial critic subagent; ~680 likes.",
   "cover": "https://longsilence.anshu.dev/og.jpg",
   "embeddable": true,
-  "verified": "2026-11-13",
+  "verified": "2026-11-16",
   "touch": true
  },
  {
@@ -3112,7 +3113,7 @@ window.PB_DISCOVER = [
   "note": "Zero-asset open-world RPG with creatures and a boss fight, all generated in code; ~660 likes.",
   "cover": "https://www.arkenfall.site/og.png",
   "embeddable": true,
-  "verified": "2026-11-13",
+  "verified": "2026-11-16",
   "touch": false
  },
  {
@@ -3129,7 +3130,7 @@ window.PB_DISCOVER = [
   "note": "Multiplayer skating game finished in 9 days instead of a year, by its creator's estimate; ~590 likes.",
   "cover": "https://freeskater.io/og.jpg?v=5",
   "embeddable": true,
-  "verified": "2026-11-13",
+  "verified": "2026-11-16",
   "touch": true
  },
  {
@@ -3146,7 +3147,7 @@ window.PB_DISCOVER = [
   "note": "Sight-fishing game in a clear mountain stream, made in under a day; ~280 likes.",
   "cover": "https://seiryu.miraicode.one/__manus/checkpoint-screenshot.png?v=e4eef52d&badge=0",
   "embeddable": true,
-  "verified": "2026-11-13",
+  "verified": "2026-11-16",
   "touch": true
  },
  {
@@ -3163,7 +3164,7 @@ window.PB_DISCOVER = [
   "note": "Atmospheric platformer with a giant boss chase scene; ~240 likes and 60K views.",
   "cover": "https://tidebreaker.vercel.app/assets/cover.jpg",
   "embeddable": false,
-  "verified": "2026-11-13",
+  "verified": "2026-11-16",
   "touch": true
  },
  {
@@ -3180,7 +3181,7 @@ window.PB_DISCOVER = [
   "note": "Satirical flight game where you shoot down startup ad-banner planes over a toy San Francisco; made in 24 hours.",
   "cover": "https://slop.inc/assets/8845c1b17855fc43/social/down-round.jpg",
   "embeddable": false,
-  "verified": "2026-11-13",
+  "verified": "2026-11-16",
   "touch": true
  },
  {
@@ -3197,7 +3198,7 @@ window.PB_DISCOVER = [
   "note": "Post-Impressionist-themed 5v5 FPS built over 6 hours, released under the MIT license.",
   "cover": "",
   "embeddable": true,
-  "verified": "2026-11-13",
+  "verified": "2026-11-16",
   "touch": false
  },
  {
@@ -3214,7 +3215,7 @@ window.PB_DISCOVER = [
   "note": "Roguelike deckbuilder where you're an AI founder, with 3 stages and bosses, made in 2 hours.",
   "cover": "",
   "embeddable": true,
-  "verified": "2026-11-13",
+  "verified": "2026-11-16",
   "touch": false
  },
  {
@@ -3231,7 +3232,7 @@ window.PB_DISCOVER = [
   "note": "Multiplayer sheep-raising sim the creator says the agent built overnight in about two hours, server included.",
   "cover": "",
   "embeddable": false,
-  "verified": "2026-11-13",
+  "verified": "2026-11-16",
   "touch": true
  },
  {
@@ -3248,7 +3249,7 @@ window.PB_DISCOVER = [
   "note": "Journey-inspired desert demo with procedural dunes, sand surfing and gliding; post drew ~69K views.",
   "cover": "",
   "embeddable": true,
-  "verified": "2026-11-13",
+  "verified": "2026-11-16",
   "touch": false
  },
  {
@@ -3265,7 +3266,7 @@ window.PB_DISCOVER = [
   "note": "Neon 80s brawler where you draw shapes to fight, tied to the creator's own show; new levels with each episode.",
   "cover": "https://junkyardking.io/og.jpg",
   "embeddable": false,
-  "verified": "2026-11-13",
+  "verified": "2026-11-16",
   "touch": false
  },
  {
@@ -3282,7 +3283,7 @@ window.PB_DISCOVER = [
   "note": "Co-op game from Lovis Odin's 'Video2Game' set, where AI gameplay videos were turned into playable games; post drew ~2K likes.",
   "cover": "",
   "embeddable": true,
-  "verified": "2026-11-13",
+  "verified": "2026-11-16",
   "touch": false
  },
  {
@@ -3299,7 +3300,7 @@ window.PB_DISCOVER = [
   "note": "One-button auto-runner of a black cat on a moonlit canal, with code-generated art and music and online ranking.",
   "cover": "https://img.itch.zone/aW1nLzMwMjkxNDM4LmdpZg==/original/A4jXWO.gif",
   "embeddable": false,
-  "verified": "2026-11-13",
+  "verified": "2026-11-16",
   "touch": ""
  },
  {
@@ -3316,7 +3317,7 @@ window.PB_DISCOVER = [
   "note": "Jungle river exploration game by a Vibe Jam 2026 entrant (Ride Tales).",
   "cover": "",
   "embeddable": true,
-  "verified": "2026-11-13",
+  "verified": "2026-11-16",
   "touch": false
  },
  {
@@ -3333,7 +3334,7 @@ window.PB_DISCOVER = [
   "note": "A first-person 3D platformer: a frog jumps impossibly high across floating islands in a glossy Frutiger Aero world to rescue stolen tadpoles. Code by Claude, art by Gemini, per the creator.",
   "cover": "https://uploads.wavedash.com/cdn-cgi/image/dpr=1,width=1200,height=675,fit=cover,format=jpeg/jd746kyb8c2rwy49489shessnx858aay/j9763v4wwpghkwpqn6vsna6drx8582yb/assets/wideCover-1787181146854-9b93c420.webp",
   "embeddable": false,
-  "verified": "2026-11-13",
+  "verified": "2026-11-16",
   "touch": ""
  },
  {
@@ -3350,7 +3351,7 @@ window.PB_DISCOVER = [
   "note": "Climb the shafts of a dead colossal engine on a winch cable to carry the last ember back to its core. Made for Gamedev.js Jam 2026, entirely with Claude Code from a phone.",
   "cover": "https://uploads.wavedash.com/cdn-cgi/image/dpr=1,width=1200,height=675,fit=cover,format=jpeg/jd7efsz5ytv0804z9yz2twqc5185gjyy/j9777fdp8vdahvych0r9wft2an85g7d7/assets/wideCover-agent-1787055490531-2f6d8fb6.webp",
   "embeddable": false,
-  "verified": "2026-11-13",
+  "verified": "2026-11-16",
   "touch": true
  },
  {
@@ -3367,7 +3368,7 @@ window.PB_DISCOVER = [
   "note": "Play SPARK, a robot at the Robo Open, and serve, rally and smash past the CPU. Made with Grok, Fable and GPT as AI collaborators, per the creator.",
   "cover": "https://uploads.wavedash.com/cdn-cgi/image/dpr=1,width=1200,height=675,fit=cover,format=jpeg/jd75665dn6y5z8t51f7xgv0yax8drs7x/j97dhnfehq24y10ehfcppvp3b18dscam/assets/wideCover-1788526913479-8ce83b4d.webp",
   "embeddable": false,
-  "verified": "2026-11-13",
+  "verified": "2026-11-16",
   "touch": ""
  },
  {
@@ -3384,7 +3385,7 @@ window.PB_DISCOVER = [
   "note": "Pick Rocco or Pip, then jump, roll and throw barrels through three jungle courses in this free 2D platforming adventure. Made with GPT, per the creator.",
   "cover": "https://uploads.wavedash.com/cdn-cgi/image/dpr=1,width=1200,height=675,fit=cover,format=jpeg/jd7bm0pk9djmkmmat91b97gvks8e65zx/j97bqtzhk4xt1ay24ytxfvmp658e7wt7/assets/wideCover-1789142061736-c9aecfc3.webp",
   "embeddable": false,
-  "verified": "2026-11-13",
+  "verified": "2026-11-16",
   "touch": ""
  },
  {
@@ -3401,7 +3402,7 @@ window.PB_DISCOVER = [
   "note": "Take the wheel of Mallow, a small tug with a stubborn heart, and bring the sea's lost treasures home. Made with GPT, per the creator.",
   "cover": "https://uploads.wavedash.com/cdn-cgi/image/dpr=1,width=1200,height=675,fit=cover,format=jpeg/jd7bm0pk9djmkmmat91b97gvks8e65zx/j973drgt5ajv1azzhrvkrk7xzs8e7dpn/assets/wideCover-1789142302378-9ca29265.webp",
   "embeddable": false,
-  "verified": "2026-11-13",
+  "verified": "2026-11-16",
   "touch": ""
  },
  {
@@ -3418,7 +3419,7 @@ window.PB_DISCOVER = [
   "note": "A living-world god sim where villagers farm, trade, migrate and fight on their own, and one small intervention ripples across the planet. Claude Code did most of the programming.",
   "cover": "https://uploads.wavedash.com/cdn-cgi/image/dpr=1,width=1200,height=675,fit=cover,format=jpeg/jd728ej52q7zp5najj2apdajen87vbtz/j97a7ddcm7xnzrm604dtxj36gd8fm35h/assets/wideCover-1791149416715-ffb1a95b.webp",
   "embeddable": false,
-  "verified": "2026-11-13",
+  "verified": "2026-11-16",
   "touch": ""
  },
  {
@@ -3435,7 +3436,7 @@ window.PB_DISCOVER = [
   "note": "First-person rooftop parkour across six roofs of a brutalist city at golden hour. Made with Claude, per the creator.",
   "cover": "https://uploads.wavedash.com/cdn-cgi/image/dpr=1,width=1200,height=675,fit=cover,format=jpeg/jd7024hwq0zeeb5qgms94gscgn8fwytw/j97628n8sq4f1w8mb749t1dt0s8fwsm6/assets/wideCover-1791438282909-2f7182df.webp",
   "embeddable": false,
-  "verified": "2026-11-13",
+  "verified": "2026-11-16",
   "touch": ""
  },
  {
@@ -3452,7 +3453,7 @@ window.PB_DISCOVER = [
   "note": "A horror maze in the yellow Backrooms: collect eight pages while something hunts you by sound. Maze, creature and audio are generated in code by Claude.",
   "cover": "https://uploads.wavedash.com/cdn-cgi/image/dpr=1,width=1200,height=675,fit=cover,format=jpeg/jd7024hwq0zeeb5qgms94gscgn8fwytw/j9726b80eaenn3ttjbd136vd7h8fx482/assets/wideCover-1791439292193-d2c86772.webp",
   "embeddable": false,
-  "verified": "2026-11-13",
+  "verified": "2026-11-16",
   "touch": ""
  },
  {
@@ -3469,7 +3470,7 @@ window.PB_DISCOVER = [
   "note": "A single sword duel on a snowy castle rooftop, won by deflecting until your opponent's posture breaks, Sekiro-style. Made with Claude, per the creator.",
   "cover": "https://uploads.wavedash.com/cdn-cgi/image/dpr=1,width=1200,height=675,fit=cover,format=jpeg/jd7024hwq0zeeb5qgms94gscgn8fwytw/j97dbkyha0nkj634ma5rcp7bms8fwvt1/assets/wideCover-1791444009936-808ee297.webp",
   "embeddable": false,
-  "verified": "2026-11-13",
+  "verified": "2026-11-16",
   "touch": ""
  },
  {
@@ -3486,7 +3487,7 @@ window.PB_DISCOVER = [
   "note": "A single-player tactical shooter round on Dune Yard, a sun-baked bombsite of crates, stairs and narrow lanes. Made with Claude, per the creator.",
   "cover": "https://uploads.wavedash.com/cdn-cgi/image/dpr=1,width=1200,height=675,fit=cover,format=jpeg/jd7024hwq0zeeb5qgms94gscgn8fwytw/j97emyd33wjj22vjzn196y71wn8fw9me/assets/wideCover-1791445921712-c1484e3e.webp",
   "embeddable": false,
-  "verified": "2026-11-13",
+  "verified": "2026-11-16",
   "touch": ""
  },
  {
@@ -3503,7 +3504,7 @@ window.PB_DISCOVER = [
   "note": "Clear ten hostiles from a container yard in three minutes in this compact first-person shooter; enemies take cover and flank. Made with Claude, per the creator.",
   "cover": "https://uploads.wavedash.com/cdn-cgi/image/dpr=1,width=1200,height=675,fit=cover,format=jpeg/jd7024hwq0zeeb5qgms94gscgn8fwytw/j978ckgkbe8kzg39vy1fepj8nn8fw44p/assets/wideCover-1791446730152-eb624905.webp",
   "embeddable": false,
-  "verified": "2026-11-13",
+  "verified": "2026-11-16",
   "touch": ""
  },
  {
@@ -3520,7 +3521,7 @@ window.PB_DISCOVER = [
   "note": "Wander a sunlit miniature harbour of townsfolk, market stalls and boats; an evolving experiment by chongdashu made with Claude.",
   "cover": "https://uploads.wavedash.com/cdn-cgi/image/dpr=1,width=1200,height=675,fit=cover,format=jpeg/jd75665dn6y5z8t51f7xgv0yax8drs7x/j976kyvh8w3fdj3rkrys4ejbv98fwmq3/assets/wideCover-1791465706609-3f51e72f.webp",
   "embeddable": false,
-  "verified": "2026-11-13",
+  "verified": "2026-11-16",
   "touch": ""
  },
  {
@@ -3537,7 +3538,7 @@ window.PB_DISCOVER = [
   "note": "A painted seaside bay from morning to moonlit night: walk the pier, then take a skiff out to the lighthouse, with every sound and the piano score generated in code. Made with Claude in Cursor.",
   "cover": "https://uploads.wavedash.com/cdn-cgi/image/dpr=1,width=1200,height=675,fit=cover,format=jpeg/jd7024hwq0zeeb5qgms94gscgn8fwytw/j9770d382twybeemzgysp9ws058fw43j/assets/wideCover-1791655272925-7747b8cc.webp",
   "embeddable": false,
-  "verified": "2026-11-13",
+  "verified": "2026-11-16",
   "touch": ""
  },
  {
@@ -3554,7 +3555,7 @@ window.PB_DISCOVER = [
   "note": "A bike ride down a Japanese country road on a late-summer afternoon, drawn like a hand-painted anime background. Made with Claude and Cursor, per the creator.",
   "cover": "https://uploads.wavedash.com/cdn-cgi/image/dpr=1,width=1200,height=675,fit=cover,format=jpeg/jd7024hwq0zeeb5qgms94gscgn8fwytw/j97faj2gy8fbtsehvdj3sj98pd8fxqdp/assets/wideCover-1791655523104-beabb6a9.webp",
   "embeddable": false,
-  "verified": "2026-11-13",
+  "verified": "2026-11-16",
   "touch": ""
  },
  {
@@ -3571,7 +3572,7 @@ window.PB_DISCOVER = [
   "note": "Arcade jet-ski racing on a living ocean: ride the swell for speed, fly off the crests, land tricks and spend your Surge on a boost. Made with Claude Code, per the creator.",
   "cover": "https://uploads.wavedash.com/cdn-cgi/image/dpr=1,width=1200,height=675,fit=cover,format=jpeg/jd77jkcrqmc7z7dayv8qtjb0bs8gn01s/j979czdya57wxz10wth6kr7vyd8gpngj/assets/wideCover-1792603739378-ad83d219.webp",
   "embeddable": false,
-  "verified": "2026-11-13",
+  "verified": "2026-11-16",
   "touch": ""
  },
  {
@@ -3588,7 +3589,7 @@ window.PB_DISCOVER = [
   "note": "A one-dimensional action game, half Vampire Survivors and half One Finger Death Punch: two buttons, combos and meta progression. Claude did the code, balancing, sprites and music.",
   "cover": "https://uploads.wavedash.com/cdn-cgi/image/dpr=1,width=1200,height=675,fit=cover,format=jpeg/jd7fye5hpbv65y2wnv3chevb4h8gy38r/j97c5f8m92gnh3pbpvr57mkyzd8gzcae/assets/wideCover-1792919119030-e00e5d86.webp",
   "embeddable": false,
-  "verified": "2026-11-13",
+  "verified": "2026-11-16",
   "touch": ""
  },
  {
@@ -3605,7 +3606,7 @@ window.PB_DISCOVER = [
   "note": "Hang on to the side of a speeding train and dodge what comes at you. Made for the LittleJS jam with Claude Code and the LittleJS-AI plugin.",
   "cover": "https://uploads.wavedash.com/cdn-cgi/image/dpr=1,width=1200,height=675,fit=cover,format=jpeg/jd79azxa0cvecyx00em21frpch8gyffg/j977gx8vh7jer1zeadcd3dpn098gz7sk/assets/wideCover-1793216670310-8fb7fb4d.webp",
   "embeddable": false,
-  "verified": "2026-11-13",
+  "verified": "2026-11-16",
   "touch": ""
  },
  {
@@ -3622,7 +3623,7 @@ window.PB_DISCOVER = [
   "note": "Two pet rats are lost in a big, cold city and try to find their way home. Made with Claude Code and Codex, per the creator.",
   "cover": "https://uploads.wavedash.com/cdn-cgi/image/dpr=1,width=1200,height=675,fit=cover,format=jpeg/jd7fy0rrwy8c4xfnawxkdprcf58gy9gx/j97fzhd0xbxq7t290x9e5ycjnx8gz8ma/assets/wideCover-1792962695864-1f621b7d.webp",
   "embeddable": false,
-  "verified": "2026-11-13",
+  "verified": "2026-11-16",
   "touch": ""
  },
  {
@@ -3639,7 +3640,7 @@ window.PB_DISCOVER = [
   "note": "Ride a motorcycle through moonlit ruins as a runaway imp: wheelies unleash hellfire and flips fire every weapon. Built in LittleJS with Claude Code and Codex.",
   "cover": "https://uploads.wavedash.com/cdn-cgi/image/dpr=1,width=1200,height=675,fit=cover,format=jpeg/jd7dnv3qnm2nj84y3t404dr81s8h0ff3/j97abrat3432y6n1js7kwmratn8h0zv1/assets/wideCover-1793050479838-4a5f4ec2.webp",
   "embeddable": false,
-  "verified": "2026-11-13",
+  "verified": "2026-11-16",
   "touch": ""
  },
  {
@@ -3656,7 +3657,7 @@ window.PB_DISCOVER = [
   "note": "Welcome to Cream's Cozy Cottage, a gentle cat-care and merging game about making a small home feel loved. Made with Codex, per the creator.",
   "cover": "https://uploads.wavedash.com/cdn-cgi/image/dpr=1,width=1200,height=675,fit=cover,format=jpeg/jd79g60ka6vc250paacpbxw1xd8gv9tr/j97capjy8twwb5vkb69126ets98gtgqc/assets/wideCover-1792788092677-a99eb6c3.webp",
   "embeddable": false,
-  "verified": "2026-11-13",
+  "verified": "2026-11-16",
   "touch": ""
  },
  {
@@ -3673,7 +3674,7 @@ window.PB_DISCOVER = [
   "note": "Arcade stage rally in your browser: fling a turbo hatch through pines, snow and a dusk coast road against the checkpoint clock. Made with Claude Code and Gemini, per the creator.",
   "cover": "https://uploads.wavedash.com/cdn-cgi/image/dpr=1,width=1200,height=675,fit=cover,format=jpeg/jd77jkcrqmc7z7dayv8qtjb0bs8gn01s/j973mkkt7vxx6mwtbkgcgnjzj98h72hr/assets/wideCover-1793287296222-104a41cb.webp",
   "embeddable": false,
-  "verified": "2026-11-13",
+  "verified": "2026-11-16",
   "touch": ""
  },
  {
@@ -3690,7 +3691,7 @@ window.PB_DISCOVER = [
   "note": "Guide a flying acorn on seasonal winds through a forgotten vale, growing checkpoint trees and restoring seven shrines. Built in LittleJS with help from Codex.",
   "cover": "https://uploads.wavedash.com/cdn-cgi/image/dpr=1,width=1200,height=675,fit=cover,format=jpeg/jd70pw3cfs427j8yctf0jgjyw98h72xg/j973hra1h3d1cwf5nf2gn47c398h6z5j/assets/wideCover-1793314191108-b5741edb.webp",
   "embeddable": false,
-  "verified": "2026-11-13",
+  "verified": "2026-11-16",
   "touch": ""
  },
  {
@@ -3707,7 +3708,7 @@ window.PB_DISCOVER = [
   "note": "A one-tap speedrun of the classic zigzag game, made for LittleJS Game Jam 3 with help from Claude.",
   "cover": "https://uploads.wavedash.com/cdn-cgi/image/dpr=1,width=1200,height=675,fit=cover,format=jpeg/jd7594a595vv0y9q51wth3xxe98hd6eq/j970ywccns9qpkkyan2pq2dkad8hcbtx/assets/wideCover-1793499756514-8945a4db.webp",
   "embeddable": false,
-  "verified": "2026-11-13",
+  "verified": "2026-11-16",
   "touch": true
  },
  {
@@ -3724,7 +3725,7 @@ window.PB_DISCOVER = [
   "note": "A musical marble run: place chime bars on a pegboard and drop the marble so it rings the tune on the way down. Claude Code wrote the code, per the creator.",
   "cover": "https://uploads.wavedash.com/cdn-cgi/image/dpr=1,width=1200,height=675,fit=cover,format=jpeg/jd78h4s5qhyew3j21x0dfh7tgh8hesty/j97fgj4exf3tjdw8tk1h25fb298hftp1/assets/wideCover-1793581838389-fa79e4b4.webp",
   "embeddable": false,
-  "verified": "2026-11-13",
+  "verified": "2026-11-16",
   "touch": ""
  },
  {
@@ -3741,7 +3742,7 @@ window.PB_DISCOVER = [
   "note": "A cozy merge puzzle: night visitors in the woods order picnic hampers that you fill by merging food. Designed and coded by a Claude Code agent for Tuper.",
   "cover": "https://uploads.wavedash.com/cdn-cgi/image/dpr=1,width=1200,height=675,fit=cover,format=jpeg/jd7c21r80kaevckfz17gnt8h6n8hezz9/j97e8cbn8g1te6djyrae37m0nx8hegtp/assets/wideCover-1793608245926-6b26430f.webp",
   "embeddable": false,
-  "verified": "2026-11-13",
+  "verified": "2026-11-16",
   "touch": ""
  },
  {
@@ -3758,7 +3759,7 @@ window.PB_DISCOVER = [
   "note": "A calm puzzle about waking a garden by connecting the light, with no timers or lives. Designed and coded by a Claude Code agent for Tuper.",
   "cover": "https://uploads.wavedash.com/cdn-cgi/image/dpr=1,width=1200,height=675,fit=cover,format=jpeg/jd7c21r80kaevckfz17gnt8h6n8hezz9/j97ejx6111cpr5j7ynree0g7v98hffvy/assets/wideCover-1793608293587-aad1de11.webp",
   "embeddable": false,
-  "verified": "2026-11-13",
+  "verified": "2026-11-16",
   "touch": ""
  },
  {
@@ -3775,7 +3776,7 @@ window.PB_DISCOVER = [
   "note": "A number-gate runner: grow your crowd through plus and times gates, dodge saws and smash the castle boss. Designed and coded by a Claude Code agent for Tuper.",
   "cover": "https://uploads.wavedash.com/cdn-cgi/image/dpr=1,width=1200,height=675,fit=cover,format=jpeg/jd7c21r80kaevckfz17gnt8h6n8hezz9/j976fgpmkcwms46516s8y6wsw58hf6fv/assets/wideCover-1793608678687-c83363ad.webp",
   "embeddable": false,
-  "verified": "2026-11-13",
+  "verified": "2026-11-16",
   "touch": ""
  },
  {
@@ -3792,7 +3793,7 @@ window.PB_DISCOVER = [
   "note": "Climb a tower one floor at a time; every fall makes you want one more try. Code, graphics and sounds made with Claude.",
   "cover": "https://uploads.wavedash.com/cdn-cgi/image/dpr=1,width=1200,height=675,fit=cover,format=jpeg/jd77jkcrqmc7z7dayv8qtjb0bs8gn01s/j978zetdkb1n22jhvypb2ehnqh8hekzg/assets/wideCover-1793644903707-c197d106.webp",
   "embeddable": false,
-  "verified": "2026-11-13",
+  "verified": "2026-11-16",
   "touch": ""
  },
  {
@@ -3809,7 +3810,7 @@ window.PB_DISCOVER = [
   "note": "A flick-puck roguelite: bank your puck off the walls, chain kills and build a run from upgrades. Made for the LittleJS Jam with Claude Code.",
   "cover": "https://uploads.wavedash.com/cdn-cgi/image/dpr=1,width=1200,height=675,fit=cover,format=jpeg/jd73cpcedr46y1t8nkwjhrwx0n8gbph0/j979hjf32m8f4nernvgfqq0t618gavd1/assets/wideCover-1793712588534-d1413026.webp",
   "embeddable": false,
-  "verified": "2026-11-13",
+  "verified": "2026-11-16",
   "touch": ""
  },
  {
@@ -3826,7 +3827,7 @@ window.PB_DISCOVER = [
   "note": "Wake a sleeping forest that is really one tree by routing nutrients through glowing mycelium; made for Defold Game Jam 2026 with help from Claude.",
   "cover": "https://uploads.wavedash.com/cdn-cgi/image/dpr=1,width=1200,height=675,fit=cover,format=jpeg/jd703npf9p9dsg3kwxa6vg4b158fnez3/j970y008e08t1dvfjjycgj6w998fm3qz/assets/wideCover-1791141910359-66131363.webp",
   "embeddable": false,
-  "verified": "2026-11-13",
+  "verified": "2026-11-16",
   "touch": ""
  },
  {
@@ -3843,7 +3844,7 @@ window.PB_DISCOVER = [
   "note": "Shoot bottles off a backyard fence and watch them crack into slow-motion, sun-catching shards, with every sound synthesized in code. Made with Claude Opus 5.5 in Cursor.",
   "cover": "https://uploads.wavedash.com/cdn-cgi/image/dpr=1,width=1200,height=675,fit=cover,format=jpeg/jd7024hwq0zeeb5qgms94gscgn8fwytw/j976a05p2qh0mmpp2bw78wz3dn8j3nvc/assets/wideCover-1794461312035-97f10ddd.webp",
   "embeddable": false,
-  "verified": "2026-11-13",
+  "verified": "2026-11-16",
   "touch": ""
  },
  {
@@ -3860,7 +3861,7 @@ window.PB_DISCOVER = [
   "note": "Wake on a beach at sunrise on a tropical island and walk anywhere you can see: a dense rainforest, a 20 m waterfall with a pool you can swim in, a… Made with Claude and Cursor, per the creator.",
   "cover": "https://uploads.wavedash.com/cdn-cgi/image/dpr=1,width=1200,height=675,fit=cover,format=jpeg/jd7024hwq0zeeb5qgms94gscgn8fwytw/j971f3716464fkg9pyek9p0mzd8j382j/assets/wideCover-1794461522192-e277e996.webp",
   "embeddable": false,
-  "verified": "2026-11-13",
+  "verified": "2026-11-16",
   "touch": ""
  },
  {
@@ -3877,7 +3878,7 @@ window.PB_DISCOVER = [
   "note": "Skate a small flow park behind a beach boardwalk at golden hour as Sol, an original character. Made with Cursor, per the creator.",
   "cover": "https://uploads.wavedash.com/cdn-cgi/image/dpr=1,width=1200,height=675,fit=cover,format=jpeg/jd7024hwq0zeeb5qgms94gscgn8fwytw/j97abawbvdrf61r2zb0d5bp55n8j3829/assets/wideCover-1794461645960-8752f352.webp",
   "embeddable": false,
-  "verified": "2026-11-13",
+  "verified": "2026-11-16",
   "touch": ""
  },
  {
@@ -3894,7 +3895,7 @@ window.PB_DISCOVER = [
   "note": "A quiet morning of fishing by a clear mountain river. Made with Cursor, per the creator.",
   "cover": "https://uploads.wavedash.com/cdn-cgi/image/dpr=1,width=1200,height=675,fit=cover,format=jpeg/jd7024hwq0zeeb5qgms94gscgn8fwytw/j97372a1w9180ah51rydana4hs8j323j/assets/wideCover-1794461711782-d71ea3de.webp",
   "embeddable": false,
-  "verified": "2026-11-13",
+  "verified": "2026-11-16",
   "touch": ""
  },
  {
@@ -3911,7 +3912,7 @@ window.PB_DISCOVER = [
   "note": "A calm horse ride across a mountain valley. Made with Claude Code, per the creator.",
   "cover": "https://uploads.wavedash.com/cdn-cgi/image/dpr=1,width=1200,height=675,fit=cover,format=jpeg/jd7024hwq0zeeb5qgms94gscgn8fwytw/j97faxhfzqwv0mv2xrgkt4evkd8j26gx/assets/wideCover-1794463991752-df56a578.webp",
   "embeddable": false,
-  "verified": "2026-11-13",
+  "verified": "2026-11-16",
   "touch": ""
  },
  {
@@ -3928,7 +3929,7 @@ window.PB_DISCOVER = [
   "note": "A Miami Beach sandbox at sunrise: walk the Art Deco strip and drive any car, ATV or beach cruiser anywhere, even into the sea. Made with Claude in Cursor.",
   "cover": "https://uploads.wavedash.com/cdn-cgi/image/dpr=1,width=1200,height=675,fit=cover,format=jpeg/jd7024hwq0zeeb5qgms94gscgn8fwytw/j97722frhfmqt3zpqy81mn9zcd8fxxgz/assets/wideCover-1791654972664-792d6032.webp",
   "embeddable": false,
-  "verified": "2026-11-13",
+  "verified": "2026-11-16",
   "touch": ""
  },
  {
@@ -3945,7 +3946,7 @@ window.PB_DISCOVER = [
   "note": "Lights out in one key press: a single-seater racing sim that runs right here in your browser. Made with Claude, per the creator.",
   "cover": "https://uploads.wavedash.com/cdn-cgi/image/dpr=1,width=1200,height=675,fit=cover,format=jpeg/jd77jkcrqmc7z7dayv8qtjb0bs8gn01s/j979wvytzntbk72prmy8yywwv58gqfte/assets/wideCover-1792577628043-60fc73ed.webp",
   "embeddable": false,
-  "verified": "2026-11-13",
+  "verified": "2026-11-16",
   "touch": ""
  },
  {
@@ -3962,7 +3963,7 @@ window.PB_DISCOVER = [
   "note": "Kite fighting on a Jakarta rooftop at golden hour: cross a rival's line, snap it and race to catch the falling kite. Development assisted by Claude Code.",
   "cover": "https://uploads.wavedash.com/cdn-cgi/image/dpr=1,width=1200,height=675,fit=cover,format=jpeg/jd70kkwy63jb75tn332tqth21h8ga04q/j970dejnn0w0p5zgz4pphjbsms8gfd9m/assets/wideCover-1793495879110-0e95d9a6.webp",
   "embeddable": false,
-  "verified": "2026-11-13",
+  "verified": "2026-11-16",
   "touch": ""
  },
  {
@@ -3979,7 +3980,7 @@ window.PB_DISCOVER = [
   "note": "A sunny golf game in the spirit of the classic golf games, by LittleJS creator Frank Force; Claude assisted with programming.",
   "cover": "https://uploads.wavedash.com/cdn-cgi/image/dpr=1,width=1200,height=675,fit=cover,format=jpeg/jd7d4e161fk4kmb2ws9zxht32x8dp09e/j977n8vp5qaqtjnt0npgjf682x8dqdwa/assets/wideCover-1793835501686-e9dbba39.webp",
   "embeddable": false,
-  "verified": "2026-11-13",
+  "verified": "2026-11-16",
   "touch": ""
  }
 ];
