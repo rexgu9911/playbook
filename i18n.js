@@ -1,7 +1,10 @@
 // Chinese interface for Playbook. Game titles, creators and descriptions stay as their creators wrote them.
 // The app renders English; PB_I18N.apply(root) swaps interface text in place when the language is zh.
 (() => {
-  const saved = (() => { try { return localStorage.getItem('pb-lang'); } catch { return null; } })();
+  // ?lang=zh or ?lang=en (used by the 中文 link on static pages) picks the language and remembers it
+  const asked = (location.search.match(/[?&]lang=(zh|en)\b/) || [])[1];
+  if (asked) try { localStorage.setItem('pb-lang', asked); } catch {}
+  const saved = asked || (() => { try { return localStorage.getItem('pb-lang'); } catch { return null; } })();
   const lang = saved || ((navigator.languages || [navigator.language || '']).some(l => /^zh/i.test(l)) ? 'zh' : 'en');
   document.documentElement.lang = lang === 'zh' ? 'zh-CN' : 'en';
 
