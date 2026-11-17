@@ -14,12 +14,6 @@
   // Visitor stats: GoatCounter (no cookies, no personal data). Empty = off and nothing loads.
   // Set to the site code, e.g. 'playbook-vibe' for https://playbook-vibe.goatcounter.com
   const GOATCOUNTER = '';
-  // Supabase project for the Studio early-access test (URL and anon key are public by design; tables are insert-only)
-  const SUPA_URL = '';
-  const SUPA_ANON = '';
-  const supaInsert = (table, row) => SUPA_URL && SUPA_ANON
-    ? fetch(`${SUPA_URL}/rest/v1/${table}`, { method: 'POST', headers: { apikey: SUPA_ANON, Authorization: `Bearer ${SUPA_ANON}`, 'Content-Type': 'application/json', Prefer: 'return=minimal' }, body: JSON.stringify(row) })
-    : Promise.resolve(null);
   // Visitor stats: Cloudflare Web Analytics (no cookies, no personal data; page views, referrers, countries).
   // The token is public by design (it sits in every page). tools/build_share.py reads it from here for the static pages.
   const CF_BEACON = 'cf06cb0d19e94ccb9f83856659b6b3b9';
@@ -267,7 +261,7 @@
     const tiles = [
       ['#/mechanics', tabIc.mech, 'Game feel', `${mechanics.length} parts`, 'Hit-stop, shake, dodge roll, combos'],
       ['#/games', tabIc.recipes, 'Recipes', `${games.filter(g => !g.parent).length} games`, 'Open games you can remake'],
-      ['#/creators', crIc, 'Creators', `${CREATORS.length} people`, 'Who makes the best vibe games'],
+      ['#/studio', ic.code, 'Studio', 'Free', 'Sound effects and pixel sprites for your game'],
       ['#/play', ic.up, 'Submit a game', 'Free', 'Made one, or found one? Send it in', 'data-submit-game'],
     ];
     app.innerHTML = `
@@ -391,7 +385,7 @@
             <div class="idea-ex">${(ZH ? ['沉没城市里的魂系 Boss 战', '会漂移的超市购物车赛车', '在云上跳跃的猫咪平台跳跃', '一波波怪物的割草肉鸽'] : ['a souls-like boss fight in a sunken city', 'a shopping-cart drift racer', 'a cat platformer above the clouds', 'a horde survivor with weird upgrades']).map(t => `<button type="button" class="chip" data-idea="${esc(t)}">${esc(t)}</button>`).join('')}</div>
             <div id="ideaOut" hidden><div class="prompt" id="ideaPrompt" data-noi18n></div><div class="idea-parts" id="ideaParts"></div>
               <div class="prompt-row"><a class="link" href="#/mcp">Connect the Playbook MCP first</a><button class="copy" type="button" id="ideaCopy">Copy prompt</button></div>
-              ${STUDIO_EXAMPLES.length ? '<a class="st-hook" href="#/studio?make">Need the art and sound too? Studio early access →</a>' : ''}</div>
+              <a class="st-hook" href="#/studio">Need sound effects and sprites too? Make them free in Studio →</a></div>
           </form>
         </section>
         <div class="stack">${steps.map((x, k) => `<div class="scard c${k}" style="--k:${k}"><div class="scard-l"><span class="n">${String(k + 1).padStart(2, '0')} / ${String(steps.length).padStart(2, '0')}</span><h3>${x[0]}</h3></div><div class="scard-r"><p>${x[1]}</p><div class="sx">${x[2]}</div></div></div>`).join('')}</div>
@@ -738,7 +732,6 @@
   // ---------- creators: built from the games we list (link + credit only) ----------
   const crSlug = h => String(h).trim().replace(/^@|^u\//, '').toLowerCase().replace(/[^a-z0-9_.-]+/g, '-').replace(/^-|-$/g, '');
   const crLink = h => `#/c/${encodeURIComponent(crSlug(h))}`;
-  const crIc = '<svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg>';
   const crAva = (h, cls = '') => `<i class="cava ${cls}" style="--h:${hashHue(h)}" aria-hidden="true">${esc((String(h).replace(/^@|^u\//, '')[0] || '?').toUpperCase())}</i>`;
   const crProfile = h => /^@[A-Za-z0-9_]{1,30}$/.test(h) ? { url: `https://x.com/${h.slice(1)}`, name: 'X' }
     : /^u\/[A-Za-z0-9_-]{2,30}$/.test(h) ? { url: `https://www.reddit.com/user/${h.slice(2)}`, name: 'Reddit' } : null;
@@ -999,70 +992,53 @@
       </div>`;
   }
 
-  // ---------- studio: early-access test for one-sentence, game-ready characters ----------
-  // Examples must be real generations (prompt, sheet, playable demo) before this page is linked publicly.
-  const STUDIO_EXAMPLES = [];
-  function studioPage() {
-    const src = (location.hash.split('?')[1] || '').replace(/[^a-z0-9_-]/gi, '').slice(0, 40) || 'direct';
-    supaInsert('events', { kind: 'view', source: src });
-    const gets = [
-      ['Drawn', 'A character in the style you describe, on a clean transparent background.'],
-      ['Animated', 'Idle, run, jump and attack, cut into sprite sheets with frames that line up.'],
-      ['Voiced', 'A matching set of sound effects: steps, jump, hit and a short victory sting.'],
-      ['Ready to load', 'Files and a manifest that Phaser and three.js games can read as they are.'],
-      ['Dropped into your project', 'Your own agent pulls it in through the Playbook MCP, next to the game-feel parts.'],
+  // ---------- studio: free asset makers that run in the browser (studio.js, loaded on demand) ----------
+  // AI generation (prepaid credits) comes later; these tools stay free and need no account or server.
+  const STUDIO_V = 2;
+  let studioLib = null;
+  const loadStudio = () => studioLib || (studioLib = new Promise(res => {
+    const sc = document.createElement('script'); sc.src = `studio.js?v=${STUDIO_V}`;
+    sc.onload = () => res(window.PB_STUDIO || null); sc.onerror = () => { studioLib = null; res(null); };
+    document.head.append(sc);
+  }));
+  const STUDIO_TOOLS = [
+    ['sfx', 'Sound effects', 'Coins, jumps, lasers, explosions. Shape one, then download a WAV or copy the code into your game.'],
+    ['sprites', 'Pixel sprites', 'Characters, ships and items with an idle animation, as a PNG sprite sheet your engine can load.'],
+  ];
+  function studioPage(tool) {
+    const t = STUDIO_TOOLS.find(x => x[0] === tool) || STUDIO_TOOLS[0];
+    const steps = [
+      ['Make it here', 'Pick a preset or a shape, tweak it until it feels right, and download it.'],
+      ['Drop it in your project', 'WAV files and PNG sprite sheets load in Phaser, three.js, Godot or a plain canvas. The copy buttons give you working code.'],
+      ['Let your agent wire it up', 'Ask your coding agent to use the files, and add game feel with the Playbook MCP.'],
+      ['Share the game', 'Made something good? Submit it. The best ones go into the weekly picks, credited to you.'],
     ];
     app.innerHTML = `
-      <section class="page-head dots"><div class="wrap">
-        <span class="tag"><span class="dot"></span>Playbook Studio · early access</span>
-        <h1>One sentence. A game-ready character.</h1>
-        <p>Describe a character. Get it drawn, animated and given sound effects in one style, as files your game can load. Then publish the game on Playbook.</p>
-        <div class="acts"><a class="btn btn-accent" href="#studioForm" data-studio-cta>Request early access</a><a class="btn" href="#/make">How making works</a></div>
+      <section class="page-head dots st-head"><div class="wrap">
+        <span class="tag"><span class="dot"></span>Playbook Studio · free · runs in your browser</span>
+        <h1>Make <em>game-ready</em> assets</h1>
+        <p>Sound effects and pixel sprites you can drop straight into your game. Everything is made on your device: no account, no upload, no cost, and what you make is yours to use however you like.</p>
+        <div class="st-tabs" role="tablist" aria-label="Studio tools">${STUDIO_TOOLS.map(([k, n, d]) => `<a class="st-tab ${k === t[0] ? 'on' : ''}" href="#/studio/${k}" role="tab" aria-selected="${k === t[0]}"><b>${n}</b><span>${d}</span></a>`).join('')}</div>
       </div></section>
       <div class="wrap">
+        <section class="st-tool" id="stTool" aria-live="polite"><div class="empty"><b>Loading the studio…</b>It takes a moment the first time.</div></section>
         <section class="section tight">
-          <div class="sec-head"><div><h2>Examples</h2><p>Each one: the sentence, the sheet it made, and a small demo you can play.</p></div></div>
-          ${STUDIO_EXAMPLES.length ? `<div class="st-ex">${STUDIO_EXAMPLES.map(x => `<figure class="st-card"><img src="${esc(x.sheet)}" alt="${esc(x.prompt)}" loading="lazy"><figcaption><b data-noi18n>“${esc(x.prompt)}”</b>${x.demo ? `<a class="link" href="${esc(x.demo)}">Play the demo</a>` : ''}</figcaption></figure>`).join('')}</div>`
-            : `<div class="empty"><b>Examples are being made</b>Real examples go here before this page is shared.</div>`}
+          <div class="sec-head"><div><h2>Use it in your game</h2></div><a class="link" href="#/make">Start a game</a></div>
+          <ol class="st-gets">${steps.map(([h, p], i) => `<li class="rv"><span class="wkp-n">${String(i + 1).padStart(2, '0')}</span><h3>${h}</h3><p>${p}</p></li>`).join('')}</ol>
         </section>
-        <section class="section tight">
-          <div class="sec-head"><div><h2>What you get</h2></div></div>
-          <ol class="st-gets">${gets.map(([t, p], i) => `<li class="rv"><span class="wkp-n">${String(i + 1).padStart(2, '0')}</span><h3>${esc(t)}</h3><p>${esc(p)}</p></li>`).join('')}</ol>
-        </section>
-        <section class="section tight">
-          <div class="sec-head"><div><h2>Price at launch</h2><p>Not on sale yet. Prepaid credits, no subscription.</p></div></div>
-          <div class="st-tiers">
-            <div class="st-tier"><span>Starter</span><b>$5</b><p>10 characters</p></div>
-            <div class="st-tier hot"><span>Creator</span><b>$15</b><p>40 characters</p></div>
-          </div>
-          <p class="note">The first 100 people on the early-access list get 20 free characters at launch.</p>
-        </section>
-        <section class="section tight" id="studioForm">
-          <form class="st-form" id="stForm">
-            <h2>Request early access</h2>
-            <div class="field"><label for="stEmail">Email</label><input id="stEmail" type="email" required maxlength="200" autocomplete="email" placeholder="you@example.com"></div>
-            <fieldset class="field st-pick"><legend>Which would you buy?</legend>
-              <label><input type="radio" name="stTier" value="starter" checked> Starter · $5</label>
-              <label><input type="radio" name="stTier" value="creator"> Creator · $15</label>
-              <label><input type="radio" name="stTier" value="curious"> Just curious</label>
-            </fieldset>
-            <div class="field"><label for="stMaking">What are you making? (optional)</label><input id="stMaking" maxlength="300" placeholder="${ZH ? '比如：一个像素风平台跳跃' : 'e.g. a pixel-art platformer'}"></div>
-            <button class="btn btn-accent btn-block" type="submit">Request early access</button>
-            <p class="note">We only use your email to tell you when Studio opens. It is never shared, and you can ask us to delete it at any time.</p>
-          </form>
-        </section>
+        <section class="section tight"><div class="st-next rv">
+          <span class="tag"><span class="dot"></span>Coming next</span>
+          <h2>One sentence, a whole character</h2>
+          <p>We are building AI generation for game characters: describe one, get it drawn, animated and given matching sounds in one style. These free tools will stay free.</p>
+          <a class="link" href="${REPO}" target="_blank" rel="noopener">Follow along on GitHub</a>
+        </div></section>
       </div>`;
-    $$('[data-studio-cta]').forEach(a => a.addEventListener('click', e => { e.preventDefault(); supaInsert('events', { kind: 'cta', source: src }); $('#studioForm').scrollIntoView({ behavior: CALM ? 'auto' : 'smooth', block: 'start' }); }));
-    $('#stForm').addEventListener('submit', async e => {
-      e.preventDefault();
-      if (!SUPA_URL) return toast('Early access is not open yet');
-      const btn = $('#stForm button[type=submit]'); btn.disabled = true;
-      const row = { email: $('#stEmail').value.trim(), tier: $('input[name=stTier]:checked').value, making: $('#stMaking').value.trim() || null, source: src, lang: ZH ? 'zh' : 'en' };
-      try {
-        const r = await supaInsert('waitlist', row);
-        if (r && (r.ok || r.status === 409)) { $('#stForm').innerHTML = `<h2>${I18N ? I18N.tr("You're on the list") : "You're on the list"}</h2><p>${I18N ? I18N.tr("We'll email you when Studio opens.") : "We'll email you when Studio opens."}</p>`; track('studio/join', row.tier, true); }
-        else { btn.disabled = false; toast('Could not save. Please try again.'); }
-      } catch { btn.disabled = false; toast('Could not save. Please try again.'); }
+    track('studio/' + t[0], document.title);
+    loadStudio().then(lib => {
+      const box = $('#stTool'); if (!box?.isConnected) return;
+      if (!lib) { box.innerHTML = '<div class="empty"><b>Could not load the studio</b>Check your connection and reload the page.</div>'; I18N?.apply(box); return; }
+      box.innerHTML = '<div id="stRoot"></div>';
+      lib[t[0] === 'sfx' ? 'mountSfx' : 'mountSprites']($('#stRoot'), { esc, toast, track, copy: txt => copy(txt), apply: I18N ? r => I18N.apply(r) : null });
     });
   }
 
@@ -1407,7 +1383,7 @@
 
   // ---------- search palette (⌘K or /) ----------
   const cmdk = $('#cmdk'), cmdkIn = $('#cmdkInput'), cmdkList = $('#cmdkList');
-  const PAGES = [['Weekly picks', '#/weeks'], ['Quality standards', '#/standards'], ['Guides', '#/guides'], ['Library', '#/library'], ['Play all games', '#/play'], ['Creators', '#/creators'], ['Make: start here', '#/make'], ['Game feel (mechanics)', '#/mechanics'], ['Open recipes', '#/games'], ['Connect Playbook MCP', '#/mcp']];
+  const PAGES = [['Weekly picks', '#/weeks'], ['Quality standards', '#/standards'], ['Guides', '#/guides'], ['Library', '#/library'], ['Play all games', '#/play'], ['Creators', '#/creators'], ['Make: start here', '#/make'], ['Game feel (mechanics)', '#/mechanics'], ['Open recipes', '#/games'], ['Connect Playbook MCP', '#/mcp'], ['Studio: sound effects', '#/studio/sfx'], ['Studio: pixel sprites', '#/studio/sprites']];
   let cmdkItems = [], cmdkSel = 0;
   const lc = s => String(s || '').toLowerCase();
   function searchAll(q) {
@@ -1529,13 +1505,12 @@
     unhydrate(app);
     stopPreview(); closeSearch();
     closeModal();
-    const nav = { '': 'home', library: 'library', studio: 'make', standards: 'play', play: 'play', g: 'play', week: 'play', weeks: 'play', saved: 'library', guides: 'play', guide: 'play', discover: 'play', review: 'play', make: 'make', game: 'make', games: 'make', mechanics: 'make', mechanic: 'make', mcp: 'make', creators: 'creators', c: 'creators' }[page];
+    const nav = { '': 'home', library: 'library', studio: 'studio', standards: 'play', play: 'play', g: 'play', week: 'play', weeks: 'play', saved: 'library', guides: 'play', guide: 'play', discover: 'play', review: 'play', make: 'make', game: 'make', games: 'make', mechanics: 'make', mechanic: 'make', mcp: 'make', creators: 'creators', c: 'creators' }[page];
     $$('[data-nav]').forEach(a => a.classList.toggle('on', a.dataset.nav === nav));
     const tab = { home: 'home', play: 'play', make: 'make', creators: 'creators', library: 'library' }[nav];
     $$('[data-tab]').forEach(a => a.classList.toggle('on', a.dataset.tab === tab));
     const a = decodeURIComponent(arg);
-    // Studio stays local until it has real examples to show
-    ({ '': home, studio: LOCAL || STUDIO_EXAMPLES.length ? studioPage : notFound, library: savedPage, standards: standardsPage, saved: savedPage, guides: guidesPage, guide: () => guidePage(a), week: () => weekPage(a), weeks: weeksPage, g: () => discGamePage(a), play: () => discoverPage(a), discover: () => discoverPage(a), make: makePage, creators: creatorsPage, c: () => creatorProfile(a), games: () => gamesPage(a), mcp: mcpPage, game: () => gamePage(a), mechanics: mechanicsPage, mechanic: () => mechanicPage(a), review: LOCAL ? reviewPage : notFound }[page] || notFound)();
+    ({ '': home, studio: () => studioPage(a), library: savedPage, standards: standardsPage, saved: savedPage, guides: guidesPage, guide: () => guidePage(a), week: () => weekPage(a), weeks: weeksPage, g: () => discGamePage(a), play: () => discoverPage(a), discover: () => discoverPage(a), make: makePage, creators: creatorsPage, c: () => creatorProfile(a), games: () => gamesPage(a), mcp: mcpPage, game: () => gamePage(a), mechanics: mechanicsPage, mechanic: () => mechanicPage(a), review: LOCAL ? reviewPage : notFound }[page] || notFound)();
     hydrate();
     window.scrollTo(0, back || 0);
     if (sub === 'kit') requestAnimationFrame(() => $('.kit')?.scrollIntoView({ block: 'start' }));

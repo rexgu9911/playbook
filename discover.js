@@ -4544,7 +4544,8 @@ window.PB_DISCOVER = [
   "cover": "https://theloststorm.com/og.jpg",
   "embeddable": true,
   "verified": "2026-11-17",
-  "touch": true
+  "touch": true,
+  "code": "https://github.com/marginsystems/the-lost-storm"
  },
  {
   "title": "Woodangtang Seoul (우당탕탕 서울)",
