@@ -64,6 +64,7 @@ window.PB_GUIDES = [
   "urls": [
    "https://fantos-megamart.vercel.app",
    "https://capybara-vibejam26.leocoout.dev/",
+   "https://www.nightclub-driftspeed.xyz/",
    "https://saltfire.higgsfield.app/",
    "https://wavedash.com/games/kickdust-rally",
    "https://wavedash.com/games/tidebreaker-1792603629704",
@@ -120,8 +121,11 @@ window.PB_GUIDES = [
    "https://tinyskies.vercel.app",
    "https://haldane4.denisbondare.com",
    "https://fly.pieter.com/",
+   "https://theloststorm.com/play/",
+   "https://woodangtang-seoul.dolmeong.workers.dev/?c=threejs&amp%3Blang=en",
    "https://game.commoncrawl.org/",
    "https://starrynightrider.com/",
+   "https://yardclash.vercel.app/",
    "https://saltfire.higgsfield.app/",
    "https://wavedash.com/games/zig-1793499045757",
    "https://catcopter.com/",
@@ -130,10 +134,7 @@ window.PB_GUIDES = [
    "https://slop.inc",
    "https://tailgrab.io/",
    "https://seiryu.miraicode.one/",
-   "https://satsumacreative.tw/kw/",
-   "https://almostsurgery.ragim.dev",
-   "https://aispaceagency.com",
-   "https://reach-the-relay.pages.dev"
+   "https://satsumacreative.tw/kw/"
   ],
   "updated": "2026-11-17"
  }
