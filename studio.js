@@ -334,6 +334,134 @@ const ${m.name.replace(/-([a-z0-9])/g, (_, ch) => ch.toUpperCase()).replace(/^[^
   }
 
 
+  // ======================= music loops =======================
+  // A seeded chiptune loop: chord progression per mood, triangle bass, square lead, noise drums. Rendered offline so it loops cleanly.
+  const MOODS = {
+    Upbeat: { scale: [0, 2, 4, 5, 7, 9, 11], prog: [0, 4, 5, 3], bpm: 140 },
+    Adventure: { scale: [0, 2, 3, 5, 7, 9, 10], prog: [0, 5, 3, 4], bpm: 120 },
+    Spooky: { scale: [0, 2, 3, 5, 7, 8, 11], prog: [0, 5, 3, 4], bpm: 96 },
+    Calm: { scale: [0, 2, 4, 7, 9], prog: [0, 3, 1, 4], bpm: 84 },
+  };
+  const ROOTS = { C: 0, D: 2, E: 4, F: 5, G: 7, A: 9, B: 11 };
+  const midiHz = m => 440 * Math.pow(2, (m - 69) / 12);
+  const songOf = spec => {
+    const md = MOODS[spec.mood], r = mulberry(spec.seed), sc = md.scale, L = sc.length;
+    const note = (deg, oct) => 12 * (oct + 1) + ROOTS[spec.root] + sc[((deg % L) + L) % L] + 12 * Math.floor(deg / L);
+    const bars = [];
+    let pos = 0;   // melody walks in scale degrees
+    for (let b = 0; b < spec.bars; b++) {
+      const ch = md.prog[b % md.prog.length], lead = [];
+      for (let i = 0; i < 16; i++) {
+        if (r() < (i % 4 === 0 ? 0.12 : 0.38)) { lead.push(null); continue; }
+        if (i % 4 === 0 && r() < 0.6) pos = ch + [0, 2, 4][Math.floor(r() * 3)];   // land on chord tones on the beat
+        else pos += [-2, -1, -1, 1, 1, 2][Math.floor(r() * 6)];
+        pos = Math.max(ch - 3, Math.min(ch + 9, pos));
+        lead.push(note(pos, 4));
+      }
+      if (b === spec.bars - 1) lead[15] = null;   // breathe before the loop restarts
+      bars.push({ bass: [note(ch, 2), note(ch + 4, 2)], lead });
+    }
+    return bars;
+  };
+  const renderMusic = async spec => {
+    const rate = 44100, step = 60 / spec.bpm / 4, len = spec.bars * 16 * step;
+    const ctx = new OfflineAudioContext(1, Math.ceil(rate * len), rate), master = ctx.createGain();
+    master.gain.value = 0.9; master.connect(ctx.destination);
+    const noise = ctx.createBuffer(1, rate, rate); { const ch = noise.getChannelData(0); for (let i = 0; i < rate; i++) ch[i] = Math.random() * 2 - 1; }
+    const tone = (type, hz, t, d, vol) => {
+      const o = ctx.createOscillator(), g = ctx.createGain(); o.type = type; o.frequency.value = hz;
+      g.gain.setValueAtTime(0, t); g.gain.linearRampToValueAtTime(vol, t + 0.005); g.gain.setValueAtTime(vol, t + d * 0.6); g.gain.linearRampToValueAtTime(0, t + d);
+      o.connect(g); g.connect(master); o.start(t); o.stop(t + d + 0.01);
+    };
+    const hit = (t, d, vol, freq, type = 'highpass') => {
+      const s = ctx.createBufferSource(), f = ctx.createBiquadFilter(), g = ctx.createGain(); s.buffer = noise; f.type = type; f.frequency.value = freq;
+      g.gain.setValueAtTime(vol, t); g.gain.exponentialRampToValueAtTime(0.001, t + d); s.connect(f); f.connect(g); g.connect(master); s.start(t); s.stop(t + d + 0.01);
+    };
+    const kick = t => { const o = ctx.createOscillator(), g = ctx.createGain(); o.frequency.setValueAtTime(150, t); o.frequency.exponentialRampToValueAtTime(40, t + 0.12);
+      g.gain.setValueAtTime(0.55, t); g.gain.exponentialRampToValueAtTime(0.001, t + 0.16); o.connect(g); g.connect(master); o.start(t); o.stop(t + 0.18); };
+    songOf(spec).forEach((bar, b) => {
+      const t0 = b * 16 * step;
+      for (let i = 0; i < 16; i += 2) tone('triangle', midiHz(bar.bass[(i / 2) % 2]), t0 + i * step, step * 1.9, 0.28);
+      bar.lead.forEach((m, i) => { if (m) tone('square', midiHz(m), t0 + i * step, step * 0.9, 0.09); });
+      if (spec.drums) for (let i = 0; i < 16; i++) {
+        const t = t0 + i * step;
+        if (i % 8 === 0) kick(t);
+        if (i % 8 === 4) hit(t, 0.12, 0.28, 1200, 'bandpass');
+        if (i % 2 === 0) hit(t, 0.03, 0.07, 7000);
+      }
+    });
+    return ctx.startRendering();
+  };
+
+  function mountMusic(root, host) {
+    const esc = host.esc;
+    const st = { mood: 'Upbeat', root: 'C', bpm: 140, bars: 8, drums: true, seed: Math.floor(Math.random() * 2 ** 31), name: 'theme' };
+    let audio = null, src = null, buf = null, n = 0;
+    root.innerHTML = `
+      <div class="mu-ctl">
+        <div><div class="sx-k">Mood</div><div class="seg" id="muMood">${Object.keys(MOODS).map(k => `<button data-mood="${k}">${k}</button>`).join('')}</div></div>
+        <div><div class="sx-k">Key</div><div class="seg">${Object.keys(ROOTS).map(k => `<button data-root="${k}">${k}</button>`).join('')}</div></div>
+        <div><div class="sx-k">Length</div><div class="seg"><button data-bars="4">4 bars</button><button data-bars="8">8 bars</button></div></div>
+      </div>
+      <div class="sx-stage mu-stage">
+        <button class="sx-play" data-act="toggle" aria-label="Play or stop the loop"><svg viewBox="0 0 24 24"><path d="M7 4.5v15l13-7.5z"/></svg></button>
+        <canvas id="muWave" width="900" height="160" aria-hidden="true"></canvas>
+      </div>
+      <div class="mu-row2">
+        <label class="sx-sl mu-bpm"><span>Tempo<b id="muBpmV"></b></span><input type="range" id="muBpm" min="60" max="190" step="1" aria-label="Tempo"></label>
+        <label class="mu-check"><input type="checkbox" id="muDrums" checked> Drums</label>
+        <button class="btn btn-accent" data-act="new">New tune</button>
+      </div>
+      <div class="sx-out">
+        <div class="field"><label for="muName">File name</label><input id="muName" maxlength="40" autocomplete="off" spellcheck="false"></div>
+        <div class="sx-row"><button class="btn btn-accent" data-act="add">Add to pack</button><button class="btn" data-act="wav">Download WAV</button></div>
+        <p class="note">Loops cleanly: set your audio player to loop and it plays forever. Same settings and seed always give the same tune.</p>
+        <p class="muted small" id="muSeed"></p>
+      </div>`;
+    const wave = $('#muWave', root), playBtn = $('[data-act=toggle]', root);
+    const icon = on => { playBtn.innerHTML = on ? '<svg viewBox="0 0 24 24"><path d="M7 5h4v14H7zM13 5h4v14h-4z"/></svg>' : '<svg viewBox="0 0 24 24"><path d="M7 4.5v15l13-7.5z"/></svg>'; };
+    const stop = () => { try { src?.stop(); } catch {} src = null; icon(false); };
+    const start = () => {
+      if (!buf) return;
+      try { audio = audio || new (window.AudioContext || window.webkitAudioContext)(); audio.resume(); } catch { return host.toast('Sound is not available in this browser'); }
+      stop(); src = audio.createBufferSource(); src.buffer = buf; src.loop = true; src.connect(audio.destination); src.start(); icon(true);
+    };
+    const sync = () => {
+      $$('[data-mood]', root).forEach(b => b.classList.toggle('on', b.dataset.mood === st.mood));
+      $$('[data-root]', root).forEach(b => b.classList.toggle('on', b.dataset.root === st.root));
+      $$('[data-bars]', root).forEach(b => b.classList.toggle('on', +b.dataset.bars === st.bars));
+      $('#muBpm', root).value = st.bpm; $('#muBpmV', root).textContent = ` ${st.bpm} BPM`; $('#muDrums', root).checked = st.drums; $('#muName', root).value = st.name;
+      $('#muSeed', root).textContent = `${st.mood} · ${st.root} · ${st.bpm} BPM · ${st.bars} bars · seed ${st.seed}`;
+    };
+    const build = async (play) => {
+      const k = ++n, playing = !!src; sync();
+      const b = await renderMusic(st); if (k !== n || !root.isConnected) return;
+      buf = b;
+      const c = wave.getContext('2d'), d = b.getChannelData(0), W = wave.width, H = wave.height, stp = d.length / W;
+      c.clearRect(0, 0, W, H); c.fillStyle = '#ff5b1f';
+      for (let x = 0; x < W; x++) { let lo = 1, hi = -1; for (let i = Math.floor(x * stp), e = Math.floor((x + 1) * stp); i < e; i += 4) { lo = Math.min(lo, d[i]); hi = Math.max(hi, d[i]); }
+        c.fillRect(x, H / 2 - hi * H * 0.45, 1, Math.max(1, (hi - lo) * H * 0.45)); }
+      if (play || playing) start();
+    };
+    root.addEventListener('click', e => {
+      const m = e.target.closest('[data-mood]'); if (m) { st.mood = m.dataset.mood; st.bpm = MOODS[st.mood].bpm; build(true); return; }
+      const rt = e.target.closest('[data-root]'); if (rt) { st.root = rt.dataset.root; build(); return; }
+      const br = e.target.closest('[data-bars]'); if (br) { st.bars = +br.dataset.bars; build(); return; }
+      const a = e.target.closest('[data-act]')?.dataset.act; if (!a) return;
+      if (a === 'toggle') src ? stop() : start();
+      if (a === 'new') { st.seed = Math.floor(Math.random() * 2 ** 31); build(true); host.track('studio/music/new', st.mood, true); }
+      if (a === 'wav' && buf) { download(toWav(buf), fileName(st.name) + '.wav'); host.track('studio/music/wav', st.mood, true); }
+      if (a === 'add') { const nm = pack.add({ kind: 'music', name: fileName(st.name), spec: { ...st } }); host.toast(`Added to pack: ${nm}`); host.track('studio/pack/add-music', '', true); }
+    });
+    $('#muBpm', root).addEventListener('input', e => { st.bpm = +e.target.value; $('#muBpmV', root).textContent = ` ${st.bpm} BPM`; });
+    $('#muBpm', root).addEventListener('change', () => build());
+    $('#muDrums', root).addEventListener('change', e => { st.drums = e.target.checked; build(); });
+    $('#muName', root).addEventListener('change', e => { st.name = fileName(e.target.value); });
+    const watch = setInterval(() => { if (!root.isConnected) { stop(); clearInterval(watch); } }, 500);   // stop the loop when you leave the page
+    build();
+    host.apply?.(root);
+  }
+
   // ======================= asset pack =======================
   // A pack lives in this browser (localStorage) as recipes, not files: sounds keep their settings, sprites their seed.
   // "Download pack" rebuilds every file and zips them with a manifest and a ready-to-import JS module.
@@ -369,11 +497,14 @@ const ${m.name.replace(/-([a-z0-9])/g, (_, ch) => ch.toUpperCase()).replace(/^[^
   const bytes = async blob => new Uint8Array(await blob.arrayBuffer());
   const camel = n => n.replace(/-([a-z0-9])/g, (_, c) => c.toUpperCase()).replace(/^[^a-z]+/, '') || 'asset';
   const buildPack = async list => {
-    const files = [], man = { made_with: 'Playbook Studio', url: 'https://rexgu9911.github.io/playbook/#/studio', license: 'Yours to use however you like; no credit needed.', sounds: [], sprites: [] };
+    const files = [], man = { made_with: 'Playbook Studio', url: 'https://rexgu9911.github.io/playbook/#/studio', license: 'Yours to use however you like; no credit needed.', sounds: [], music: [], sprites: [] };
     for (const it of list) {
       if (it.kind === 'sfx') {
         files.push({ name: `sounds/${it.name}.wav`, data: await bytes(toWav(await renderSfx(tidy(it.params)))) });
         man.sounds.push({ name: it.name, file: `sounds/${it.name}.wav`, settings: round(tidy(it.params)) });
+      } else if (it.kind === 'music') {
+        files.push({ name: `music/${it.name}.wav`, data: await bytes(toWav(await renderMusic(it.spec))) });
+        man.music.push({ name: it.name, file: `music/${it.name}.wav`, loop: true, bpm: it.spec.bpm, bars: it.spec.bars, mood: it.spec.mood, key: it.spec.root, seed: it.spec.seed });
       } else {
         const g = makeSprite(it.spec), sc = it.scale || 4, blob = await new Promise(r => sheetCanvas(g, sc).toBlob(r));
         files.push({ name: `sprites/${it.name}-sheet.png`, data: await bytes(blob) });
@@ -405,9 +536,10 @@ ${playbookSfx.toString()}
     const readme = `Playbook Studio asset pack
 ==========================
 Made at ${man.url}
-${man.sounds.length} sound(s), ${man.sprites.length} sprite sheet(s). Everything here is yours to use however you like; no credit needed.
+${man.sounds.length} sound(s), ${man.music.length} music loop(s), ${man.sprites.length} sprite sheet(s). Everything here is yours to use however you like; no credit needed.
 
 sounds/      WAV files (mono, 44.1 kHz). The same sounds can also be played live from code: see playbook-assets.js.
+music/       WAV loops: set them to loop in your audio player.
 sprites/     PNG sprite sheets, 5 frames in a row: 4 idle frames, then 1 hit flash. Frame sizes are in manifest.json.
 manifest.json        every asset with its file, frame size, animations and the settings that made it
 playbook-assets.js   ES module: playSound(name), plus loadSprites(scene) / makeAnimations(scene) for Phaser
@@ -427,7 +559,7 @@ Tell your coding agent: "Use the assets in this folder. playbook-assets.js shows
       const list = pack.get();
       root.innerHTML = `<div class="pk-head"><div><h2>Your asset pack</h2><p>${list.length ? 'Saved in this browser. Download it as one zip: files, a manifest and code to load them.' : 'Add sounds and sprites with "Add to pack". They stay in this browser until you download them as one zip.'}</p></div>
         ${list.length ? `<div class="sx-row"><button class="btn btn-accent" data-pk="zip">Download pack (.zip)</button><button class="btn" data-pk="clear">Clear</button></div>` : ''}</div>
-        ${list.length ? `<ul class="pk-list">${list.map((it, i) => `<li><span class="pk-kind">${it.kind === 'sfx' ? 'Sound' : 'Sprite'}</span><b data-noi18n>${esc(it.name)}</b><button class="pk-x" data-pk-rm="${i}" aria-label="Remove ${esc(it.name)}">×</button></li>`).join('')}</ul>` : ''}`;
+        ${list.length ? `<ul class="pk-list">${list.map((it, i) => `<li><span class="pk-kind">${{ sfx: 'Sound', music: 'Music', sprite: 'Sprite' }[it.kind] || it.kind}</span><b data-noi18n>${esc(it.name)}</b><button class="pk-x" data-pk-rm="${i}" aria-label="Remove ${esc(it.name)}">×</button></li>`).join('')}</ul>` : ''}`;
       host.apply?.(root);
     };
     root.addEventListener('click', async e => {
@@ -440,5 +572,5 @@ Tell your coding agent: "Use the assets in this folder. playbook-assets.js shows
     draw();
   }
 
-  window.PB_STUDIO = { mountSfx, mountSprites, mountPack, _test: { makeSprite, sheetCanvas, renderSfx, toWav, PRESETS, tidy, buildPack, pack } };
+  window.PB_STUDIO = { mountSfx, mountSprites, mountMusic, mountPack, _test: { renderMusic, songOf, makeSprite, sheetCanvas, renderSfx, toWav, PRESETS, tidy, buildPack, pack } };
 })();

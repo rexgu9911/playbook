@@ -994,7 +994,7 @@
 
   // ---------- studio: free asset makers that run in the browser (studio.js, loaded on demand) ----------
   // AI generation (prepaid credits) comes later; these tools stay free and need no account or server.
-  const STUDIO_V = 3;
+  const STUDIO_V = 4;
   let studioLib = null;
   const loadStudio = () => studioLib || (studioLib = new Promise(res => {
     const sc = document.createElement('script'); sc.src = `studio.js?v=${STUDIO_V}`;
@@ -1004,6 +1004,7 @@
   const STUDIO_TOOLS = [
     ['sfx', 'Sound effects', 'Coins, jumps, lasers, explosions. Shape one, then download a WAV or copy the code into your game.'],
     ['sprites', 'Pixel sprites', 'Characters, ships and items with an idle animation, as a PNG sprite sheet your engine can load.'],
+    ['music', 'Music loops', 'Short chiptune loops in the mood you pick, made to loop under your game.'],
   ];
   function studioPage(tool) {
     const t = STUDIO_TOOLS.find(x => x[0] === tool) || STUDIO_TOOLS[0];
@@ -1017,7 +1018,7 @@
       <section class="page-head dots st-head"><div class="wrap">
         <span class="tag"><span class="dot"></span>Playbook Studio · free · runs in your browser</span>
         <h1>Make <em>game-ready</em> assets</h1>
-        <p>Sound effects and pixel sprites you can drop straight into your game. Everything is made on your device: no account, no upload, no cost, and what you make is yours to use however you like.</p>
+        <p>Sound effects, pixel sprites and music loops you can drop straight into your game. Everything is made on your device: no account, no upload, no cost, and what you make is yours to use however you like.</p>
         <div class="st-tabs" role="tablist" aria-label="Studio tools">${STUDIO_TOOLS.map(([k, n, d]) => `<a class="st-tab ${k === t[0] ? 'on' : ''}" href="#/studio/${k}" role="tab" aria-selected="${k === t[0]}"><b>${n}</b><span>${d}</span></a>`).join('')}</div>
       </div></section>
       <div class="wrap">
@@ -1040,7 +1041,7 @@
       if (!lib) { box.innerHTML = '<div class="empty"><b>Could not load the studio</b>Check your connection and reload the page.</div>'; I18N?.apply(box); return; }
       box.innerHTML = '<div id="stRoot"></div>';
       const host = { esc, toast, track, copy: txt => copy(txt), apply: I18N ? r => I18N.apply(r) : null };
-      lib[t[0] === 'sfx' ? 'mountSfx' : 'mountSprites']($('#stRoot'), host);
+      lib[{ sfx: 'mountSfx', sprites: 'mountSprites', music: 'mountMusic' }[t[0]]]($('#stRoot'), host);
       lib.mountPack?.($('#stPack'), host);
     });
   }
@@ -1386,7 +1387,7 @@
 
   // ---------- search palette (⌘K or /) ----------
   const cmdk = $('#cmdk'), cmdkIn = $('#cmdkInput'), cmdkList = $('#cmdkList');
-  const PAGES = [['Weekly picks', '#/weeks'], ['Quality standards', '#/standards'], ['Guides', '#/guides'], ['Library', '#/library'], ['Play all games', '#/play'], ['Creators', '#/creators'], ['Make: start here', '#/make'], ['Game feel (mechanics)', '#/mechanics'], ['Open recipes', '#/games'], ['Connect Playbook MCP', '#/mcp'], ['Studio: sound effects', '#/studio/sfx'], ['Studio: pixel sprites', '#/studio/sprites']];
+  const PAGES = [['Weekly picks', '#/weeks'], ['Quality standards', '#/standards'], ['Guides', '#/guides'], ['Library', '#/library'], ['Play all games', '#/play'], ['Creators', '#/creators'], ['Make: start here', '#/make'], ['Game feel (mechanics)', '#/mechanics'], ['Open recipes', '#/games'], ['Connect Playbook MCP', '#/mcp'], ['Studio: sound effects', '#/studio/sfx'], ['Studio: pixel sprites', '#/studio/sprites'], ['Studio: music loops', '#/studio/music']];
   let cmdkItems = [], cmdkSel = 0;
   const lc = s => String(s || '').toLowerCase();
   function searchAll(q) {

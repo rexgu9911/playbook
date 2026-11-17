@@ -1192,3 +1192,11 @@ html[lang="zh-CN"] .tag, html[lang="zh-CN"] .chip.hot { letter-spacing: .04em; }
 .pk-kind { font-family: var(--pixel); font-size: 10px; text-transform: uppercase; color: var(--accent-text); }
 .pk-x { width: 24px; height: 24px; border-radius: 7px; color: var(--muted); font-size: 16px; line-height: 1; }
 .pk-x:hover { background: var(--panel-3); color: var(--ink); }
+/* studio music loops */
+.mu-ctl { display: flex; flex-wrap: wrap; gap: 14px 22px; margin-bottom: 14px; }
+.mu-ctl .seg { flex-wrap: wrap; }
+.mu-row2 { display: flex; flex-wrap: wrap; align-items: end; gap: 14px 22px; margin-top: 14px; }
+.mu-bpm { flex: 1 1 240px; max-width: 420px; }
+.mu-check { display: inline-flex; align-items: center; gap: 8px; height: 42px; font-size: 14px; font-weight: 600; color: var(--ink-2); }
+.mu-check input { width: 18px; height: 18px; accent-color: var(--accent); }
+@media (min-width: 861px) { .st-tabs { grid-template-columns: repeat(3, minmax(0, 1fr)); max-width: 1100px; } }
