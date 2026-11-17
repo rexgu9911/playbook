@@ -20,6 +20,15 @@
   const supaInsert = (table, row) => SUPA_URL && SUPA_ANON
     ? fetch(`${SUPA_URL}/rest/v1/${table}`, { method: 'POST', headers: { apikey: SUPA_ANON, Authorization: `Bearer ${SUPA_ANON}`, 'Content-Type': 'application/json', Prefer: 'return=minimal' }, body: JSON.stringify(row) })
     : Promise.resolve(null);
+  // Visitor stats: Cloudflare Web Analytics (no cookies, no personal data; page views, referrers, countries).
+  // The token is public by design (it sits in every page). tools/build_share.py reads it from here for the static pages.
+  const CF_BEACON = 'cf06cb0d19e94ccb9f83856659b6b3b9';
+  if (CF_BEACON && !LOCAL) {
+    const cf = document.createElement('script');
+    cf.defer = true; cf.src = 'https://static.cloudflareinsights.com/beacon.min.js';
+    cf.setAttribute('data-cf-beacon', JSON.stringify({ token: CF_BEACON }));
+    document.head.append(cf);
+  }
   if (GOATCOUNTER && !LOCAL) {
     const gc = document.createElement('script');
     gc.async = true; gc.src = 'https://gc.zgo.at/count.js';
