@@ -130,7 +130,7 @@ ${playbookSfx.toString()}
           <div class="sx-sliders">${SLIDERS.map(s => `<label class="sx-sl"><span>${esc(s[1])}<b data-val="${s[0]}"></b></span><input type="range" min="0" max="1000" data-k="${s[0]}" aria-label="${esc(s[1])}"></label>`).join('')}</div>
           <div class="sx-out">
             <div class="field"><label for="sxName">File name</label><input id="sxName" maxlength="40" autocomplete="off" spellcheck="false"></div>
-            <div class="sx-row"><button class="btn btn-accent" data-act="wav">Download WAV</button><button class="btn" data-act="code">Copy code for your game</button><button class="btn" data-act="json">Copy settings</button></div>
+            <div class="sx-row"><button class="btn btn-accent" data-act="add">Add to pack</button><button class="btn" data-act="wav">Download WAV</button><button class="btn" data-act="code">Copy code for your game</button><button class="btn" data-act="json">Copy settings</button></div>
           </div>
         </div>
       </div>`;
@@ -172,6 +172,7 @@ ${playbookSfx.toString()}
       if (a === 'wav') renderSfx(p).then(b => { download(toWav(b), fileName(name) + '.wav'); host.track('studio/sfx/wav', '', true); });
       if (a === 'code') { host.copy(sfxCode(p, fileName(name))); host.track('studio/sfx/code', '', true); }
       if (a === 'json') host.copy(JSON.stringify(round(p), null, 2));
+      if (a === 'add') { const nm = pack.add({ kind: 'sfx', name: fileName(name), params: round(p) }); host.toast(`Added to pack: ${nm}`); host.track('studio/pack/add-sfx', '', true); }
     });
     root.addEventListener('input', e => {
       const k = e.target.dataset.k; if (k) { const s = SLIDERS.find(x => x[0] === k); p[k] = fromPos(s, +e.target.value); p = tidy(p); $(`[data-val="${k}"]`, root).textContent = ` ${(+p[k]).toFixed(s[6])}${s[5] ? ' ' + s[5] : ''}`; drawWave(); }
@@ -273,7 +274,7 @@ ${playbookSfx.toString()}
           <div class="field"><label for="spName">File name</label><input id="spName" value="hero" maxlength="40" autocomplete="off" spellcheck="false"></div>
           <div class="sp-k">Export size</div>
           <div class="seg" id="spScale">${[1, 2, 4, 8].map(s => `<button data-scale="${s}">${s}×</button>`).join('')}</div>
-          <div class="sx-row"><button class="btn btn-accent" data-act="sheet">Download sprite sheet</button><button class="btn" data-act="png">Download PNG</button></div>
+          <div class="sx-row"><button class="btn btn-accent" data-act="add">Add to pack</button><button class="btn" data-act="sheet">Download sprite sheet</button><button class="btn" data-act="png">Download PNG</button></div>
           <div class="sx-row"><button class="btn" data-act="phaser">Copy Phaser code</button><button class="btn" data-act="manifest">Copy manifest</button></div>
           <p class="note">The sheet has 5 frames in a row: 4 for idle and 1 hit flash. Frame size is shown in the manifest.</p>
         </div>
@@ -318,6 +319,7 @@ ${playbookSfx.toString()}
       if (a === 'sheet') { sheetCanvas(cur().grid, st.scale).toBlob(b => download(b, `${nm}-sheet.png`)); host.track('studio/sprite/sheet', '', true); }
       if (a === 'png') { const s = cur(), cv = document.createElement('canvas'); cv.width = cv.height = s.size * st.scale; drawFrame(cv.getContext('2d'), s.grid, st.scale, 0, 0); cv.toBlob(b => download(b, `${nm}.png`)); host.track('studio/sprite/png', '', true); }
       if (a === 'manifest') host.copy(JSON.stringify(manifest(), null, 2));
+      if (a === 'add') { const { type, size, seed, pal, mut } = cur(); const added = pack.add({ kind: 'sprite', name: nm, spec: { type, size, seed, pal, mut }, scale: st.scale }); host.toast(`Added to pack: ${added}`); host.track('studio/pack/add-sprite', '', true); }
       if (a === 'phaser') { const m = manifest(); host.copy(`// ${m.name}: made with Playbook Studio. Free to use, no credit needed.
 // preload()
 this.load.spritesheet('${m.name}', '${m.image}', { frameWidth: ${m.frameWidth}, frameHeight: ${m.frameHeight} });
@@ -331,5 +333,112 @@ const ${m.name.replace(/-([a-z0-9])/g, (_, ch) => ch.toUpperCase()).replace(/^[^
     host.apply?.(root);
   }
 
-  window.PB_STUDIO = { mountSfx, mountSprites, _test: { makeSprite, sheetCanvas, renderSfx, toWav, PRESETS, tidy } };
+
+  // ======================= asset pack =======================
+  // A pack lives in this browser (localStorage) as recipes, not files: sounds keep their settings, sprites their seed.
+  // "Download pack" rebuilds every file and zips them with a manifest and a ready-to-import JS module.
+  const PACK_KEY = 'pb-studio-pack';
+  const pack = {
+    get: () => { try { const v = JSON.parse(localStorage.getItem(PACK_KEY) || '[]'); return Array.isArray(v) ? v : []; } catch { return []; } },
+    set: list => { try { localStorage.setItem(PACK_KEY, JSON.stringify(list.slice(0, 60))); } catch {} window.dispatchEvent(new Event('pb-pack')); },
+    add(item) {
+      const list = pack.get(), base = fileName(item.name); let nm = base, n = 2;
+      while (list.some(x => x.kind === item.kind && x.name === nm)) nm = `${base}-${n++}`;
+      list.push({ ...item, name: nm }); pack.set(list); return nm;
+    },
+  };
+  const CRC = (() => { const t = new Uint32Array(256); for (let n = 0; n < 256; n++) { let c = n; for (let k = 0; k < 8; k++) c = c & 1 ? 0xEDB88320 ^ (c >>> 1) : c >>> 1; t[n] = c >>> 0; } return t; })();
+  const crc32 = b => { let c = 0xFFFFFFFF; for (let i = 0; i < b.length; i++) c = CRC[(c ^ b[i]) & 0xFF] ^ (c >>> 8); return (c ^ 0xFFFFFFFF) >>> 0; };
+  // minimal zip writer (stored, no compression): enough for a handful of small assets
+  const zip = files => {
+    const enc = new TextEncoder(), parts = [], dir = []; let off = 0;
+    files.forEach(({ name, data }) => {
+      const nb = enc.encode(name), crc = crc32(data), h = new DataView(new ArrayBuffer(30));
+      h.setUint32(0, 0x04034b50, true); h.setUint16(4, 20, true); h.setUint16(6, 0x0800, true); h.setUint32(14, crc, true);
+      h.setUint32(18, data.length, true); h.setUint32(22, data.length, true); h.setUint16(26, nb.length, true);
+      parts.push(h, nb, data);
+      const c = new DataView(new ArrayBuffer(46));
+      c.setUint32(0, 0x02014b50, true); c.setUint16(4, 20, true); c.setUint16(6, 20, true); c.setUint16(8, 0x0800, true); c.setUint32(16, crc, true);
+      c.setUint32(20, data.length, true); c.setUint32(24, data.length, true); c.setUint16(28, nb.length, true); c.setUint32(42, off, true);
+      dir.push(c, nb); off += 30 + nb.length + data.length;
+    });
+    const size = dir.reduce((n, x) => n + x.byteLength, 0), e = new DataView(new ArrayBuffer(22));
+    e.setUint32(0, 0x06054b50, true); e.setUint16(8, files.length, true); e.setUint16(10, files.length, true); e.setUint32(12, size, true); e.setUint32(16, off, true);
+    return new Blob([...parts, ...dir, e], { type: 'application/zip' });
+  };
+  const bytes = async blob => new Uint8Array(await blob.arrayBuffer());
+  const camel = n => n.replace(/-([a-z0-9])/g, (_, c) => c.toUpperCase()).replace(/^[^a-z]+/, '') || 'asset';
+  const buildPack = async list => {
+    const files = [], man = { made_with: 'Playbook Studio', url: 'https://rexgu9911.github.io/playbook/#/studio', license: 'Yours to use however you like; no credit needed.', sounds: [], sprites: [] };
+    for (const it of list) {
+      if (it.kind === 'sfx') {
+        files.push({ name: `sounds/${it.name}.wav`, data: await bytes(toWav(await renderSfx(tidy(it.params)))) });
+        man.sounds.push({ name: it.name, file: `sounds/${it.name}.wav`, settings: round(tidy(it.params)) });
+      } else {
+        const g = makeSprite(it.spec), sc = it.scale || 4, blob = await new Promise(r => sheetCanvas(g, sc).toBlob(r));
+        files.push({ name: `sprites/${it.name}-sheet.png`, data: await bytes(blob) });
+        man.sprites.push({ name: it.name, file: `sprites/${it.name}-sheet.png`, frameWidth: it.spec.size * sc, frameHeight: (it.spec.size + 2) * sc, frames: 5,
+          animations: { idle: { frames: [0, 1, 2, 3], fps: 6, loop: true }, hit: { frames: [4], fps: 1 } }, seed: it.spec.seed, type: it.spec.type });
+      }
+    }
+    const js = `// Playbook Studio asset pack. Import it, then call playSound('name') after the first click or key press.
+export const sounds = ${JSON.stringify(Object.fromEntries(man.sounds.map(x => [x.name, x.settings])), null, 1)};
+export const sprites = ${JSON.stringify(man.sprites.map(({ name, file, frameWidth, frameHeight, animations }) => ({ name, file, frameWidth, frameHeight, animations })), null, 1)};
+
+let audio;
+export function playSound(name) {
+  audio = audio || new AudioContext();
+  return playbookSfx(audio, sounds[name]);
+}
+
+// Phaser: call loadSprites(this) in preload() and makeAnimations(this) in create()
+export function loadSprites(scene, base = '') { sprites.forEach(s => scene.load.spritesheet(s.name, base + s.file, { frameWidth: s.frameWidth, frameHeight: s.frameHeight })); }
+export function makeAnimations(scene) {
+  sprites.forEach(s => {
+    scene.anims.create({ key: s.name + '-idle', frames: scene.anims.generateFrameNumbers(s.name, { start: 0, end: 3 }), frameRate: 6, repeat: -1 });
+    scene.anims.create({ key: s.name + '-hit', frames: [{ key: s.name, frame: 4 }], frameRate: 1 });
+  });
+}
+
+${playbookSfx.toString()}
+`;
+    const readme = `Playbook Studio asset pack
+==========================
+Made at ${man.url}
+${man.sounds.length} sound(s), ${man.sprites.length} sprite sheet(s). Everything here is yours to use however you like; no credit needed.
+
+sounds/      WAV files (mono, 44.1 kHz). The same sounds can also be played live from code: see playbook-assets.js.
+sprites/     PNG sprite sheets, 5 frames in a row: 4 idle frames, then 1 hit flash. Frame sizes are in manifest.json.
+manifest.json        every asset with its file, frame size, animations and the settings that made it
+playbook-assets.js   ES module: playSound(name), plus loadSprites(scene) / makeAnimations(scene) for Phaser
+
+Tell your coding agent: "Use the assets in this folder. playbook-assets.js shows how to load them."
+`;
+    files.push({ name: 'manifest.json', data: new TextEncoder().encode(JSON.stringify(man, null, 2)) });
+    files.push({ name: 'playbook-assets.js', data: new TextEncoder().encode(js) });
+    files.push({ name: 'README.txt', data: new TextEncoder().encode(readme) });
+    return zip(files);
+  };
+
+  function mountPack(root, host) {
+    const esc = host.esc;
+    const draw = () => {
+      if (!root.isConnected) return window.removeEventListener('pb-pack', draw);
+      const list = pack.get();
+      root.innerHTML = `<div class="pk-head"><div><h2>Your asset pack</h2><p>${list.length ? 'Saved in this browser. Download it as one zip: files, a manifest and code to load them.' : 'Add sounds and sprites with "Add to pack". They stay in this browser until you download them as one zip.'}</p></div>
+        ${list.length ? `<div class="sx-row"><button class="btn btn-accent" data-pk="zip">Download pack (.zip)</button><button class="btn" data-pk="clear">Clear</button></div>` : ''}</div>
+        ${list.length ? `<ul class="pk-list">${list.map((it, i) => `<li><span class="pk-kind">${it.kind === 'sfx' ? 'Sound' : 'Sprite'}</span><b data-noi18n>${esc(it.name)}</b><button class="pk-x" data-pk-rm="${i}" aria-label="Remove ${esc(it.name)}">×</button></li>`).join('')}</ul>` : ''}`;
+      host.apply?.(root);
+    };
+    root.addEventListener('click', async e => {
+      const rm = e.target.closest('[data-pk-rm]'); if (rm) { const l = pack.get(); l.splice(+rm.dataset.pkRm, 1); pack.set(l); return; }
+      const a = e.target.closest('[data-pk]')?.dataset.pk; if (!a) return;
+      if (a === 'clear') pack.set([]);
+      if (a === 'zip') { const b = e.target.closest('button'); b.disabled = true; try { download(await buildPack(pack.get()), 'playbook-assets.zip'); host.track('studio/pack/zip', String(pack.get().length), true); } finally { b.disabled = false; } }
+    });
+    window.addEventListener('pb-pack', draw);
+    draw();
+  }
+
+  window.PB_STUDIO = { mountSfx, mountSprites, mountPack, _test: { makeSprite, sheetCanvas, renderSfx, toWav, PRESETS, tidy, buildPack, pack } };
 })();

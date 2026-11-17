@@ -994,7 +994,7 @@
 
   // ---------- studio: free asset makers that run in the browser (studio.js, loaded on demand) ----------
   // AI generation (prepaid credits) comes later; these tools stay free and need no account or server.
-  const STUDIO_V = 2;
+  const STUDIO_V = 3;
   let studioLib = null;
   const loadStudio = () => studioLib || (studioLib = new Promise(res => {
     const sc = document.createElement('script'); sc.src = `studio.js?v=${STUDIO_V}`;
@@ -1022,6 +1022,7 @@
       </div></section>
       <div class="wrap">
         <section class="st-tool" id="stTool" aria-live="polite"><div class="empty"><b>Loading the studio…</b>It takes a moment the first time.</div></section>
+        <section class="st-pack" id="stPack"></section>
         <section class="section tight">
           <div class="sec-head"><div><h2>Use it in your game</h2></div><a class="link" href="#/make">Start a game</a></div>
           <ol class="st-gets">${steps.map(([h, p], i) => `<li class="rv"><span class="wkp-n">${String(i + 1).padStart(2, '0')}</span><h3>${h}</h3><p>${p}</p></li>`).join('')}</ol>
@@ -1038,7 +1039,9 @@
       const box = $('#stTool'); if (!box?.isConnected) return;
       if (!lib) { box.innerHTML = '<div class="empty"><b>Could not load the studio</b>Check your connection and reload the page.</div>'; I18N?.apply(box); return; }
       box.innerHTML = '<div id="stRoot"></div>';
-      lib[t[0] === 'sfx' ? 'mountSfx' : 'mountSprites']($('#stRoot'), { esc, toast, track, copy: txt => copy(txt), apply: I18N ? r => I18N.apply(r) : null });
+      const host = { esc, toast, track, copy: txt => copy(txt), apply: I18N ? r => I18N.apply(r) : null };
+      lib[t[0] === 'sfx' ? 'mountSfx' : 'mountSprites']($('#stRoot'), host);
+      lib.mountPack?.($('#stPack'), host);
     });
   }
 
