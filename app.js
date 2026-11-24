@@ -992,6 +992,26 @@
       </div>`;
   }
 
+  // ---------- create: the AI game studio (create.js, loaded on demand; backend is the Playbook Create Worker) ----------
+  // Local only until accounts and credits exist (stage 2). Run the Worker with `npm run dev` in worker/.
+  const CREATE_API = LOCAL ? 'http://127.0.0.1:8787' : '';
+  const CREATE_V = 3;
+  let createLib = null;
+  const loadCreate = () => createLib || (createLib = new Promise(res => {
+    const sc = document.createElement('script'); sc.src = `create.js?v=${CREATE_V}`;
+    sc.onload = () => res(window.PB_CREATE || null); sc.onerror = () => { createLib = null; res(null); };
+    document.head.append(sc);
+  }));
+  function createPage() {
+    app.innerHTML = `<section class="cr-wrap"><div id="crRoot"><div class="empty"><b>Loading the studio…</b>It takes a moment the first time.</div></div></section>`;
+    loadCreate().then(lib => {
+      const box = $('#crRoot'); if (!box?.isConnected) return;
+      if (!lib) { box.innerHTML = '<div class="empty"><b>Could not load the studio</b>Check your connection and reload the page.</div>'; I18N?.apply(box); return; }
+      lib.mount(box, { api: CREATE_API, esc, toast, track, copy: txt => copy(txt), apply: I18N ? r => I18N.apply(r) : null, tr: t => (I18N ? I18N.tr(t) : t), zh: ZH,
+        recipes: games.filter(g => !g.parent).map(g => ({ id: g.id, title: g.title, src: g.src })) });
+    });
+  }
+
   // ---------- studio: free asset makers that run in the browser (studio.js, loaded on demand) ----------
   // AI generation (prepaid credits) comes later; these tools stay free and need no account or server.
   const STUDIO_V = 4;
@@ -1509,23 +1529,24 @@
     unhydrate(app);
     stopPreview(); closeSearch();
     closeModal();
-    const nav = { '': 'home', library: 'library', studio: 'studio', standards: 'play', play: 'play', g: 'play', week: 'play', weeks: 'play', saved: 'library', guides: 'play', guide: 'play', discover: 'play', review: 'play', make: 'make', game: 'make', games: 'make', mechanics: 'make', mechanic: 'make', mcp: 'make', creators: 'creators', c: 'creators' }[page];
+    const nav = { '': 'home', library: 'library', studio: 'studio', create: 'create', standards: 'play', play: 'play', g: 'play', week: 'play', weeks: 'play', saved: 'library', guides: 'play', guide: 'play', discover: 'play', review: 'play', make: 'make', game: 'make', games: 'make', mechanics: 'make', mechanic: 'make', mcp: 'make', creators: 'creators', c: 'creators' }[page];
     $$('[data-nav]').forEach(a => a.classList.toggle('on', a.dataset.nav === nav));
     const tab = { home: 'home', play: 'play', make: 'make', creators: 'creators', library: 'library' }[nav];
     $$('[data-tab]').forEach(a => a.classList.toggle('on', a.dataset.tab === tab));
     const a = decodeURIComponent(arg);
-    ({ '': home, studio: () => studioPage(a), library: savedPage, standards: standardsPage, saved: savedPage, guides: guidesPage, guide: () => guidePage(a), week: () => weekPage(a), weeks: weeksPage, g: () => discGamePage(a), play: () => discoverPage(a), discover: () => discoverPage(a), make: makePage, creators: creatorsPage, c: () => creatorProfile(a), games: () => gamesPage(a), mcp: mcpPage, game: () => gamePage(a), mechanics: mechanicsPage, mechanic: () => mechanicPage(a), review: LOCAL ? reviewPage : notFound }[page] || notFound)();
+    ({ '': home, create: LOCAL ? createPage : notFound, studio: () => studioPage(a), library: savedPage, standards: standardsPage, saved: savedPage, guides: guidesPage, guide: () => guidePage(a), week: () => weekPage(a), weeks: weeksPage, g: () => discGamePage(a), play: () => discoverPage(a), discover: () => discoverPage(a), make: makePage, creators: creatorsPage, c: () => creatorProfile(a), games: () => gamesPage(a), mcp: mcpPage, game: () => gamePage(a), mechanics: mechanicsPage, mechanic: () => mechanicPage(a), review: LOCAL ? reviewPage : notFound }[page] || notFound)();
     hydrate();
     window.scrollTo(0, back || 0);
     if (sub === 'kit') requestAnimationFrame(() => $('.kit')?.scrollIntoView({ block: 'start' }));
     if (sub === 'claim') { if (page === 'g' && G_BY[a]) claimModal(G_BY[a]._i); if (page === 'c' && crBySlug[a]) claimCreatorModal(a); }
     const ttl = page === 'game' && byId[a] ? byId[a].title : page === 'mechanic' && mechBySlug[a] ? mechBySlug[a].name : page === 'c' && crBySlug[a] ? crBySlug[a].handle : page === 'g' && G_BY[a] ? G_BY[a].title : page === 'week' && WEEKS.find(w => w.id === a) ? `Week of ${weekName(a)}` : page === 'guide' && GUIDES.find(x => x.slug === a) ? GUIDES.find(x => x.slug === a).title
-      : { studio: 'Studio', library: 'Library', standards: 'Quality standards', saved: 'Library', guides: 'Guides', weeks: 'Weekly picks', play: 'Play', discover: 'Play', make: 'Make', creators: 'Creators', mechanics: 'Game feel', games: 'Recipes', mcp: 'Connect MCP' }[page];
+      : { create: 'Create', studio: 'Studio', library: 'Library', standards: 'Quality standards', saved: 'Library', guides: 'Guides', weeks: 'Weekly picks', play: 'Play', discover: 'Play', make: 'Make', creators: 'Creators', mechanics: 'Game feel', games: 'Recipes', mcp: 'Connect MCP' }[page];
     document.title = ttl ? `${ttl} — Playbook` : 'Playbook — the home of vibe gaming';
     track('/' + path.replace(/^\//, ''), document.title);
     if (I18N) document.title = I18N.tr(document.title);
   }
   window.addEventListener('hashchange', route);
+  if (LOCAL) $('[data-nav="make"]')?.insertAdjacentHTML('beforebegin', '<a href="#/create" data-nav="create">Create</a>');   // the AI studio, local until stage 2
   I18N?.apply(document.body);
   $$('[data-lang]').forEach(b => { b.textContent = ZH ? 'EN' : '中文'; b.setAttribute('aria-label', ZH ? 'Switch to English' : '切换到中文'); });
   rollify(document.querySelector('#nav')); rollify(document.querySelector('.footer'));
