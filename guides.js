@@ -18,12 +18,12 @@ window.PB_GUIDES = [
    "https://wavedash.com/games/bay-ride",
    "https://wavedash.com/games/summer-cycle",
    "https://dgreenheck.github.io/tidewater/",
-   "https://meridian-desert.pages.dev/",
+   "https://boxdaveb.itch.io/meridian",
    "https://wildbrush.vercel.app/",
    "https://wavedash.com/games/pando-garden",
    "https://longsilence.anshu.dev/"
   ],
-  "updated": "2026-11-18"
+  "updated": "2026-11-24"
  },
  {
   "slug": "vibe-jam-2026-winners",
@@ -53,7 +53,7 @@ window.PB_GUIDES = [
    "https://playnapless.com",
    "https://kottbullar-metal.vercel.app"
   ],
-  "updated": "2026-11-18"
+  "updated": "2026-11-24"
  },
  {
   "slug": "best-vibe-coded-racing-games",
@@ -76,7 +76,7 @@ window.PB_GUIDES = [
    "https://rally-positano.sachasayan.com",
    "https://js-drift.fly.dev/"
   ],
-  "updated": "2026-11-18"
+  "updated": "2026-11-24"
  },
  {
   "slug": "made-with-claude-fable-5-2",
@@ -102,11 +102,11 @@ window.PB_GUIDES = [
    "https://what-the-water-keeps.vercel.app/",
    "https://catcopter.com/",
    "https://wavedash.com/games/robo-tennis",
-   "https://op7418.github.io/guizang-game-skill/",
-   "https://wquguru.github.io/fable52-fps-repro/",
-   "https://jakozaur.github.io/sf_bay_area_transit_fable_5_2_game/"
+   "https://lexisworld.org/",
+   "https://robinduckett.github.io/boo-mas/",
+   "https://op7418.github.io/guizang-game-skill/"
   ],
-  "updated": "2026-11-18"
+  "updated": "2026-11-24"
  },
  {
   "slug": "vibe-coded-games-for-your-phone",
@@ -136,6 +136,6 @@ window.PB_GUIDES = [
    "https://tailgrab.io/",
    "https://seiryu.miraicode.one/"
   ],
-  "updated": "2026-11-18"
+  "updated": "2026-11-24"
  }
 ];

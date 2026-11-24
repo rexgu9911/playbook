@@ -19,7 +19,7 @@ window.PB_DISCOVER = [
   "note_zh": "一个 3D 动作游戏，整个塞进一个 30 MB 的 HTML 文件，一个下午做完。",
   "cover": "",
   "embeddable": true,
-  "verified": "2026-11-16",
+  "verified": "2026-11-23",
   "touch": true
  },
  {
@@ -38,7 +38,7 @@ window.PB_DISCOVER = [
   "note_zh": "四个单文件 FPS 实验，复现“一句提示词做 FPS”的思路，模型、音效和贴图全部用代码生成；代码开源。",
   "cover": "",
   "embeddable": true,
-  "verified": "2026-11-16",
+  "verified": "2026-11-23",
   "touch": false,
   "code": "https://github.com/wquguru/fable52-fps-repro"
  },
@@ -58,7 +58,7 @@ window.PB_DISCOVER = [
   "note_zh": "一个可以走进去的厚涂油画场景，每帧约 150 万笔刷、200 帧每秒；代码开源。",
   "cover": "https://patch.gg/api/cards/block/blendi/oil-paint?v=dc461e8a06f4208d",
   "embeddable": true,
-  "verified": "2026-11-16",
+  "verified": "2026-11-23",
   "touch": ""
  },
  {
@@ -77,7 +77,7 @@ window.PB_DISCOVER = [
   "note_zh": "看起来像 Pong 的翻版，玩起来才知道不是；原本是一条玩笑帖，结果被到处转发。",
   "cover": "https://tennis.sixfingerpunch.com/og.jpg",
   "embeddable": true,
-  "verified": "2026-11-16",
+  "verified": "2026-11-23",
   "touch": false
  },
  {
@@ -96,7 +96,7 @@ window.PB_DISCOVER = [
   "note_zh": "骑着自行车穿过梵高的《星月夜》，收集光球，上传分数。",
   "cover": "https://starrynightrider.com/og-painting.jpg",
   "embeddable": false,
-  "verified": "2026-11-16",
+  "verified": "2026-11-23",
   "touch": true
  },
  {
@@ -115,7 +115,7 @@ window.PB_DISCOVER = [
   "note_zh": "写实开放世界曼哈顿的早期预览：可以开车、开直升机或步行，直接在 Chrome 里玩。",
   "cover": "https://nyc.somethingbig.ai/og.jpg",
   "embeddable": true,
-  "verified": "2026-11-16",
+  "verified": "2026-11-23",
   "touch": false
  },
  {
@@ -134,7 +134,7 @@ window.PB_DISCOVER = [
   "note_zh": "沉没大教堂里的一场魂系 Boss 单挑。",
   "cover": "https://evensong-phi.vercel.app/assets/share/card.jpg",
   "embeddable": true,
-  "verified": "2026-11-16",
+  "verified": "2026-11-23",
   "touch": false
  },
  {
@@ -153,7 +153,7 @@ window.PB_DISCOVER = [
   "note_zh": "动作游戏，所有动画、模型和敌人死亡特效都出自模型之手。",
   "cover": "",
   "embeddable": true,
-  "verified": "2026-11-16",
+  "verified": "2026-11-23",
   "touch": false
  },
  {
@@ -172,7 +172,7 @@ window.PB_DISCOVER = [
   "note_zh": "玩具屋顶球场上的单打匹克球，用 Unreal 5.9 制作，在 Wavedash 上直接用浏览器玩。",
   "cover": "https://uploads.wavedash.com/cdn-cgi/image/dpr=1,width=1200,height=675,fit=cover,format=jpeg/jd75665dn6y5z8t51f7xgv0yax8drs7x/j97f5z6pcezey4t7ww01qfq99h8j0x2n/assets/wideCover-1794389143866-b8fdb1be.webp",
   "embeddable": false,
-  "verified": "2026-11-16",
+  "verified": "2026-11-23",
   "touch": ""
  },
  {
@@ -191,7 +191,7 @@ window.PB_DISCOVER = [
   "note_zh": "第三人称 Boss 战动作 RPG：手持竹杖的熊猫武士，两种架势、完美闪避，还有一个神殿 Boss。",
   "cover": "https://d2ol7oe51mr4n9.cloudfront.net/user_3F618kxxnh0N3gYgUuqNnkKCcN5/336bdb4d-7c9b-49b0-be49-a8197b5bb68a.png",
   "embeddable": false,
-  "verified": "2026-11-16",
+  "verified": "2026-11-23",
   "touch": false
  },
  {
@@ -210,7 +210,7 @@ window.PB_DISCOVER = [
   "note_zh": "奇幻运输物流模拟，把物流做好就能打败邪恶；由一组 agent 边争论美术、世界观和笑话边做出来。",
   "cover": "https://dread-and-district.netlify.app/art/og.jpg",
   "embeddable": true,
-  "verified": "2026-11-16",
+  "verified": "2026-11-23",
   "touch": false
  },
  {
@@ -229,7 +229,7 @@ window.PB_DISCOVER = [
   "note_zh": "街坊 7v7 橄榄球，角色众多，有联赛成长，也能和朋友一起玩。",
   "cover": "https://yardclash.vercel.app/og.jpg",
   "embeddable": true,
-  "verified": "2026-11-16",
+  "verified": "2026-11-23",
   "touch": true
  },
  {
@@ -248,7 +248,7 @@ window.PB_DISCOVER = [
   "note_zh": "惊涛骇浪中的武装快艇竞速：四条赛道、三种船体，机枪、追踪火箭，外加五个 AI 对手。",
   "cover": "https://d2ol7oe51mr4n9.cloudfront.net/user_3F618kxxnh0N3gYgUuqNnkKCcN5/8ce9990b-16ca-4f8a-aa11-f2b95556583c.png",
   "embeddable": false,
-  "verified": "2026-11-16",
+  "verified": "2026-11-23",
   "touch": true
  },
  {
@@ -267,7 +267,7 @@ window.PB_DISCOVER = [
   "note_zh": "本周爆款：一句提示词做出的 FPS，场景是雨中的集装箱码头，所有模型、音效和贴图都由代码生成。耗时 8 小时，花了约 550 美元。",
   "cover": "",
   "embeddable": false,
-  "verified": "2026-11-16",
+  "verified": "2026-11-23",
   "touch": false
  },
  {
@@ -286,7 +286,7 @@ window.PB_DISCOVER = [
   "note_zh": "开放世界 3D 动作冒险，有神殿解谜、过场动画，以及与 Hollow King 的 3 幕 Boss 战。",
   "cover": "https://d2ol7oe51mr4n9.cloudfront.net/user_3F618kxxnh0N3gYgUuqNnkKCcN5/e1ebfae6-f9e6-4d7c-9ead-cfb52bb8df86.png",
   "embeddable": false,
-  "verified": "2026-11-16",
+  "verified": "2026-11-23",
   "touch": false
  },
  {
@@ -305,7 +305,7 @@ window.PB_DISCOVER = [
   "note_zh": "1v1 第一人称竞技场对决：每回合一条命，十二把黄铜与钢铁打造的武器，先赢五局者胜。",
   "cover": "https://gilt-and-gutter.vercel.app/assets/share/card.jpg",
   "embeddable": true,
-  "verified": "2026-11-16",
+  "verified": "2026-11-23",
   "touch": false
  },
  {
@@ -324,7 +324,7 @@ window.PB_DISCOVER = [
   "note_zh": "3D 卡丁车竞速，六名车手，有漂移、跳台和道具，支持单人和多人。",
   "cover": "",
   "embeddable": true,
-  "verified": "2026-11-16",
+  "verified": "2026-11-23",
   "touch": true
  },
  {
@@ -341,9 +341,9 @@ window.PB_DISCOVER = [
   "date": "2026-11-09",
   "note": "The whole planet as a destructible sandbox, with weather that matches the real Earth live.",
   "note_zh": "把整个地球做成可破坏的沙盒，天气与真实地球实时同步。",
-  "cover": "https://www.spawn.co/api/og/box?owner=mattshumer&game=earth&pic=shot&k=gplpt2",
+  "cover": "https://www.spawn.co/api/og/box?owner=mattshumer&game=earth&pic=shot&k=1xuw0mh",
   "embeddable": false,
-  "verified": "2026-11-16",
+  "verified": "2026-11-23",
   "touch": ""
  },
  {
@@ -362,7 +362,7 @@ window.PB_DISCOVER = [
   "note_zh": "提着灯笼乘船缓缓穿过八个梦境般的国度；Fable 5.2 发布后最早的演示之一。",
   "cover": "https://what-the-water-keeps.vercel.app/assets/share/card.jpg?v=74c13609",
   "embeddable": true,
-  "verified": "2026-11-16",
+  "verified": "2026-11-23",
   "touch": false
  },
  {
@@ -381,7 +381,7 @@ window.PB_DISCOVER = [
   "note_zh": "Cursor Vibe Jam 2026 银奖（10,000 美元）：在闹鬼的超市里以火箭般的速度疯狂购物，支持多人。",
   "cover": "https://fantos-megamart.vercel.app/fanto-thumbnail-b.png",
   "embeddable": true,
-  "verified": "2026-11-16",
+  "verified": "2026-11-23",
   "touch": false
  },
  {
@@ -400,7 +400,7 @@ window.PB_DISCOVER = [
   "note_zh": "Cursor Vibe Jam 2026 铜奖（5,000 美元），并获 Most Played 奖：类似 GeoGuessr 的游戏，看一张 360 度历史场景，同时猜出地点和年份。",
   "cover": "",
   "embeddable": false,
-  "verified": "2026-11-16",
+  "verified": "2026-11-23",
   "touch": true
  },
  {
@@ -419,7 +419,7 @@ window.PB_DISCOVER = [
   "note_zh": "Cursor Vibe Jam 2026 第 4 名，获 Best Art Direction 奖：第一人称多人太空狗斗。",
   "cover": "",
   "embeddable": false,
-  "verified": "2026-11-16",
+  "verified": "2026-11-23",
   "touch": true
  },
  {
@@ -438,7 +438,7 @@ window.PB_DISCOVER = [
   "note_zh": "Cursor Vibe Jam 2026 第 5 名，获 Most Original 奖：一个简短的 ASCII 恐怖故事，讲述独自深入南极冰层之下。",
   "cover": "https://haldane4.denisbondare.com/haldane4_preview_x.png",
   "embeddable": true,
-  "verified": "2026-11-16",
+  "verified": "2026-11-23",
   "touch": true
  },
  {
@@ -457,7 +457,7 @@ window.PB_DISCOVER = [
   "note_zh": "Cursor Vibe Jam 2026 第 6 名，获 Most Atmospheric 奖：随时加入的合作波次动作 Roguelike。",
   "cover": "",
   "embeddable": true,
-  "verified": "2026-11-13",
+  "verified": "2026-11-23",
   "touch": true
  },
  {
@@ -476,7 +476,7 @@ window.PB_DISCOVER = [
   "note_zh": "Cursor Vibe Jam 2026 第 7 名，获 Most Polished 奖：温馨的探索游戏，舞台是一颗即将迎来末日的小星球。",
   "cover": "https://tinyskies.vercel.app/social-card.png?v=2",
   "embeddable": true,
-  "verified": "2026-11-16",
+  "verified": "2026-11-23",
   "touch": true
  },
  {
@@ -495,7 +495,7 @@ window.PB_DISCOVER = [
   "note_zh": "Cursor Vibe Jam 2026 第 8 名（共 945 款参赛作品）：避开守卫的视线，一路爬向高塔。",
   "cover": "https://sunset-city.didof.dev/og.jpg",
   "embeddable": true,
-  "verified": "2026-11-16",
+  "verified": "2026-11-23",
   "touch": true
  },
  {
@@ -514,7 +514,7 @@ window.PB_DISCOVER = [
   "note_zh": "Cursor Vibe Jam 2026 第 9 名，获 Most Zen 奖：一款安静的盆景培育游戏。",
   "cover": "https://www.kansogame.com/kanso_snippet.png",
   "embeddable": true,
-  "verified": "2026-11-16",
+  "verified": "2026-11-23",
   "touch": true
  },
  {
@@ -533,7 +533,7 @@ window.PB_DISCOVER = [
   "note_zh": "Cursor Vibe Jam 2026 第 11 名（共 945 款参赛作品）：氛围感十足的汉堡制作模拟，靠做汉堡换取自由。",
   "cover": "https://bungr.net/embed.jpg",
   "embeddable": true,
-  "verified": "2026-11-16",
+  "verified": "2026-11-23",
   "touch": false
  },
  {
@@ -552,7 +552,7 @@ window.PB_DISCOVER = [
   "note_zh": "Cursor Vibe Jam 2026 第 12 名（共 945 款参赛作品）：俄克拉何马龙卷风来袭前，你只有五分钟赶到避难所。",
   "cover": "",
   "embeddable": true,
-  "verified": "2026-11-16",
+  "verified": "2026-11-23",
   "touch": true
  },
  {
@@ -571,7 +571,7 @@ window.PB_DISCOVER = [
   "note_zh": "Cursor Vibe Jam 2026 第 13 名：基于物理的多人格斗游戏，也被列入本届使用 Colyseus 的参赛作品名单。",
   "cover": "https://floppybrawler.vercel.app/ogicon.png",
   "embeddable": true,
-  "verified": "2026-11-16",
+  "verified": "2026-11-23",
   "touch": true
  },
  {
@@ -590,7 +590,7 @@ window.PB_DISCOVER = [
   "note_zh": "Cursor Vibe Jam 2026 第 14 名，获 Unique Concept 奖：在球体内部作战、重力不断变化的多人 FPS。",
   "cover": "https://www.playundersphere.com/thumbnail.png",
   "embeddable": true,
-  "verified": "2026-11-16",
+  "verified": "2026-11-23",
   "touch": true
  },
  {
@@ -609,7 +609,7 @@ window.PB_DISCOVER = [
   "note_zh": "Cursor Vibe Jam 2026 第 17 名，获 Most Unhinged 奖：和朋友一起荡来荡去，比谁对基础设施造成的破坏更大。",
   "cover": "",
   "embeddable": true,
-  "verified": "2026-11-16",
+  "verified": "2026-11-23",
   "touch": true
  },
  {
@@ -628,7 +628,7 @@ window.PB_DISCOVER = [
   "note_zh": "Cursor Vibe Jam 2026 第 19 名，获 Most Portal Transfers 奖：一款加载飞快的 2D 竞速。",
   "cover": "https://fullsend.game/og-image.jpg?v=c205df89b0eec8c1fb9d396e3c54e32ec945fd06",
   "embeddable": true,
-  "verified": "2026-11-16",
+  "verified": "2026-11-23",
   "touch": true
  },
  {
@@ -647,7 +647,7 @@ window.PB_DISCOVER = [
   "note_zh": "Cursor Vibe Jam 2026 第 20 名，获 Rage-Quit Award：一路爬到顶的平台跳跃。",
   "cover": "https://beetlejump.com/preview.png",
   "embeddable": true,
-  "verified": "2026-11-16",
+  "verified": "2026-11-23",
   "touch": true
  },
  {
@@ -666,7 +666,7 @@ window.PB_DISCOVER = [
   "note_zh": "Cursor Vibe Jam 2026 第 21 名：多人混战，一群幼儿在巨大的客厅里为抢电视遥控器大打出手。",
   "cover": "",
   "embeddable": true,
-  "verified": "2026-11-16",
+  "verified": "2026-11-23",
   "touch": true
  },
  {
@@ -685,7 +685,7 @@ window.PB_DISCOVER = [
   "note_zh": "Cursor Vibe Jam 2026 第 22 名，获 Funniest Game 奖：围绕死亡金属歌词的 mosh pit 生存游戏，歌词全由家具商品名组成。",
   "cover": "",
   "embeddable": true,
-  "verified": "2026-11-16",
+  "verified": "2026-11-23",
   "touch": true
  },
  {
@@ -704,7 +704,7 @@ window.PB_DISCOVER = [
   "note_zh": "Cursor Vibe Jam 2026 第 28 名，获 Most Cursed 奖：带点恐怖色彩的手术模拟，也是少数用 Godot 做的获奖作品之一。",
   "cover": "https://almostsurgery.ragim.dev/social-image-v2.jpg",
   "embeddable": true,
-  "verified": "2026-11-16",
+  "verified": "2026-11-23",
   "touch": true
  },
  {
@@ -723,7 +723,7 @@ window.PB_DISCOVER = [
   "note_zh": "无限世界的 MMO 生存游戏；在 Colyseus 盘点 Vibe Jam 2026 多人作品的文章中排名第一，该榜单按作者帖子的点赞数排序。",
   "cover": "https://hollowlands.andreelias.dev/assets/images/hollowlands-menu-screen.webp",
   "embeddable": true,
-  "verified": "2026-11-16",
+  "verified": "2026-11-23",
   "touch": true
  },
  {
@@ -742,7 +742,7 @@ window.PB_DISCOVER = [
   "note_zh": "2025 年首届 Vibe Coding Game Jam 金奖（10,000 美元），该届参赛作品超过 1,000 款：带节奏玩法的出租车驾驶游戏，舞台是 Vibe City。",
   "cover": "https://great-taxi-assignment.netlify.app/assets/social-preview.jpg",
   "embeddable": true,
-  "verified": "2026-11-16",
+  "verified": "2026-11-23",
   "touch": true
  },
  {
@@ -761,7 +761,7 @@ window.PB_DISCOVER = [
   "note_zh": "2025 Vibe Coding Game Jam 银奖（5,000 美元）：以日常手机和网页琐事为题材的快节奏小游戏合集。现在页面打开会先显示一个可跳过的宣传画面。",
   "cover": "https://vibeware.vercel.app/social-card.jpg",
   "embeddable": true,
-  "verified": "2026-11-16",
+  "verified": "2026-11-23",
   "touch": true
  },
  {
@@ -780,7 +780,7 @@ window.PB_DISCOVER = [
   "note_zh": "2025 年 jam 的轻松网页航海模拟，至今仍在更新，每天都有比赛；作者后来成了 2026 年 jam 的评委。",
   "cover": "https://vibesail.com/assets/thumbnail.png",
   "embeddable": false,
-  "verified": "2026-11-16",
+  "verified": "2026-11-23",
   "touch": false
  },
  {
@@ -799,7 +799,7 @@ window.PB_DISCOVER = [
   "note_zh": "参加 2025 年 jam 的空战飞行模拟；作者说完全用 AI 做成，大约用了 500 条提示词。",
   "cover": "",
   "embeddable": true,
-  "verified": "2026-11-16",
+  "verified": "2026-11-23",
   "touch": true
  },
  {
@@ -818,7 +818,7 @@ window.PB_DISCOVER = [
   "note_zh": "itch.io AI Browser Game Jam 2（共 42 款参赛作品）总排名第一：用 Box2D 做的弹珠台，有多球模式和 Boss 模式。",
   "cover": "https://img.itch.zone/aW1nLzI2OTY0OTMxLnBuZw==/original/waPVht.png",
   "embeddable": false,
-  "verified": "2026-11-16",
+  "verified": "2026-11-23",
   "touch": ""
  },
  {
@@ -837,7 +837,7 @@ window.PB_DISCOVER = [
   "note_zh": "itch.io AI Browser Game Jam 2 总排名第二：围绕一场不断升级的 Boss 战打造的纵版射击。",
   "cover": "https://img.itch.zone/aW1nLzI2OTczODMwLnBuZw==/original/PSyiVP.png",
   "embeddable": false,
-  "verified": "2026-11-16",
+  "verified": "2026-11-23",
   "touch": ""
  },
  {
@@ -856,7 +856,7 @@ window.PB_DISCOVER = [
   "note_zh": "掀起 vibe coding 游戏浪潮的多人飞行模拟；至今仍在运营，常被当作标杆案例引用。",
   "cover": "http://fly.pieter.com/assets/fly_social_image.png?1234",
   "embeddable": true,
-  "verified": "2026-11-16",
+  "verified": "2026-11-23",
   "touch": true
  },
  {
@@ -875,7 +875,7 @@ window.PB_DISCOVER = [
   "note_zh": "Three.js 作者与 Claude 合作，把 Quake 的共享版章节移植到了浏览器。",
   "cover": "",
   "embeddable": true,
-  "verified": "2026-11-16",
+  "verified": "2026-11-23",
   "touch": false
  },
  {
@@ -894,7 +894,7 @@ window.PB_DISCOVER = [
   "note_zh": "用 Three.js 移植的 Doom，最初是测试 Claude Code 自主 goal 命令的实验，后来打磨成可玩的正式版本。",
   "cover": "",
   "embeddable": true,
-  "verified": "2026-11-16",
+  "verified": "2026-11-23",
   "touch": false
  },
  {
@@ -913,7 +913,7 @@ window.PB_DISCOVER = [
   "note_zh": "带赛道编辑器、支持 VR/MR 的卡丁车竞速，源自 mrdoob 用 Three.js 移植的 Kenney 赛车套件的一个分支。",
   "cover": "https://cdn.dmnshd.gg/uploads/thumbnails/shed-racer.webp",
   "embeddable": false,
-  "verified": "2026-11-16",
+  "verified": "2026-11-23",
   "touch": true
  },
  {
@@ -932,7 +932,7 @@ window.PB_DISCOVER = [
   "note_zh": "擦洗污垢的清洁模拟，用提示词大约两天做完。",
   "cover": "",
   "embeddable": true,
-  "verified": "2026-11-16",
+  "verified": "2026-11-23",
   "touch": true
  },
  {
@@ -951,7 +951,7 @@ window.PB_DISCOVER = [
   "note_zh": "Ridge Racer 风格的霓虹漂移竞速，是 Fable 5 发布当周配合一套开源 game-director 技能做的测试。",
   "cover": "",
   "embeddable": true,
-  "verified": "2026-11-16",
+  "verified": "2026-11-23",
   "touch": true
  },
  {
@@ -970,7 +970,7 @@ window.PB_DISCOVER = [
   "note_zh": "太空狗斗游戏，3D 和音频素材由 AI 生成，由 Fable 5 制作。",
   "cover": "",
   "embeddable": true,
-  "verified": "2026-11-16",
+  "verified": "2026-11-23",
   "touch": false
  },
  {
@@ -989,7 +989,7 @@ window.PB_DISCOVER = [
   "note_zh": "竞技场对战游戏，用来证明这套 game-director 技能换成 Fable 以外的模型也能用。",
   "cover": "",
   "embeddable": true,
-  "verified": "2026-11-16",
+  "verified": "2026-11-23",
   "touch": true
  },
  {
@@ -1008,7 +1008,7 @@ window.PB_DISCOVER = [
   "note_zh": "开源的经典风格网页 MMORPG，可玩的基础一个周末就搭好了；被广泛报道，也引发不少争论。联网游玩需要注册账号，但也提供即开即玩的离线单人世界。",
   "cover": "",
   "embeddable": false,
-  "verified": "2026-11-16",
+  "verified": "2026-11-23",
   "touch": true,
   "code": "https://github.com/levy-street/world-of-claudecraft"
  },
@@ -1028,7 +1028,7 @@ window.PB_DISCOVER = [
   "note_zh": "战术 FPS，通过逆向 Matt Shumer 爆火的“Claude of Duty”演示背后的提示词做出来，没有用 subagent。",
   "cover": "",
   "embeddable": true,
-  "verified": "2026-11-16",
+  "verified": "2026-11-23",
   "touch": false
  },
  {
@@ -1047,7 +1047,7 @@ window.PB_DISCOVER = [
   "note_zh": "使命召唤风格的 FPS，用 Matt Shumer 公开的提示词跑了十小时生成，所有素材都用代码制作。",
   "cover": "",
   "embeddable": true,
-  "verified": "2026-11-16",
+  "verified": "2026-11-23",
   "touch": false
  },
  {
@@ -1066,7 +1066,7 @@ window.PB_DISCOVER = [
   "note_zh": "3D 浣熊盗窃游戏，一句提示词大约半小时一次生成，题材来自 2022 年的一个 GPT-3 游戏设定。",
   "cover": "",
   "embeddable": true,
-  "verified": "2026-11-16",
+  "verified": "2026-11-23",
   "touch": false
  },
  {
@@ -1085,7 +1085,7 @@ window.PB_DISCOVER = [
   "note_zh": "3D 程序化生成的 Roguelite，有 Boss、灾难事件和局外成长，零素材文件，作者是一位知名 AI YouTuber。",
   "cover": "https://the-librarian-2.mreflow.chatgpt.site/key-art-wolfe-v2.png",
   "embeddable": true,
-  "verified": "2026-11-16",
+  "verified": "2026-11-23",
   "touch": false
  },
  {
@@ -1104,7 +1104,7 @@ window.PB_DISCOVER = [
   "note_zh": "俯视角物理剑斗游戏，人负责设计和测试，代码全部由 Claude 编写。",
   "cover": "https://satsumacreative.tw/games/kw/cover-forge.jpg",
   "embeddable": false,
-  "verified": "2026-11-16",
+  "verified": "2026-11-23",
   "touch": true
  },
  {
@@ -1123,7 +1123,7 @@ window.PB_DISCOVER = [
   "note_zh": "历时两年的个人项目，在一个标签页里集合了六种模式（战役、动作关卡、技能养成、卡牌、5v5 竞技场、1v1 RTS）。开始前需要输入一个显示名称。",
   "cover": "https://danmanreal.com/realgrind/og-image.jpg",
   "embeddable": false,
-  "verified": "2026-11-16",
+  "verified": "2026-11-23",
   "touch": false
  },
  {
@@ -1142,7 +1142,7 @@ window.PB_DISCOVER = [
   "note_zh": "命令与征服风格的 RTS，支持在线和基于声音的多人对战，经过 12 轮迭代，代码几乎全由 agent 编写、基本未经审查。",
   "cover": "",
   "embeddable": true,
-  "verified": "2026-11-16",
+  "verified": "2026-11-23",
   "touch": true
  },
  {
@@ -1161,7 +1161,7 @@ window.PB_DISCOVER = [
   "note_zh": "一个小型 3D 冒险，完全在普通的 Claude 聊天应用里迭代了十一个版本，对话记录公开。",
   "cover": "",
   "embeddable": true,
-  "verified": "2026-11-16",
+  "verified": "2026-11-23",
   "touch": true
  },
  {
@@ -1180,7 +1180,7 @@ window.PB_DISCOVER = [
   "note_zh": "ChatGPT 对 Emberwick 实验的回应版本，直接从 ChatGPT 发布到公开网站。",
   "cover": "",
   "embeddable": true,
-  "verified": "2026-11-16",
+  "verified": "2026-11-23",
   "touch": true
  },
  {
@@ -1199,7 +1199,7 @@ window.PB_DISCOVER = [
   "note_zh": "温馨的农场游戏，根据书面规格由多 agent 协同的 Claude Code 流程做出来。",
   "cover": "",
   "embeddable": true,
-  "verified": "2026-11-16",
+  "verified": "2026-11-23",
   "touch": false
  },
  {
@@ -1218,7 +1218,7 @@ window.PB_DISCOVER = [
   "note_zh": "低多边形的 SimCity 2000 复刻，游戏逻辑翻译自反编译的原版，并与模拟器运行结果比对校验。",
   "cover": "",
   "embeddable": true,
-  "verified": "2026-11-16",
+  "verified": "2026-11-23",
   "touch": true
  },
  {
@@ -1237,7 +1237,7 @@ window.PB_DISCOVER = [
   "note_zh": "多人空战乱斗，螺旋桨猫咪在热带岛屿上空混战；在之前一个项目的基础上大约一周做完。",
   "cover": "https://catcopter.com/opengraph-image.png?opengraph-image.41b5mp_ao2j63.png",
   "embeddable": true,
-  "verified": "2026-11-16",
+  "verified": "2026-11-23",
   "touch": true
  },
  {
@@ -1256,7 +1256,7 @@ window.PB_DISCOVER = [
   "note_zh": "复古双翼机特技游戏（戳气球、俯冲穿过谷仓），和 Gemini 对话大约四小时做成。",
   "cover": "",
   "embeddable": true,
-  "verified": "2026-11-16",
+  "verified": "2026-11-23",
   "touch": true
  },
  {
@@ -1275,7 +1275,7 @@ window.PB_DISCOVER = [
   "note_zh": "坡道式无尽下滑，每天一条新赛道，体积不到 100 KB，没有广告也不用登录。",
   "cover": "https://hurtle.site/og.png",
   "embeddable": true,
-  "verified": "2026-11-16",
+  "verified": "2026-11-23",
   "touch": false
  },
  {
@@ -1294,7 +1294,7 @@ window.PB_DISCOVER = [
   "note_zh": "SimTower 风格的大楼建造游戏，你是选举产生的管理者，经济按合作社规则运转，而不是靠房东牟利。",
   "cover": "https://intergalacticrobots.app/skyline-coop/assets/og-image.png",
   "embeddable": false,
-  "verified": "2026-11-16",
+  "verified": "2026-11-23",
   "touch": false
  },
  {
@@ -1313,7 +1313,7 @@ window.PB_DISCOVER = [
   "note_zh": "一位父亲和孩子们一起做的网页多人 FPS，孩子们当产品经理；点对点 WebRTC，手机上也能玩。",
   "cover": "",
   "embeddable": true,
-  "verified": "2026-11-16",
+  "verified": "2026-11-23",
   "touch": true
  },
  {
@@ -1351,7 +1351,7 @@ window.PB_DISCOVER = [
   "note_zh": "魔兽争霸 2 风格的 RTS，9 个阵营、200 多种单位、战争迷雾、多人对战，还有可选的 LLM 指挥官，由一位非游戏开发者利用碎片时间做成。",
   "cover": "https://www.shardsofstone.com/og/index.jpg?v=1",
   "embeddable": false,
-  "verified": "2026-11-16",
+  "verified": "2026-11-23",
   "touch": true
  },
  {
@@ -1370,7 +1370,7 @@ window.PB_DISCOVER = [
   "note_zh": "佣兵团自走棋 Roguelike，带暗黑破坏神式的装备词缀，作者自称不会写代码。",
   "cover": "https://img.itch.zone/aW1nLzI1Njc2NDA2LnBuZw==/original/Lvot6l.png",
   "embeddable": false,
-  "verified": "2026-11-16",
+  "verified": "2026-11-23",
   "touch": ""
  },
  {
@@ -1389,7 +1389,7 @@ window.PB_DISCOVER = [
   "note_zh": "3D 国际象棋 Roguelike，灵感来自 Slay the Spire 和 Balatro，为 Vibe Jam 制作，作者全程没看代码。",
   "cover": "",
   "embeddable": true,
-  "verified": "2026-11-16",
+  "verified": "2026-11-23",
   "touch": true
  },
  {
@@ -1408,7 +1408,7 @@ window.PB_DISCOVER = [
   "note_zh": "带联网多人和排行榜的漂移游戏；作者的第一款 vibe coding 网页游戏。",
   "cover": "",
   "embeddable": false,
-  "verified": "2026-11-16",
+  "verified": "2026-11-23",
   "touch": false
  },
  {
@@ -1427,7 +1427,7 @@ window.PB_DISCOVER = [
   "note_zh": "开源多人海战，最多 16 人，有蓄力炮击、水雷和撞击；支持手机操作。",
   "cover": "",
   "embeddable": true,
-  "verified": "2026-11-16",
+  "verified": "2026-11-23",
   "touch": true
  },
  {
@@ -1446,7 +1446,7 @@ window.PB_DISCOVER = [
   "note_zh": "红色警戒风格的网页 RTS，约 10 MB，有基地建设、三个阵营和核武器超级武器。",
   "cover": "https://img.itch.zone/aW1nLzI5MDg0NjcwLmdpZg==/original/FZiEaA.gif",
   "embeddable": false,
-  "verified": "2026-11-16",
+  "verified": "2026-11-23",
   "touch": ""
  },
  {
@@ -1465,7 +1465,7 @@ window.PB_DISCOVER = [
   "note_zh": "复古塔防，作者说只向 Claude 免费版提了两次要求就做出来了。",
   "cover": "https://img.itch.zone/aW1nLzMxODg5NjkyLnBuZw==/original/%2BjEipg.png",
   "embeddable": false,
-  "verified": "2026-11-16",
+  "verified": "2026-11-23",
   "touch": ""
  },
  {
@@ -1484,7 +1484,7 @@ window.PB_DISCOVER = [
   "note_zh": "赛博朋克拉面店游戏，要为顾客平衡各种风味属性；为一个面条主题 jam 制作，作者此前没用过 Phaser。",
   "cover": "https://img.itch.zone/aW1nLzIwODk0ODYzLnBuZw==/original/Jy2vFX.png",
   "embeddable": false,
-  "verified": "2026-11-16",
+  "verified": "2026-11-23",
   "touch": ""
  },
  {
@@ -1503,7 +1503,7 @@ window.PB_DISCOVER = [
   "note_zh": "Cursor Vibe Jam 2026 金奖：PS1 画风的送餐跑腿，水豚开车穿城送外卖。",
   "cover": "https://capybara-vibejam26.leocoout.dev/images/capybara_thumbnail.png?v=1",
   "embeddable": true,
-  "verified": "2026-11-16",
+  "verified": "2026-11-23",
   "touch": true
  },
  {
@@ -1520,9 +1520,9 @@ window.PB_DISCOVER = [
   "date": "2026-04-10",
   "note": "Ranked 10th of 945 at Cursor Vibe Jam 2026. The invasion that never was.",
   "note_zh": "Cursor Vibe Jam 2026 第 10 名（共 945 款参赛作品）。一场从未发生过的入侵。",
-  "cover": "https://www.fieldofcommand.com/media/v1/brand/search-card-v4.jpg",
+  "cover": "https://www.fieldofcommand.com/media/v1/brand/search-card-v6.jpg",
   "embeddable": false,
-  "verified": "2026-11-16",
+  "verified": "2026-11-23",
   "touch": true
  },
  {
@@ -1541,7 +1541,7 @@ window.PB_DISCOVER = [
   "note_zh": "Cursor Vibe Jam 2026 第 16 名（共 945 款参赛作品）。PvP 竞技场射击。",
   "cover": "https://therite.magooney.org/twitter.jpg",
   "embeddable": true,
-  "verified": "2026-11-16",
+  "verified": "2026-11-23",
   "touch": true
  },
  {
@@ -1560,7 +1560,7 @@ window.PB_DISCOVER = [
   "note_zh": "Cursor Vibe Jam 2026 第 23 名（共 945 款参赛作品）。Blockzilla——Vampire Survivors 遇上 Rampage 的 Roguelike，你终于能扮演反派：一只摧毁纽约的巨型怪兽，并且……",
   "cover": "https://blockzilla.io/og-image.png",
   "embeddable": true,
-  "verified": "2026-11-16",
+  "verified": "2026-11-23",
   "touch": true
  },
  {
@@ -1579,7 +1579,7 @@ window.PB_DISCOVER = [
   "note_zh": "Cursor Vibe Jam 2026 第 24 名（共 945 款参赛作品）。驾驶无人机飞过可爱的像素世界，四处散播自由。",
   "cover": "https://cozydrone.com/images/social-card.png",
   "embeddable": true,
-  "verified": "2026-11-16",
+  "verified": "2026-11-23",
   "touch": true
  },
  {
@@ -1598,7 +1598,7 @@ window.PB_DISCOVER = [
   "note_zh": "Cursor Vibe Jam 2026 第 25 名（共 945 款参赛作品）。超现实的办公室射击：一个精疲力竭的打工人在崩塌的公司噩梦中一路杀出，赶在被系统吞噬前逃离。",
   "cover": "",
   "embeddable": true,
-  "verified": "2026-11-16",
+  "verified": "2026-11-23",
   "touch": true
  },
  {
@@ -1617,7 +1617,7 @@ window.PB_DISCOVER = [
   "note_zh": "Cursor Vibe Jam 2026 第 26 名（共 945 款参赛作品）。你和一群陌生人在尘土飞扬的竞技场里互相撞车，纯粹傻乐。",
   "cover": "https://demolition-derby.xyz/brand/og-image.png",
   "embeddable": false,
-  "verified": "2026-11-16",
+  "verified": "2026-11-23",
   "touch": true
  },
  {
@@ -1636,7 +1636,7 @@ window.PB_DISCOVER = [
   "note_zh": "Cursor Vibe Jam 2026 第 27 名（共 945 款参赛作品）。第一款专为陌生人打造的合作游戏。",
   "cover": "https://upwithastranger.com/og-image.jpg",
   "embeddable": true,
-  "verified": "2026-11-16",
+  "verified": "2026-11-23",
   "touch": true
  },
  {
@@ -1655,7 +1655,7 @@ window.PB_DISCOVER = [
   "note_zh": "Cursor Vibe Jam 2026 第 30 名（共 945 款参赛作品）。猫和老鼠版的搜刮撤离。",
   "cover": "https://mouse.ryanfitzpatrick.io/og-card.jpg",
   "embeddable": false,
-  "verified": "2026-11-16",
+  "verified": "2026-11-23",
   "touch": true
  },
  {
@@ -1674,7 +1674,7 @@ window.PB_DISCOVER = [
   "note_zh": "Cursor Vibe Jam 2026 第 31 名（共 945 款参赛作品）。选地球上任意一个地点降落，开车穿越一个鲜活的开放世界，有任务、隐藏宝藏和传奇座驾。",
   "cover": "",
   "embeddable": true,
-  "verified": "2026-11-16",
+  "verified": "2026-11-23",
   "touch": true
  },
  {
@@ -1693,7 +1693,7 @@ window.PB_DISCOVER = [
   "note_zh": "Cursor Vibe Jam 2026 第 32 名（共 945 款参赛作品）。高风险的黑客模拟器。",
   "cover": "",
   "embeddable": true,
-  "verified": "2026-11-16",
+  "verified": "2026-11-23",
   "touch": true
  },
  {
@@ -1712,7 +1712,7 @@ window.PB_DISCOVER = [
   "note_zh": "Cursor Vibe Jam 2026 第 33 名（共 945 款参赛作品）。Leviathan 是一款神话风格的“反向白鲸记”动作游戏，你扮演鲸鱼，从漆黑深海中升起，撞碎捕鲸船队、扯断鱼叉绳……",
   "cover": "https://leviathan.timothybauman.com/cover-image.png",
   "embeddable": true,
-  "verified": "2026-11-16",
+  "verified": "2026-11-23",
   "touch": false
  },
  {
@@ -1731,7 +1731,7 @@ window.PB_DISCOVER = [
   "note_zh": "Cursor Vibe Jam 2026 第 34 名（共 945 款参赛作品）。带潜行和 Roguelike 机制的下潜冒险。",
   "cover": "https://www.roguelith.com/social-preview.jpg",
   "embeddable": true,
-  "verified": "2026-11-16",
+  "verified": "2026-11-23",
   "touch": true
  },
  {
@@ -1750,7 +1750,7 @@ window.PB_DISCOVER = [
   "note_zh": "Cursor Vibe Jam 2026 第 35 名（共 945 款参赛作品）。与众神一同翱翔，在这款神话题材的空战格斗游戏中击落敌人。",
   "cover": "https://pub-1bcd105380b447799dc637211f8ceb8f.r2.dev/banner-aerobolt.png",
   "embeddable": true,
-  "verified": "2026-11-16",
+  "verified": "2026-11-23",
   "touch": true
  },
  {
@@ -1769,7 +1769,7 @@ window.PB_DISCOVER = [
   "note_zh": "Cursor Vibe Jam 2026 第 36 名（共 945 款参赛作品）。生化危机遇上 Vampire Survivors——第三人称打僵尸。",
   "cover": "",
   "embeddable": true,
-  "verified": "2026-11-16",
+  "verified": "2026-11-23",
   "touch": true
  },
  {
@@ -1788,7 +1788,7 @@ window.PB_DISCOVER = [
   "note_zh": "Cursor Vibe Jam 2026 第 38 名（共 945 款参赛作品）。Stoke Slopes 是一款多人街机滑雪游戏：玩家在山间小屋出生，选一条雪道，一路冲下山收集代币，并且比拼……",
   "cover": "",
   "embeddable": true,
-  "verified": "2026-11-16",
+  "verified": "2026-11-23",
   "touch": true
  },
  {
@@ -1826,7 +1826,7 @@ window.PB_DISCOVER = [
   "note_zh": "Cursor Vibe Jam 2026 第 41 名（共 945 款参赛作品）。Quadron X 是完整的 15 关 X-wing 狗斗战役，有配音剧情、360° 程序化驾驶舱，以及超过 200 段 Grok 生成的视频通讯。",
   "cover": "https://x.danielfarina.com/assets/og-preview.jpg",
   "embeddable": true,
-  "verified": "2026-11-16",
+  "verified": "2026-11-23",
   "touch": true
  },
  {
@@ -1845,7 +1845,7 @@ window.PB_DISCOVER = [
   "note_zh": "Cursor Vibe Jam 2026 第 42 名（共 945 款参赛作品）。在风景如画的 Positano 地区来一场赛车。",
   "cover": "",
   "embeddable": true,
-  "verified": "2026-11-16",
+  "verified": "2026-11-23",
   "touch": true
  },
  {
@@ -1864,7 +1864,7 @@ window.PB_DISCOVER = [
   "note_zh": "Cursor Vibe Jam 2026 第 43 名（共 945 款参赛作品）。史前竞技场游戏，黏土角色互相打斗、采集资源，比谁先把资源运回自己的洞穴。",
   "cover": "",
   "embeddable": true,
-  "verified": "2026-11-16",
+  "verified": "2026-11-23",
   "touch": true
  },
  {
@@ -1883,7 +1883,7 @@ window.PB_DISCOVER = [
   "note_zh": "Cursor Vibe Jam 2026 第 45 名（共 945 款参赛作品）。做一只苍蝇，尝尝粪便，别被拍扁。",
   "cover": "https://bolt.new/static/og_default.png",
   "embeddable": true,
-  "verified": "2026-11-16",
+  "verified": "2026-11-23",
   "touch": true
  },
  {
@@ -1902,7 +1902,7 @@ window.PB_DISCOVER = [
   "note_zh": "Cursor Vibe Jam 2026 第 46 名（共 945 款参赛作品）。多人生活模拟，在像素世界里种地、黑客、闯荡——每个选择都是 1 或 0。",
   "cover": "",
   "embeddable": true,
-  "verified": "2026-11-16",
+  "verified": "2026-11-23",
   "touch": true
  },
  {
@@ -1921,7 +1921,7 @@ window.PB_DISCOVER = [
   "note_zh": "Cursor Vibe Jam 2026 第 47 名（共 945 款参赛作品）。在月球上抵挡一波波僵尸 Levelsio 的进攻。",
   "cover": "",
   "embeddable": true,
-  "verified": "2026-11-16",
+  "verified": "2026-11-23",
   "touch": true
  },
  {
@@ -1940,7 +1940,7 @@ window.PB_DISCOVER = [
   "note_zh": "Cursor Vibe Jam 2026 第 48 名（共 945 款参赛作品）。采集花朵，安全返回蜂巢，别被愤怒的黄蜂干掉。",
   "cover": "",
   "embeddable": true,
-  "verified": "2026-11-16",
+  "verified": "2026-11-23",
   "touch": true
  },
  {
@@ -1959,7 +1959,7 @@ window.PB_DISCOVER = [
   "note_zh": "Cursor Vibe Jam 2026 第 49 名（共 945 款参赛作品）。一个月球殖民地有机体从受损的外星种子中长出，在尘土中蔓延器官，人类的机器则试图把它烧光。",
   "cover": "",
   "embeddable": true,
-  "verified": "2026-11-16",
+  "verified": "2026-11-23",
   "touch": false
  },
  {
@@ -1978,7 +1978,7 @@ window.PB_DISCOVER = [
   "note_zh": "Cursor Vibe Jam 2026 第 51 名（共 945 款参赛作品）。在一家破旧的多人汽车旅馆里抢先赚到 $10K——偷、骗或者赌，总有办法脱身。",
   "cover": "https://motel.floorsjs.com/og-image2.png",
   "embeddable": false,
-  "verified": "2026-11-16",
+  "verified": "2026-11-23",
   "touch": true
  },
  {
@@ -1997,7 +1997,7 @@ window.PB_DISCOVER = [
   "note_zh": "Cursor Vibe Jam 2026 第 52 名（共 945 款参赛作品）。快节奏的身法射击，围绕跑酷、枪战和泰坦级战斗打造。",
   "cover": "",
   "embeddable": true,
-  "verified": "2026-11-16",
+  "verified": "2026-11-23",
   "touch": true
  },
  {
@@ -2016,7 +2016,7 @@ window.PB_DISCOVER = [
   "note_zh": "Cursor Vibe Jam 2026 第 53 名（共 945 款参赛作品）。多人剑斗游戏——浏览器版 Chivalry。",
   "cover": "",
   "embeddable": true,
-  "verified": "2026-11-16",
+  "verified": "2026-11-23",
   "touch": true
  },
  {
@@ -2035,7 +2035,7 @@ window.PB_DISCOVER = [
   "note_zh": "Cursor Vibe Jam 2026 第 54 名（共 945 款参赛作品）。用鼠标和键盘玩桌上足球。",
   "cover": "http://kicker.nc.hn/og-image.jpg",
   "embeddable": true,
-  "verified": "2026-11-16",
+  "verified": "2026-11-23",
   "touch": false
  },
  {
@@ -2054,7 +2054,7 @@ window.PB_DISCOVER = [
   "note_zh": "Cursor Vibe Jam 2026 第 56 名（共 945 款参赛作品）。6 DoF 竞技场射击，美术、音效和音乐均为生成。",
   "cover": "https://banished.smsithlord.com/meta-image.jpg",
   "embeddable": true,
-  "verified": "2026-11-16",
+  "verified": "2026-11-23",
   "touch": true
  },
  {
@@ -2073,7 +2073,7 @@ window.PB_DISCOVER = [
   "note_zh": "Cursor Vibe Jam 2026 第 57 名（共 945 款参赛作品）。一封写给 80 年代地牢探索游戏的情书。",
   "cover": "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/52d1020b-6ba0-4ed5-bf60-87e01234a2d6/id-preview-2075b2a7--33a4f47a-5231-45a3-8e46-9d7c8eeb3d33.lovable.app-1775772695327.png",
   "embeddable": true,
-  "verified": "2026-11-16",
+  "verified": "2026-11-23",
   "touch": true
  },
  {
@@ -2092,7 +2092,7 @@ window.PB_DISCOVER = [
   "note_zh": "Cursor Vibe Jam 2026 第 59 名（共 945 款参赛作品）。轨道力学游戏，借助行星引力弹弓加速，逃离太阳系。",
   "cover": "https://slingshot.indiega.me/og-image.jpg",
   "embeddable": true,
-  "verified": "2026-11-16",
+  "verified": "2026-11-23",
   "touch": true
  },
  {
@@ -2111,7 +2111,7 @@ window.PB_DISCOVER = [
   "note_zh": "Cursor Vibe Jam 2026 第 60 名（共 945 款参赛作品）。选择你自己的冒险。",
   "cover": "https://videovideogames.com/opengraph-image?feddcdde297a35bb",
   "embeddable": true,
-  "verified": "2026-11-16",
+  "verified": "2026-11-23",
   "touch": true
  },
  {
@@ -2130,7 +2130,7 @@ window.PB_DISCOVER = [
   "note_zh": "Cursor Vibe Jam 2026 第 61 名（共 945 款参赛作品）。用 ThreeJS 做的快节奏 MMOTPS。",
   "cover": "",
   "embeddable": true,
-  "verified": "2026-11-16",
+  "verified": "2026-11-23",
   "touch": false
  },
  {
@@ -2149,7 +2149,7 @@ window.PB_DISCOVER = [
   "note_zh": "Cursor Vibe Jam 2026 第 62 名（共 945 款参赛作品）。一场“赛博奥德赛”：在数字虚空中冒险，寻找同伴。",
   "cover": "",
   "embeddable": true,
-  "verified": "2026-11-16",
+  "verified": "2026-11-23",
   "touch": false
  },
  {
@@ -2168,7 +2168,7 @@ window.PB_DISCOVER = [
   "note_zh": "Cursor Vibe Jam 2026 第 63 名（共 945 款参赛作品）。讽刺味十足、偏重剧情的幸存者类游戏，以知名科技大佬为玩家角色和 Boss。",
   "cover": "https://tech-bros-c98f2.web.app/assets/tech_bros_cover_art.png",
   "embeddable": true,
-  "verified": "2026-11-16",
+  "verified": "2026-11-23",
   "touch": false
  },
  {
@@ -2187,7 +2187,7 @@ window.PB_DISCOVER = [
   "note_zh": "Cursor Vibe Jam 2026 第 64 名（共 945 款参赛作品）。AI 数据中心版的 Kerbal Space Program：在太空建造你的 AI 数据中心。",
   "cover": "https://aispaceagency.com/opengraph.jpg",
   "embeddable": true,
-  "verified": "2026-11-16",
+  "verified": "2026-11-23",
   "touch": true
  },
  {
@@ -2206,7 +2206,7 @@ window.PB_DISCOVER = [
   "note_zh": "Cursor Vibe Jam 2026 第 65 名（共 945 款参赛作品）。AI 末日废墟中的回合制 RPG。",
   "cover": "https://reach-the-relay.pages.dev/og-image.png",
   "embeddable": true,
-  "verified": "2026-11-16",
+  "verified": "2026-11-23",
   "touch": true
  },
  {
@@ -2225,7 +2225,7 @@ window.PB_DISCOVER = [
   "note_zh": "Cursor Vibe Jam 2026 第 66 名（共 945 款参赛作品）。1v1 语音操控的 FPS 版大乱斗（Smash Bros）。",
   "cover": "",
   "embeddable": true,
-  "verified": "2026-11-16",
+  "verified": "2026-11-23",
   "touch": false
  },
  {
@@ -2244,7 +2244,7 @@ window.PB_DISCOVER = [
   "note_zh": "Cursor Vibe Jam 2026 第 67 名（共 945 款参赛作品）。太空生存。",
   "cover": "",
   "embeddable": true,
-  "verified": "2026-11-16",
+  "verified": "2026-11-23",
   "touch": true
  },
  {
@@ -2263,7 +2263,7 @@ window.PB_DISCOVER = [
   "note_zh": "Cursor Vibe Jam 2026 第 68 名（共 945 款参赛作品）。组建最强队伍、掌握羁绊，与其他真人玩家的幽灵对战，一路冲上榜首。",
   "cover": "",
   "embeddable": true,
-  "verified": "2026-11-16",
+  "verified": "2026-11-23",
   "touch": true
  },
  {
@@ -2282,7 +2282,7 @@ window.PB_DISCOVER = [
   "note_zh": "Cursor Vibe Jam 2026 第 69 名（共 945 款参赛作品）。一名特工被派去调查一起怪事，却很快发现自己身陷与外星人的战争，还必须与内心的……",
   "cover": "",
   "embeddable": true,
-  "verified": "2026-11-16",
+  "verified": "2026-11-23",
   "touch": false
  },
  {
@@ -2301,7 +2301,7 @@ window.PB_DISCOVER = [
   "note_zh": "Cursor Vibe Jam 2026 第 70 名（共 945 款参赛作品）。第一人称 Roguelike，在废弃空间站里一层甲板一层甲板地杀出去，搜刮武器和天赋，消灭一切……",
   "cover": "",
   "embeddable": true,
-  "verified": "2026-11-16",
+  "verified": "2026-11-23",
   "touch": true
  },
  {
@@ -2320,7 +2320,7 @@ window.PB_DISCOVER = [
   "note_zh": "Cursor Vibe Jam 2026 第 72 名（共 945 款参赛作品）。快节奏、混乱的多人生存对决，在不断坍塌的地块上翻滚、闪避，坚持到对手掉下去。",
   "cover": "https://ballfall.net/img/app-icon-1024.png",
   "embeddable": true,
-  "verified": "2026-11-16",
+  "verified": "2026-11-23",
   "touch": true
  },
  {
@@ -2339,7 +2339,7 @@ window.PB_DISCOVER = [
   "note_zh": "Cursor Vibe Jam 2026 第 73 名（共 945 款参赛作品）。打造你的咖啡馆帝国。",
   "cover": "",
   "embeddable": true,
-  "verified": "2026-11-16",
+  "verified": "2026-11-23",
   "touch": false
  },
  {
@@ -2358,7 +2358,7 @@ window.PB_DISCOVER = [
   "note_zh": "Cursor Vibe Jam 2026 第 74 名（共 945 款参赛作品）。在这款爽快的拆楼模拟器里挥击、砸碎、粉碎，一路冲上全球排行榜榜首。",
   "cover": "",
   "embeddable": true,
-  "verified": "2026-11-16",
+  "verified": "2026-11-23",
   "touch": true
  },
  {
@@ -2377,7 +2377,7 @@ window.PB_DISCOVER = [
   "note_zh": "Cursor Vibe Jam 2026 第 76 名（共 945 款参赛作品）。1691 年的 Port Royal，你是一名手持十种凶残武器的海盗，摧毁建筑、与 NPC 作战，把这座最富有的城市……",
   "cover": "",
   "embeddable": true,
-  "verified": "2026-11-16",
+  "verified": "2026-11-23",
   "touch": true
  },
  {
@@ -2396,7 +2396,7 @@ window.PB_DISCOVER = [
   "note_zh": "Cursor Vibe Jam 2026 第 77 名（共 945 款参赛作品）。免费的战术卡牌游戏，4,276 张独特卡牌、实时排位多人对战、6 级 AI——由一名开发者借助 AI 在不到 15 天内做完……",
   "cover": "",
   "embeddable": false,
-  "verified": "2026-11-16",
+  "verified": "2026-11-23",
   "touch": true
  },
  {
@@ -2415,7 +2415,7 @@ window.PB_DISCOVER = [
   "note_zh": "Cursor Vibe Jam 2026 第 79 名（共 945 款参赛作品）。温馨的开放世界单车冒险，骑行穿过 Q 版动漫城市——接任务、买单车。",
   "cover": "",
   "embeddable": true,
-  "verified": "2026-11-16",
+  "verified": "2026-11-23",
   "touch": true
  },
  {
@@ -2434,7 +2434,7 @@ window.PB_DISCOVER = [
   "note_zh": "Cursor Vibe Jam 2026 第 80 名（共 945 款参赛作品）。划进巨浪，在破碎的浪面上切出弧线，赶在浪花吞没你之前收集星星。",
   "cover": "",
   "embeddable": true,
-  "verified": "2026-11-16",
+  "verified": "2026-11-23",
   "touch": true
  },
  {
@@ -2453,7 +2453,7 @@ window.PB_DISCOVER = [
   "note_zh": "Cursor Vibe Jam 2026 第 81 名（共 945 款参赛作品）。末日废土风的点击冒险游戏，有多个结局。",
   "cover": "",
   "embeddable": true,
-  "verified": "2026-11-16",
+  "verified": "2026-11-23",
   "touch": true
  },
  {
@@ -2472,7 +2472,7 @@ window.PB_DISCOVER = [
   "note_zh": "Cursor Vibe Jam 2026 第 82 名（共 945 款参赛作品）。Ship It 是一款关于 game jam 的元游戏：点子太多、时间太少，但还是鼓起勇气交出点什么。",
   "cover": "",
   "embeddable": true,
-  "verified": "2026-11-16",
+  "verified": "2026-11-23",
   "touch": false
  },
  {
@@ -2491,7 +2491,7 @@ window.PB_DISCOVER = [
   "note_zh": "Cursor Vibe Jam 2026 第 83 名（共 945 款参赛作品）。撑过十波变异史莱姆，打败 Boss，再从一个显然不该信任的传送门逃出去。",
   "cover": "https://slimeescape.com/images/slime-escape-og.jpg",
   "embeddable": true,
-  "verified": "2026-11-16",
+  "verified": "2026-11-23",
   "touch": true
  },
  {
@@ -2510,7 +2510,7 @@ window.PB_DISCOVER = [
   "note_zh": "Cursor Vibe Jam 2026 第 85 名（共 945 款参赛作品）。后末日河内的双设备送货游戏：在电脑上用 WASD 走路，手机负责按钮、任务简报和倾斜操作。",
   "cover": "https://echo9.tonnoz.com/title-card.jpg",
   "embeddable": false,
-  "verified": "2026-11-16",
+  "verified": "2026-11-23",
   "touch": true
  },
  {
@@ -2529,7 +2529,7 @@ window.PB_DISCOVER = [
   "note_zh": "Cursor Vibe Jam 2026 第 86 名（共 945 款参赛作品）。偷游客的东西，看准目标拉屎，俯冲抢百吉饼。",
   "cover": "https://grand-theft-bagel.pages.dev/og.png",
   "embeddable": true,
-  "verified": "2026-11-16",
+  "verified": "2026-11-23",
   "touch": true
  },
  {
@@ -2548,7 +2548,7 @@ window.PB_DISCOVER = [
   "note_zh": "Cursor Vibe Jam 2026 第 87 名（共 945 款参赛作品）。在这款沉浸式操作系统模拟器中逃离失控 AI 的魔爪，赌上灵魂求生。",
   "cover": "",
   "embeddable": true,
-  "verified": "2026-11-16",
+  "verified": "2026-11-23",
   "touch": true
  },
  {
@@ -2567,7 +2567,7 @@ window.PB_DISCOVER = [
   "note_zh": "Cursor Vibe Jam 2026 第 88 名（共 945 款参赛作品）。一款可玩的写实拳击游戏，画面完全由 AI 视频渲染而成。",
   "cover": "",
   "embeddable": true,
-  "verified": "2026-11-16",
+  "verified": "2026-11-23",
   "touch": true
  },
  {
@@ -2586,7 +2586,7 @@ window.PB_DISCOVER = [
   "note_zh": "Cursor Vibe Jam 2026 第 89 名（共 945 款参赛作品）。恐怖 Roguelite 卡牌游戏，与一位堕落的安第斯丰饶之神讨价还价献上祭品。",
   "cover": "https://img.itch.zone/aW1nLzI2OTAyMDA4LnBuZw==/original/mbuhi5.png",
   "embeddable": false,
-  "verified": "2026-11-16",
+  "verified": "2026-11-23",
   "touch": ""
  },
  {
@@ -2605,7 +2605,7 @@ window.PB_DISCOVER = [
   "note_zh": "Cursor Vibe Jam 2026 第 90 名（共 945 款参赛作品）。Trianguloid 是一款 3D 竞技场射击——每个操作都为手感调校，每个字节都为体积优化——零外部素材，gzip 后约 350KB，流畅……",
   "cover": "",
   "embeddable": false,
-  "verified": "2026-11-16",
+  "verified": "2026-11-23",
   "touch": true
  },
  {
@@ -2624,7 +2624,7 @@ window.PB_DISCOVER = [
   "note_zh": "Cursor Vibe Jam 2026 第 91 名（共 945 款参赛作品）。终极无人机大战，全武器开放。",
   "cover": "",
   "embeddable": true,
-  "verified": "2026-11-16",
+  "verified": "2026-11-23",
   "touch": true
  },
  {
@@ -2643,7 +2643,7 @@ window.PB_DISCOVER = [
   "note_zh": "Cursor Vibe Jam 2026 第 93 名（共 945 款参赛作品）。Game Dev Story 遇上 MADtv。",
   "cover": "https://www.prime-time-panic.com/opengraph.jpg",
   "embeddable": true,
-  "verified": "2026-11-16",
+  "verified": "2026-11-23",
   "touch": true
  },
  {
@@ -2662,7 +2662,7 @@ window.PB_DISCOVER = [
   "note_zh": "Cursor Vibe Jam 2026 第 96 名（共 945 款参赛作品）。风格化近战 PvP。",
   "cover": "",
   "embeddable": true,
-  "verified": "2026-11-16",
+  "verified": "2026-11-23",
   "touch": false
  },
  {
@@ -2681,7 +2681,7 @@ window.PB_DISCOVER = [
   "note_zh": "Cursor Vibe Jam 2026 第 97 名（共 945 款参赛作品）。街机动作生存游戏，驾驶一艘巨型油轮穿越世界上最危险的海峡。",
   "cover": "https://hormuzy.com/og.png",
   "embeddable": true,
-  "verified": "2026-11-16",
+  "verified": "2026-11-23",
   "touch": true
  },
  {
@@ -2700,7 +2700,7 @@ window.PB_DISCOVER = [
   "note_zh": "Cursor Vibe Jam 2026 第 98 名（共 945 款参赛作品）。穿过关卡门，别被抓住，收集分数倍率，冲上排行榜。",
   "cover": "",
   "embeddable": false,
-  "verified": "2026-11-16",
+  "verified": "2026-11-23",
   "touch": true
  },
  {
@@ -2719,7 +2719,7 @@ window.PB_DISCOVER = [
   "note_zh": "Cursor Vibe Jam 2026 第 99 名（共 945 款参赛作品）。Hue 是一位无畏的年轻画家，穿越被毁、失去颜色的 Canvaria，找回被偷走的色彩，与贪食色彩的怪物战斗，让生机……",
   "cover": "",
   "embeddable": true,
-  "verified": "2026-11-16",
+  "verified": "2026-11-23",
   "touch": false
  },
  {
@@ -2738,7 +2738,7 @@ window.PB_DISCOVER = [
   "note_zh": "Cursor Vibe Jam 2026 第 100 名（共 945 款参赛作品）。Slay the Spire 遇上 Spore。",
   "cover": "",
   "embeddable": true,
-  "verified": "2026-11-16",
+  "verified": "2026-11-23",
   "touch": true
  },
  {
@@ -2757,7 +2757,7 @@ window.PB_DISCOVER = [
   "note_zh": "Cursor Vibe Jam 2026 第 101 名（共 945 款参赛作品）。给独立开发者玩的免费卡牌游戏。",
   "cover": "https://mrrbattle.com/images/social-sharing.png",
   "embeddable": true,
-  "verified": "2026-11-16",
+  "verified": "2026-11-23",
   "touch": true
  },
  {
@@ -2776,7 +2776,7 @@ window.PB_DISCOVER = [
   "note_zh": "Cursor Vibe Jam 2026 第 103 名（共 945 款参赛作品）。在真实地点里打 FPS——一款建在高斯泼溅（Gaussian Splat）扫描场景里的网页游戏。",
   "cover": "",
   "embeddable": false,
-  "verified": "2026-11-16",
+  "verified": "2026-11-23",
   "touch": true
  },
  {
@@ -2795,7 +2795,7 @@ window.PB_DISCOVER = [
   "note_zh": "Cursor Vibe Jam 2026 第 104 名（共 945 款参赛作品）。像素风节拍制作 RPG，在世界各地的城市制作真正的节拍，接受当地乐评人点评，赢取每座城市的标志性……",
   "cover": "",
   "embeddable": true,
-  "verified": "2026-11-16",
+  "verified": "2026-11-23",
   "touch": true
  },
  {
@@ -2814,7 +2814,7 @@ window.PB_DISCOVER = [
   "note_zh": "Cursor Vibe Jam 2026 第 105 名（共 945 款参赛作品）。如果宝可梦和数独生了个孩子。",
   "cover": "",
   "embeddable": true,
-  "verified": "2026-11-16",
+  "verified": "2026-11-23",
   "touch": true
  },
  {
@@ -2833,7 +2833,7 @@ window.PB_DISCOVER = [
   "note_zh": "Cursor Vibe Jam 2026 第 106 名（共 945 款参赛作品）。硬核 ASCII Roguelike，重玩性极高，内容量巨大。",
   "cover": "",
   "embeddable": true,
-  "verified": "2026-11-16",
+  "verified": "2026-11-23",
   "touch": false
  },
  {
@@ -2852,7 +2852,7 @@ window.PB_DISCOVER = [
   "note_zh": "Cursor Vibe Jam 2026 第 107 名（共 945 款参赛作品）。Ship Snatch 是一款网页俯视角六边形塔防兼基地建设游戏，带黏土动画海盗风——一格一格扩张你的群岛，放置……",
   "cover": "https://shipsnatch.com/images/landing/social.jpg",
   "embeddable": true,
-  "verified": "2026-11-16",
+  "verified": "2026-11-23",
   "touch": true
  },
  {
@@ -2871,7 +2871,7 @@ window.PB_DISCOVER = [
   "note_zh": "Cursor Vibe Jam 2026 第 108 名（共 945 款参赛作品）。每日符号解码谜题，每个符号都代表一条固定指令——学会这门语言，破解短语。",
   "cover": "https://symblify.app/og-image.jpg",
   "embeddable": true,
-  "verified": "2026-11-16",
+  "verified": "2026-11-23",
   "touch": true
  },
  {
@@ -2890,7 +2890,7 @@ window.PB_DISCOVER = [
   "note_zh": "Cursor Vibe Jam 2026 第 109 名（共 945 款参赛作品）。快节奏的策略型 2 人卡牌对战，在 3×5 棋盘上进行，小胜积累成势，每一步都会改变局面。",
   "cover": "https://www.smashandclash.in/cover.jpg",
   "embeddable": false,
-  "verified": "2026-11-16",
+  "verified": "2026-11-23",
   "touch": true
  },
  {
@@ -2909,7 +2909,7 @@ window.PB_DISCOVER = [
   "note_zh": "Cursor Vibe Jam 2026 第 110 名（共 945 款参赛作品）。保卫天空。",
   "cover": "https://media.base44.com/images/public/69b8a15550d3ca1718a64908/afaf0b9be_1000481731.jpg/v1/fill/w_1200,h_630/afaf0b9be_1000481731.jpg",
   "embeddable": false,
-  "verified": "2026-11-16",
+  "verified": "2026-11-23",
   "touch": true
  },
  {
@@ -2928,7 +2928,7 @@ window.PB_DISCOVER = [
   "note_zh": "Cursor Vibe Jam 2026 第 111 名（共 945 款参赛作品）。竞技多人游戏，在神经网络内部争夺影响力。",
   "cover": "https://nodecontrol.gg/keyart-branded.png",
   "embeddable": true,
-  "verified": "2026-11-16",
+  "verified": "2026-11-23",
   "touch": true
  },
  {
@@ -2947,7 +2947,7 @@ window.PB_DISCOVER = [
   "note_zh": "Cursor Vibe Jam 2026 第 112 名（共 945 款参赛作品）。别再给语言模型写提示词了，来当一个语言模型吧。",
   "cover": "",
   "embeddable": false,
-  "verified": "2026-11-16",
+  "verified": "2026-11-23",
   "touch": true
  },
  {
@@ -2964,9 +2964,9 @@ window.PB_DISCOVER = [
   "date": "2026-04-30",
   "note": "Ranked 116th of 945 at Cursor Vibe Jam 2026. Hamsters go boom.",
   "note_zh": "Cursor Vibe Jam 2026 第 116 名（共 945 款参赛作品）。仓鼠会爆炸。",
-  "cover": "https://pzlgames.com/shared/assets/images/og-new.png",
+  "cover": "https://pzlgames.com/shared/assets/images/og-explodinghamsters.png",
   "embeddable": true,
-  "verified": "2026-11-16",
+  "verified": "2026-11-23",
   "touch": true
  },
  {
@@ -2985,7 +2985,7 @@ window.PB_DISCOVER = [
   "note_zh": "Cursor Vibe Jam 2026 第 117 名（共 945 款参赛作品）。多人巫师竞技场，用提示词让 AI 生成法术，以混乱的物理魔法战斗。",
   "cover": "",
   "embeddable": true,
-  "verified": "2026-11-16",
+  "verified": "2026-11-23",
   "touch": true
  },
  {
@@ -3004,7 +3004,7 @@ window.PB_DISCOVER = [
   "note_zh": "Cursor Vibe Jam 2026 第 119 名（共 945 款参赛作品）。同时操控两个量子实体穿梭于平行维度：引导它们都抵达各自的逃生传送门，同时躲避 Void Agents，你的 Echo……",
   "cover": "",
   "embeddable": true,
-  "verified": "2026-11-16",
+  "verified": "2026-11-23",
   "touch": true
  },
  {
@@ -3023,7 +3023,7 @@ window.PB_DISCOVER = [
   "note_zh": "网页里的随身摄像头视角战术 FPS，有电脑对手、点对点联机和两张地图；用纯 three.js 写成，Claude Code 帮了大忙。",
   "cover": "https://elitewarfare.fun/og-image.jpg",
   "embeddable": true,
-  "verified": "2026-11-16",
+  "verified": "2026-11-23",
   "touch": false
  },
  {
@@ -3042,7 +3042,7 @@ window.PB_DISCOVER = [
   "note_zh": "一款发生在模拟的 90 年代末电脑桌面里的游戏；最好用电脑玩。相当一部分代码由 Claude Code 编写。",
   "cover": "https://makeworks98.com/og-image.png",
   "embeddable": true,
-  "verified": "2026-11-16",
+  "verified": "2026-11-23",
   "touch": false
  },
  {
@@ -3061,7 +3061,7 @@ window.PB_DISCOVER = [
   "note_zh": "每日游戏：猜大多数人会怎么回答，或者猜没人会说的答案。大部分代码用 AI 工具写成；设计和美术由人完成。",
   "cover": "https://wonderhop.io/og/en.png?v=2",
   "embeddable": true,
-  "verified": "2026-11-16",
+  "verified": "2026-11-23",
   "touch": true
  },
  {
@@ -3080,7 +3080,7 @@ window.PB_DISCOVER = [
   "note_zh": "在线多人游戏，把房间链接发给朋友就能一起玩；用 Claude Code 两天做完。",
   "cover": "https://pawnrush.xiaohan.dev/og-image.png",
   "embeddable": true,
-  "verified": "2026-11-16",
+  "verified": "2026-11-23",
   "touch": false
  },
  {
@@ -3099,7 +3099,7 @@ window.PB_DISCOVER = [
   "note_zh": "每日旋转拼管道谜题，从不需要靠猜；几乎所有代码都由 Claude 实现。",
   "cover": "https://daily-pipes.com/og-image-v2.png",
   "embeddable": true,
-  "verified": "2026-11-16",
+  "verified": "2026-11-23",
   "touch": false
  },
  {
@@ -3118,7 +3118,7 @@ window.PB_DISCOVER = [
   "note_zh": "几乎不可能通关的每日问答：答错一题或超时一次就出局。用 Claude Code 制作。",
   "cover": "https://outclocked.com/og.png",
   "embeddable": false,
-  "verified": "2026-11-16",
+  "verified": "2026-11-23",
   "touch": false
  },
  {
@@ -3137,7 +3137,7 @@ window.PB_DISCOVER = [
   "note_zh": "你迷失在银河系某处，要靠观察天空中的脉冲星导航回到地球；作者用 vibe coding 做成。",
   "cover": "",
   "embeddable": true,
-  "verified": "2026-11-16",
+  "verified": "2026-11-23",
   "touch": false
  },
  {
@@ -3156,7 +3156,7 @@ window.PB_DISCOVER = [
   "note_zh": "Common Crawl 团队做的像素平台跳跃，主角是他们的网络爬虫 CCBot；制作名单里把 Claude 也列为制作者之一。",
   "cover": "https://game.commoncrawl.org/og-image.png",
   "embeddable": true,
-  "verified": "2026-11-16",
+  "verified": "2026-11-23",
   "touch": true
  },
  {
@@ -3175,7 +3175,7 @@ window.PB_DISCOVER = [
   "note_zh": "基于真实地图数据的体素湾区：规划线路、挑选盾构机、砍掉繁文缛节，用波兰的价格修公共交通。用 Fable 5.2 和几条提示词做成。",
   "cover": "",
   "embeddable": true,
-  "verified": "2026-11-16",
+  "verified": "2026-11-23",
   "touch": true
  },
  {
@@ -3194,7 +3194,7 @@ window.PB_DISCOVER = [
   "note_zh": "在一款教育向晶体学游戏里培育你自己的明矾晶体，支持四种语言；用 Fable 5.2 制作。",
   "cover": "",
   "embeddable": true,
-  "verified": "2026-11-16",
+  "verified": "2026-11-23",
   "touch": false
  },
  {
@@ -3213,7 +3213,7 @@ window.PB_DISCOVER = [
   "note_zh": "航空管制模拟，获 2025 Vibe Coding Game Jam 第 3 名（2,500 美元），该届参赛作品 1,000 多款；网页版“Classic”免费。",
   "cover": "",
   "embeddable": true,
-  "verified": "2026-11-16",
+  "verified": "2026-11-23",
   "touch": true
  },
  {
@@ -3232,7 +3232,7 @@ window.PB_DISCOVER = [
   "note_zh": "作者为侄子做的清版动作游戏；相关文章在 Hacker News 上拿到 504 分。",
   "cover": "",
   "embeddable": true,
-  "verified": "2026-11-16",
+  "verified": "2026-11-23",
   "touch": true
  },
  {
@@ -3251,7 +3251,7 @@ window.PB_DISCOVER = [
   "note_zh": "作者构想了多年的牧羊犬赶羊游戏，全部写在一个 2,319 行的 index.html 里；Hacker News 186 分。",
   "cover": "",
   "embeddable": true,
-  "verified": "2026-11-16",
+  "verified": "2026-11-23",
   "touch": false
  },
  {
@@ -3270,7 +3270,7 @@ window.PB_DISCOVER = [
   "note_zh": "一位化学工程师为了向孩子解释自己的工作而做的五分钟炼油厂游戏；Show HN 127 分。",
   "cover": "https://www.fuelingcuriosity.com/social-preview.jpg",
   "embeddable": true,
-  "verified": "2026-11-16",
+  "verified": "2026-11-23",
   "touch": true
  },
  {
@@ -3289,7 +3289,7 @@ window.PB_DISCOVER = [
   "note_zh": "每日调查竞猜谜题，今天的答案来自昨天的玩家，作者不是开发者。",
   "cover": "",
   "embeddable": true,
-  "verified": "2026-11-16",
+  "verified": "2026-11-23",
   "touch": true
  },
  {
@@ -3308,7 +3308,7 @@ window.PB_DISCOVER = [
   "note_zh": "和孩子们一起做的开放世界冒险，武器是一支巨大的画笔；帖子获得约 4.6K 赞、1.2M 次浏览。",
   "cover": "",
   "embeddable": true,
-  "verified": "2026-11-16",
+  "verified": "2026-11-23",
   "touch": false
  },
  {
@@ -3327,7 +3327,7 @@ window.PB_DISCOVER = [
   "note_zh": "星舰探索游戏，80 多颗行星可以降落探索；帖子获得约 4K 赞、420K 次浏览。",
   "cover": "https://tesana.com/cdn-cgi/image/width=1200,height=630,fit=cover,format=jpeg,quality=85/https://cdn.tesana.ai/one-tap/media/game_posters/2026/09/27/game-20260927-b815915b-poster-shot.jpg",
   "embeddable": false,
-  "verified": "2026-11-16",
+  "verified": "2026-11-23",
   "touch": ""
  },
  {
@@ -3346,7 +3346,7 @@ window.PB_DISCOVER = [
   "note_zh": "多人割草模拟；发布帖获得约 3.9K 赞、约 197K 次浏览。",
   "cover": "",
   "embeddable": true,
-  "verified": "2026-11-16",
+  "verified": "2026-11-23",
   "touch": false
  },
  {
@@ -3365,7 +3365,7 @@ window.PB_DISCOVER = [
   "note_zh": "Homeworld 风格的太空 RTS，没有外部素材；帖子获得约 2.5K 赞、223K 次浏览。",
   "cover": "https://e01.ai/starfall/og.jpg",
   "embeddable": true,
-  "verified": "2026-11-16",
+  "verified": "2026-11-23",
   "touch": false
  },
  {
@@ -3384,7 +3384,7 @@ window.PB_DISCOVER = [
   "note_zh": "机器人对决游戏，有冲刺、追踪弹和激光刃；帖子获得约 1.9K 赞、430K 次浏览。",
   "cover": "",
   "embeddable": true,
-  "verified": "2026-11-16",
+  "verified": "2026-11-23",
   "touch": true
  },
  {
@@ -3403,7 +3403,7 @@ window.PB_DISCOVER = [
   "note_zh": "单人网页 RTS，大约 40 条提示词做完，包括全部素材；约 1.3K 赞。",
   "cover": "https://dust-front.mustafaakin.dev/share-card.jpg",
   "embeddable": false,
-  "verified": "2026-11-16",
+  "verified": "2026-11-23",
   "touch": false
  },
  {
@@ -3422,7 +3422,7 @@ window.PB_DISCOVER = [
   "note_zh": "由 agent 从头到尾做出的开放世界网页游戏，花了约 2,000 美元的额度；Perplexity CEO 转发分享（约 890 赞）。",
   "cover": "",
   "embeddable": false,
-  "verified": "2026-11-16",
+  "verified": "2026-11-23",
   "touch": false
  },
  {
@@ -3441,7 +3441,7 @@ window.PB_DISCOVER = [
   "note_zh": "温馨的海岛钓鱼游戏，带 FFT 海洋，由一位知名 Three.js 开发者基于原生 WebGPU 打造；约 890 赞。",
   "cover": "",
   "embeddable": true,
-  "verified": "2026-11-16",
+  "verified": "2026-11-23",
   "touch": false
  },
  {
@@ -3460,7 +3460,7 @@ window.PB_DISCOVER = [
   "note_zh": "太空探索游戏，代码开源，借助一个对抗式评审 subagent“几乎完全放手”做成；约 680 赞。",
   "cover": "https://longsilence.anshu.dev/og.jpg",
   "embeddable": true,
-  "verified": "2026-11-16",
+  "verified": "2026-11-23",
   "touch": true
  },
  {
@@ -3479,7 +3479,7 @@ window.PB_DISCOVER = [
   "note_zh": "零素材的开放世界 RPG，有生物和 Boss 战，全部由代码生成；约 660 赞。",
   "cover": "https://www.arkenfall.site/og.png",
   "embeddable": true,
-  "verified": "2026-11-16",
+  "verified": "2026-11-23",
   "touch": false
  },
  {
@@ -3498,7 +3498,7 @@ window.PB_DISCOVER = [
   "note_zh": "多人滑板游戏，作者估计原本要做一年，结果 9 天就完成了；约 590 赞。",
   "cover": "https://freeskater.io/og.jpg?v=5",
   "embeddable": true,
-  "verified": "2026-11-16",
+  "verified": "2026-11-23",
   "touch": true
  },
  {
@@ -3517,7 +3517,7 @@ window.PB_DISCOVER = [
   "note_zh": "在清澈山涧中看鱼钓鱼的游戏，不到一天做完；约 280 赞。",
   "cover": "https://seiryu.miraicode.one/__manus/checkpoint-screenshot.png?v=e4eef52d&badge=0",
   "embeddable": true,
-  "verified": "2026-11-16",
+  "verified": "2026-11-23",
   "touch": true
  },
  {
@@ -3536,7 +3536,7 @@ window.PB_DISCOVER = [
   "note_zh": "氛围感平台跳跃，有一段巨型 Boss 追逐戏；约 240 赞、60K 次浏览。",
   "cover": "https://tidebreaker.vercel.app/assets/cover.jpg",
   "embeddable": false,
-  "verified": "2026-11-16",
+  "verified": "2026-11-23",
   "touch": true
  },
  {
@@ -3555,7 +3555,7 @@ window.PB_DISCOVER = [
   "note_zh": "讽刺飞行游戏，在玩具版旧金山上空击落拉着创业公司广告横幅的飞机；24 小时做完。",
   "cover": "https://slop.inc/assets/8845c1b17855fc43/social/down-round.jpg",
   "embeddable": false,
-  "verified": "2026-11-16",
+  "verified": "2026-11-23",
   "touch": true
  },
  {
@@ -3574,7 +3574,7 @@ window.PB_DISCOVER = [
   "note_zh": "后印象派主题的 5v5 FPS，用 6 小时做成，以 MIT 许可证发布。",
   "cover": "",
   "embeddable": true,
-  "verified": "2026-11-16",
+  "verified": "2026-11-23",
   "touch": false
  },
  {
@@ -3593,7 +3593,7 @@ window.PB_DISCOVER = [
   "note_zh": "扮演 AI 创业者的 Roguelike 卡组构筑游戏，3 个阶段外加 Boss，2 小时做完。",
   "cover": "",
   "embeddable": true,
-  "verified": "2026-11-16",
+  "verified": "2026-11-23",
   "touch": false
  },
  {
@@ -3612,7 +3612,7 @@ window.PB_DISCOVER = [
   "note_zh": "多人养羊模拟，作者说 agent 一夜之间大约两小时就做好了，服务器也包括在内。",
   "cover": "",
   "embeddable": false,
-  "verified": "2026-11-16",
+  "verified": "2026-11-23",
   "touch": true
  },
  {
@@ -3631,7 +3631,7 @@ window.PB_DISCOVER = [
   "note_zh": "受 Journey 启发的沙漠演示，有程序化沙丘、滑沙和滑翔；帖子获得约 69K 次浏览。",
   "cover": "",
   "embeddable": true,
-  "verified": "2026-11-16",
+  "verified": "2026-11-23",
   "touch": false
  },
  {
@@ -3650,7 +3650,7 @@ window.PB_DISCOVER = [
   "note_zh": "霓虹 80 年代风格的乱斗游戏，靠画出形状来战斗，和作者自己的节目联动；每期节目都会更新新关卡。",
   "cover": "https://junkyardking.io/og.jpg",
   "embeddable": false,
-  "verified": "2026-11-16",
+  "verified": "2026-11-23",
   "touch": false
  },
  {
@@ -3669,7 +3669,7 @@ window.PB_DISCOVER = [
   "note_zh": "Lovis Odin“Video2Game”系列中的合作游戏，这个系列把 AI 生成的游戏视频变成了可玩的游戏；帖子获得约 2K 赞。",
   "cover": "",
   "embeddable": true,
-  "verified": "2026-11-16",
+  "verified": "2026-11-23",
   "touch": false
  },
  {
@@ -3707,7 +3707,7 @@ window.PB_DISCOVER = [
   "note_zh": "丛林河流探索游戏，作者也参加了 Vibe Jam 2026（作品 Ride Tales）。",
   "cover": "",
   "embeddable": true,
-  "verified": "2026-11-16",
+  "verified": "2026-11-23",
   "touch": false
  },
  {
@@ -3726,7 +3726,7 @@ window.PB_DISCOVER = [
   "note_zh": "第一人称 3D 平台跳跃：一只青蛙在光鲜的 Frutiger Aero 风格世界里，跳得高到离谱，跨越浮空岛屿去营救被偷走的蝌蚪。据作者说，代码由 Claude 完成，美术由 Gemini 完成。",
   "cover": "https://uploads.wavedash.com/cdn-cgi/image/dpr=1,width=1200,height=675,fit=cover,format=jpeg/jd746kyb8c2rwy49489shessnx858aay/j9763v4wwpghkwpqn6vsna6drx8582yb/assets/wideCover-1787181146854-9b93c420.webp",
   "embeddable": false,
-  "verified": "2026-11-16",
+  "verified": "2026-11-23",
   "touch": ""
  },
  {
@@ -3745,7 +3745,7 @@ window.PB_DISCOVER = [
   "note_zh": "顺着绞盘缆绳攀爬一台死去的巨型引擎的竖井，把最后一点余烬送回核心。为 Gamedev.js Jam 2026 制作，完全用手机上的 Claude Code 做成。",
   "cover": "https://uploads.wavedash.com/cdn-cgi/image/dpr=1,width=1200,height=675,fit=cover,format=jpeg/jd7efsz5ytv0804z9yz2twqc5185gjyy/j9777fdp8vdahvych0r9wft2an85g7d7/assets/wideCover-agent-1787055490531-2f6d8fb6.webp",
   "embeddable": false,
-  "verified": "2026-11-16",
+  "verified": "2026-11-23",
   "touch": true
  },
  {
@@ -3764,7 +3764,7 @@ window.PB_DISCOVER = [
   "note_zh": "扮演 Robo Open 上的机器人 SPARK，发球、对拉、扣杀，击败 CPU。据作者说，制作时以 Grok、Fable 和 GPT 为 AI 协作者。",
   "cover": "https://uploads.wavedash.com/cdn-cgi/image/dpr=1,width=1200,height=675,fit=cover,format=jpeg/jd75665dn6y5z8t51f7xgv0yax8drs7x/j97dhnfehq24y10ehfcppvp3b18dscam/assets/wideCover-1788526913479-8ce83b4d.webp",
   "embeddable": false,
-  "verified": "2026-11-16",
+  "verified": "2026-11-23",
   "touch": ""
  },
  {
@@ -3783,7 +3783,7 @@ window.PB_DISCOVER = [
   "note_zh": "选择 Rocco 或 Pip，在三条丛林赛道中跳跃、翻滚、扔木桶，一款免费的 2D 平台冒险。据作者说用 GPT 制作。",
   "cover": "https://uploads.wavedash.com/cdn-cgi/image/dpr=1,width=1200,height=675,fit=cover,format=jpeg/jd7bm0pk9djmkmmat91b97gvks8e65zx/j97bqtzhk4xt1ay24ytxfvmp658e7wt7/assets/wideCover-1789142061736-c9aecfc3.webp",
   "embeddable": false,
-  "verified": "2026-11-16",
+  "verified": "2026-11-23",
   "touch": ""
  },
  {
@@ -3802,7 +3802,7 @@ window.PB_DISCOVER = [
   "note_zh": "掌舵 Mallow——一艘有颗倔强心的小拖船，把大海中失落的宝藏带回家。据作者说用 GPT 制作。",
   "cover": "https://uploads.wavedash.com/cdn-cgi/image/dpr=1,width=1200,height=675,fit=cover,format=jpeg/jd7bm0pk9djmkmmat91b97gvks8e65zx/j973drgt5ajv1azzhrvkrk7xzs8e7dpn/assets/wideCover-1789142302378-9ca29265.webp",
   "embeddable": false,
-  "verified": "2026-11-16",
+  "verified": "2026-11-23",
   "touch": ""
  },
  {
@@ -3821,7 +3821,7 @@ window.PB_DISCOVER = [
   "note_zh": "一个鲜活世界的上帝模拟：村民自己耕种、交易、迁徙和打仗，你一个小小的干预就会波及整个星球。大部分编程由 Claude Code 完成。",
   "cover": "https://uploads.wavedash.com/cdn-cgi/image/dpr=1,width=1200,height=675,fit=cover,format=jpeg/jd728ej52q7zp5najj2apdajen87vbtz/j97a7ddcm7xnzrm604dtxj36gd8fm35h/assets/wideCover-1791149416715-ffb1a95b.webp",
   "embeddable": false,
-  "verified": "2026-11-16",
+  "verified": "2026-11-23",
   "touch": ""
  },
  {
@@ -3840,7 +3840,7 @@ window.PB_DISCOVER = [
   "note_zh": "黄金时刻的粗野主义城市，在六座屋顶间第一人称跑酷。据作者说用 Claude 制作。",
   "cover": "https://uploads.wavedash.com/cdn-cgi/image/dpr=1,width=1200,height=675,fit=cover,format=jpeg/jd7024hwq0zeeb5qgms94gscgn8fwytw/j97628n8sq4f1w8mb749t1dt0s8fwsm6/assets/wideCover-1791438282909-2f7182df.webp",
   "embeddable": false,
-  "verified": "2026-11-16",
+  "verified": "2026-11-23",
   "touch": ""
  },
  {
@@ -3859,7 +3859,7 @@ window.PB_DISCOVER = [
   "note_zh": "黄色 Backrooms 里的恐怖迷宫：收集八页纸，同时有东西循着声音追猎你。迷宫、怪物和音效都由 Claude 用代码生成。",
   "cover": "https://uploads.wavedash.com/cdn-cgi/image/dpr=1,width=1200,height=675,fit=cover,format=jpeg/jd7024hwq0zeeb5qgms94gscgn8fwytw/j9726b80eaenn3ttjbd136vd7h8fx482/assets/wideCover-1791439292193-d2c86772.webp",
   "embeddable": false,
-  "verified": "2026-11-16",
+  "verified": "2026-11-23",
   "touch": ""
  },
  {
@@ -3878,7 +3878,7 @@ window.PB_DISCOVER = [
   "note_zh": "雪中城堡屋顶上的一场剑斗，靠弹反打崩对手的架势取胜，只狼风格。据作者说用 Claude 制作。",
   "cover": "https://uploads.wavedash.com/cdn-cgi/image/dpr=1,width=1200,height=675,fit=cover,format=jpeg/jd7024hwq0zeeb5qgms94gscgn8fwytw/j97dbkyha0nkj634ma5rcp7bms8fwvt1/assets/wideCover-1791444009936-808ee297.webp",
   "embeddable": false,
-  "verified": "2026-11-16",
+  "verified": "2026-11-23",
   "touch": ""
  },
  {
@@ -3897,7 +3897,7 @@ window.PB_DISCOVER = [
   "note_zh": "单人战术射击回合，地图 Dune Yard 是一个烈日下的爆破点，满是箱子、楼梯和狭窄通道。据作者说用 Claude 制作。",
   "cover": "https://uploads.wavedash.com/cdn-cgi/image/dpr=1,width=1200,height=675,fit=cover,format=jpeg/jd7024hwq0zeeb5qgms94gscgn8fwytw/j97emyd33wjj22vjzn196y71wn8fw9me/assets/wideCover-1791445921712-c1484e3e.webp",
   "embeddable": false,
-  "verified": "2026-11-16",
+  "verified": "2026-11-23",
   "touch": ""
  },
  {
@@ -3916,7 +3916,7 @@ window.PB_DISCOVER = [
   "note_zh": "在这款紧凑的第一人称射击中，三分钟内清除集装箱堆场里的十名敌人；敌人会找掩体、会包抄。据作者说用 Claude 制作。",
   "cover": "https://uploads.wavedash.com/cdn-cgi/image/dpr=1,width=1200,height=675,fit=cover,format=jpeg/jd7024hwq0zeeb5qgms94gscgn8fwytw/j978ckgkbe8kzg39vy1fepj8nn8fw44p/assets/wideCover-1791446730152-eb624905.webp",
   "embeddable": false,
-  "verified": "2026-11-16",
+  "verified": "2026-11-23",
   "touch": ""
  },
  {
@@ -3935,7 +3935,7 @@ window.PB_DISCOVER = [
   "note_zh": "漫步在阳光明媚的微缩港口，有镇民、市集摊位和船只；chongdashu 用 Claude 做的一个持续演进的实验。",
   "cover": "https://uploads.wavedash.com/cdn-cgi/image/dpr=1,width=1200,height=675,fit=cover,format=jpeg/jd75665dn6y5z8t51f7xgv0yax8drs7x/j976kyvh8w3fdj3rkrys4ejbv98fwmq3/assets/wideCover-1791465706609-3f51e72f.webp",
   "embeddable": false,
-  "verified": "2026-11-16",
+  "verified": "2026-11-23",
   "touch": ""
  },
  {
@@ -3954,7 +3954,7 @@ window.PB_DISCOVER = [
   "note_zh": "从清晨到月夜的手绘风海湾：走上码头，再乘小艇去灯塔，所有音效和钢琴配乐都由代码生成。用 Claude 在 Cursor 中制作。",
   "cover": "https://uploads.wavedash.com/cdn-cgi/image/dpr=1,width=1200,height=675,fit=cover,format=jpeg/jd7024hwq0zeeb5qgms94gscgn8fwytw/j9770d382twybeemzgysp9ws058fw43j/assets/wideCover-1791655272925-7747b8cc.webp",
   "embeddable": false,
-  "verified": "2026-11-16",
+  "verified": "2026-11-23",
   "touch": ""
  },
  {
@@ -3973,7 +3973,7 @@ window.PB_DISCOVER = [
   "note_zh": "夏末午后沿着日本乡间小路骑车，画面像手绘动画背景。据作者说用 Claude 和 Cursor 制作。",
   "cover": "https://uploads.wavedash.com/cdn-cgi/image/dpr=1,width=1200,height=675,fit=cover,format=jpeg/jd7024hwq0zeeb5qgms94gscgn8fwytw/j97faj2gy8fbtsehvdj3sj98pd8fxqdp/assets/wideCover-1791655523104-beabb6a9.webp",
   "embeddable": false,
-  "verified": "2026-11-16",
+  "verified": "2026-11-23",
   "touch": ""
  },
  {
@@ -3992,7 +3992,7 @@ window.PB_DISCOVER = [
   "note_zh": "鲜活海面上的街机摩托艇竞速：借浪加速、冲出浪尖、落地做特技，再用 Surge 开加速。据作者说用 Claude Code 制作。",
   "cover": "https://uploads.wavedash.com/cdn-cgi/image/dpr=1,width=1200,height=675,fit=cover,format=jpeg/jd77jkcrqmc7z7dayv8qtjb0bs8gn01s/j979czdya57wxz10wth6kr7vyd8gpngj/assets/wideCover-1792603739378-ad83d219.webp",
   "embeddable": false,
-  "verified": "2026-11-16",
+  "verified": "2026-11-23",
   "touch": ""
  },
  {
@@ -4011,7 +4011,7 @@ window.PB_DISCOVER = [
   "note_zh": "一维动作游戏，一半 Vampire Survivors 一半 One Finger Death Punch：两个按键、连招和局外成长。代码、数值平衡、精灵图和音乐都由 Claude 完成。",
   "cover": "https://uploads.wavedash.com/cdn-cgi/image/dpr=1,width=1200,height=675,fit=cover,format=jpeg/jd7fye5hpbv65y2wnv3chevb4h8gy38r/j97c5f8m92gnh3pbpvr57mkyzd8gzcae/assets/wideCover-1792919119030-e00e5d86.webp",
   "embeddable": false,
-  "verified": "2026-11-16",
+  "verified": "2026-11-23",
   "touch": ""
  },
  {
@@ -4030,7 +4030,7 @@ window.PB_DISCOVER = [
   "note_zh": "挂在飞驰的火车侧面，躲开迎面而来的东西。为 LittleJS jam 制作，使用 Claude Code 和 LittleJS-AI 插件。",
   "cover": "https://uploads.wavedash.com/cdn-cgi/image/dpr=1,width=1200,height=675,fit=cover,format=jpeg/jd79azxa0cvecyx00em21frpch8gyffg/j977gx8vh7jer1zeadcd3dpn098gz7sk/assets/wideCover-1793216670310-8fb7fb4d.webp",
   "embeddable": false,
-  "verified": "2026-11-16",
+  "verified": "2026-11-23",
   "touch": ""
  },
  {
@@ -4049,7 +4049,7 @@ window.PB_DISCOVER = [
   "note_zh": "两只宠物鼠在寒冷的大城市里迷了路，努力寻找回家的路。据作者说用 Claude Code 和 Codex 制作。",
   "cover": "https://uploads.wavedash.com/cdn-cgi/image/dpr=1,width=1200,height=675,fit=cover,format=jpeg/jd7fy0rrwy8c4xfnawxkdprcf58gy9gx/j97fzhd0xbxq7t290x9e5ycjnx8gz8ma/assets/wideCover-1792962695864-1f621b7d.webp",
   "embeddable": false,
-  "verified": "2026-11-16",
+  "verified": "2026-11-23",
   "touch": ""
  },
  {
@@ -4068,7 +4068,7 @@ window.PB_DISCOVER = [
   "note_zh": "扮演一只出逃的小恶魔，骑摩托穿过月光下的废墟：翘头释放地狱火，空翻触发所有武器。用 LittleJS 搭配 Claude Code 和 Codex 制作。",
   "cover": "https://uploads.wavedash.com/cdn-cgi/image/dpr=1,width=1200,height=675,fit=cover,format=jpeg/jd7dnv3qnm2nj84y3t404dr81s8h0ff3/j97abrat3432y6n1js7kwmratn8h0zv1/assets/wideCover-1793050479838-4a5f4ec2.webp",
   "embeddable": false,
-  "verified": "2026-11-16",
+  "verified": "2026-11-23",
   "touch": ""
  },
  {
@@ -4087,7 +4087,7 @@ window.PB_DISCOVER = [
   "note_zh": "欢迎来到 Cream 的温馨小屋，一款轻松的猫咪照料加合成游戏，让一个小小的家充满爱。据作者说用 Codex 制作。",
   "cover": "https://uploads.wavedash.com/cdn-cgi/image/dpr=1,width=1200,height=675,fit=cover,format=jpeg/jd79g60ka6vc250paacpbxw1xd8gv9tr/j97capjy8twwb5vkb69126ets98gtgqc/assets/wideCover-1792788092677-a99eb6c3.webp",
   "embeddable": false,
-  "verified": "2026-11-16",
+  "verified": "2026-11-23",
   "touch": ""
  },
  {
@@ -4106,7 +4106,7 @@ window.PB_DISCOVER = [
   "note_zh": "浏览器里的街机拉力赛：驾驶涡轮掀背车冲过松林、雪地和黄昏海岸公路，与检查点计时赛跑。据作者说用 Claude Code 和 Gemini 制作。",
   "cover": "https://uploads.wavedash.com/cdn-cgi/image/dpr=1,width=1200,height=675,fit=cover,format=jpeg/jd77jkcrqmc7z7dayv8qtjb0bs8gn01s/j973mkkt7vxx6mwtbkgcgnjzj98h72hr/assets/wideCover-1793287296222-104a41cb.webp",
   "embeddable": false,
-  "verified": "2026-11-16",
+  "verified": "2026-11-23",
   "touch": ""
  },
  {
@@ -4125,7 +4125,7 @@ window.PB_DISCOVER = [
   "note_zh": "引导一颗会飞的橡果，乘着四季的风穿过一座被遗忘的山谷，种下检查点树木，修复七座神龛。用 LittleJS 制作，Codex 协助。",
   "cover": "https://uploads.wavedash.com/cdn-cgi/image/dpr=1,width=1200,height=675,fit=cover,format=jpeg/jd70pw3cfs427j8yctf0jgjyw98h72xg/j973hra1h3d1cwf5nf2gn47c398h6z5j/assets/wideCover-1793314191108-b5741edb.webp",
   "embeddable": false,
-  "verified": "2026-11-16",
+  "verified": "2026-11-23",
   "touch": ""
  },
  {
@@ -4144,7 +4144,7 @@ window.PB_DISCOVER = [
   "note_zh": "经典 zigzag 游戏的单击竞速版，为 LittleJS Game Jam 3 制作，Claude 协助。",
   "cover": "https://uploads.wavedash.com/cdn-cgi/image/dpr=1,width=1200,height=675,fit=cover,format=jpeg/jd7594a595vv0y9q51wth3xxe98hd6eq/j970ywccns9qpkkyan2pq2dkad8hcbtx/assets/wideCover-1793499756514-8945a4db.webp",
   "embeddable": false,
-  "verified": "2026-11-16",
+  "verified": "2026-11-23",
   "touch": true
  },
  {
@@ -4163,7 +4163,7 @@ window.PB_DISCOVER = [
   "note_zh": "音乐弹珠轨道：在钉板上摆放音条，让弹珠一路落下敲出旋律。据作者说代码由 Claude Code 编写。",
   "cover": "https://uploads.wavedash.com/cdn-cgi/image/dpr=1,width=1200,height=675,fit=cover,format=jpeg/jd78h4s5qhyew3j21x0dfh7tgh8hesty/j97fgj4exf3tjdw8tk1h25fb298hftp1/assets/wideCover-1793581838389-fa79e4b4.webp",
   "embeddable": false,
-  "verified": "2026-11-16",
+  "verified": "2026-11-23",
   "touch": ""
  },
  {
@@ -4182,7 +4182,7 @@ window.PB_DISCOVER = [
   "note_zh": "温馨的合成谜题：林中夜访的客人点了野餐篮，你通过合成食物把篮子装满。由一个 Claude Code agent 为 Tuper 设计并编写。",
   "cover": "https://uploads.wavedash.com/cdn-cgi/image/dpr=1,width=1200,height=675,fit=cover,format=jpeg/jd7c21r80kaevckfz17gnt8h6n8hezz9/j97e8cbn8g1te6djyrae37m0nx8hegtp/assets/wideCover-1793608245926-6b26430f.webp",
   "embeddable": false,
-  "verified": "2026-11-16",
+  "verified": "2026-11-23",
   "touch": ""
  },
  {
@@ -4201,7 +4201,7 @@ window.PB_DISCOVER = [
   "note_zh": "安静的谜题游戏，连接光线唤醒花园，没有计时也没有生命限制。由一个 Claude Code agent 为 Tuper 设计并编写。",
   "cover": "https://uploads.wavedash.com/cdn-cgi/image/dpr=1,width=1200,height=675,fit=cover,format=jpeg/jd7c21r80kaevckfz17gnt8h6n8hezz9/j97ejx6111cpr5j7ynree0g7v98hffvy/assets/wideCover-1793608293587-aad1de11.webp",
   "embeddable": false,
-  "verified": "2026-11-16",
+  "verified": "2026-11-23",
   "touch": ""
  },
  {
@@ -4220,7 +4220,7 @@ window.PB_DISCOVER = [
   "note_zh": "数字门跑酷：穿过加法和乘法门让队伍壮大，躲开锯片，砸烂城堡 Boss。由一个 Claude Code agent 为 Tuper 设计并编写。",
   "cover": "https://uploads.wavedash.com/cdn-cgi/image/dpr=1,width=1200,height=675,fit=cover,format=jpeg/jd7c21r80kaevckfz17gnt8h6n8hezz9/j976fgpmkcwms46516s8y6wsw58hf6fv/assets/wideCover-1793608678687-c83363ad.webp",
   "embeddable": false,
-  "verified": "2026-11-16",
+  "verified": "2026-11-23",
   "touch": ""
  },
  {
@@ -4239,7 +4239,7 @@ window.PB_DISCOVER = [
   "note_zh": "一层一层往塔上爬；每次摔下来都让人想再试一次。代码、画面和音效都用 Claude 制作。",
   "cover": "https://uploads.wavedash.com/cdn-cgi/image/dpr=1,width=1200,height=675,fit=cover,format=jpeg/jd77jkcrqmc7z7dayv8qtjb0bs8gn01s/j978zetdkb1n22jhvypb2ehnqh8hekzg/assets/wideCover-1793644903707-c197d106.webp",
   "embeddable": false,
-  "verified": "2026-11-16",
+  "verified": "2026-11-23",
   "touch": ""
  },
  {
@@ -4258,7 +4258,7 @@ window.PB_DISCOVER = [
   "note_zh": "弹射冰球 Roguelite：让冰球在墙壁间反弹，连锁击杀，用升级构筑一局。为 LittleJS Jam 制作，使用 Claude Code。",
   "cover": "https://uploads.wavedash.com/cdn-cgi/image/dpr=1,width=1200,height=675,fit=cover,format=jpeg/jd73cpcedr46y1t8nkwjhrwx0n8gbph0/j979hjf32m8f4nernvgfqq0t618gavd1/assets/wideCover-1793712588534-d1413026.webp",
   "embeddable": false,
-  "verified": "2026-11-16",
+  "verified": "2026-11-23",
   "touch": ""
  },
  {
@@ -4277,7 +4277,7 @@ window.PB_DISCOVER = [
   "note_zh": "一片沉睡的森林其实是同一棵树，通过发光的菌丝输送养分来唤醒它；为 Defold Game Jam 2026 制作，Claude 协助。",
   "cover": "https://uploads.wavedash.com/cdn-cgi/image/dpr=1,width=1200,height=675,fit=cover,format=jpeg/jd703npf9p9dsg3kwxa6vg4b158fnez3/j970y008e08t1dvfjjycgj6w998fm3qz/assets/wideCover-1791141910359-66131363.webp",
   "embeddable": false,
-  "verified": "2026-11-16",
+  "verified": "2026-11-23",
   "touch": ""
  },
  {
@@ -4296,7 +4296,7 @@ window.PB_DISCOVER = [
   "note_zh": "射击后院栅栏上的瓶子，看它们碎成慢动作下闪着阳光的碎片，所有音效都由代码合成。用 Claude Opus 5.5 在 Cursor 中制作。",
   "cover": "https://uploads.wavedash.com/cdn-cgi/image/dpr=1,width=1200,height=675,fit=cover,format=jpeg/jd7024hwq0zeeb5qgms94gscgn8fwytw/j976a05p2qh0mmpp2bw78wz3dn8j3nvc/assets/wideCover-1794461312035-97f10ddd.webp",
   "embeddable": false,
-  "verified": "2026-11-16",
+  "verified": "2026-11-23",
   "touch": ""
  },
  {
@@ -4315,7 +4315,7 @@ window.PB_DISCOVER = [
   "note_zh": "日出时在热带岛屿的海滩醒来，视线所及之处都能走到：茂密的雨林、一道 20 m 高且下方水潭可以游泳的瀑布，还有……据作者说用 Claude 和 Cursor 制作。",
   "cover": "https://uploads.wavedash.com/cdn-cgi/image/dpr=1,width=1200,height=675,fit=cover,format=jpeg/jd7024hwq0zeeb5qgms94gscgn8fwytw/j971f3716464fkg9pyek9p0mzd8j382j/assets/wideCover-1794461522192-e277e996.webp",
   "embeddable": false,
-  "verified": "2026-11-16",
+  "verified": "2026-11-23",
   "touch": ""
  },
  {
@@ -4334,7 +4334,7 @@ window.PB_DISCOVER = [
   "note_zh": "黄金时刻，在海滨木栈道后的小型 flow 滑板公园里滑板，扮演原创角色 Sol。据作者说用 Cursor 制作。",
   "cover": "https://uploads.wavedash.com/cdn-cgi/image/dpr=1,width=1200,height=675,fit=cover,format=jpeg/jd7024hwq0zeeb5qgms94gscgn8fwytw/j97abawbvdrf61r2zb0d5bp55n8j3829/assets/wideCover-1794461645960-8752f352.webp",
   "embeddable": false,
-  "verified": "2026-11-16",
+  "verified": "2026-11-23",
   "touch": ""
  },
  {
@@ -4353,7 +4353,7 @@ window.PB_DISCOVER = [
   "note_zh": "在清澈的山间河边钓鱼，度过一个安静的早晨。据作者说用 Cursor 制作。",
   "cover": "https://uploads.wavedash.com/cdn-cgi/image/dpr=1,width=1200,height=675,fit=cover,format=jpeg/jd7024hwq0zeeb5qgms94gscgn8fwytw/j97372a1w9180ah51rydana4hs8j323j/assets/wideCover-1794461711782-d71ea3de.webp",
   "embeddable": false,
-  "verified": "2026-11-16",
+  "verified": "2026-11-23",
   "touch": ""
  },
  {
@@ -4372,7 +4372,7 @@ window.PB_DISCOVER = [
   "note_zh": "骑马悠闲地穿过山谷。据作者说用 Claude Code 制作。",
   "cover": "https://uploads.wavedash.com/cdn-cgi/image/dpr=1,width=1200,height=675,fit=cover,format=jpeg/jd7024hwq0zeeb5qgms94gscgn8fwytw/j97faxhfzqwv0mv2xrgkt4evkd8j26gx/assets/wideCover-1794463991752-df56a578.webp",
   "embeddable": false,
-  "verified": "2026-11-16",
+  "verified": "2026-11-23",
   "touch": ""
  },
  {
@@ -4391,7 +4391,7 @@ window.PB_DISCOVER = [
   "note_zh": "日出时的迈阿密海滩沙盒：漫步装饰艺术风格街区，开任何一辆汽车、全地形车或沙滩自行车去任何地方，甚至开进海里。用 Claude 在 Cursor 中制作。",
   "cover": "https://uploads.wavedash.com/cdn-cgi/image/dpr=1,width=1200,height=675,fit=cover,format=jpeg/jd7024hwq0zeeb5qgms94gscgn8fwytw/j97722frhfmqt3zpqy81mn9zcd8fxxgz/assets/wideCover-1791654972664-792d6032.webp",
   "embeddable": false,
-  "verified": "2026-11-16",
+  "verified": "2026-11-23",
   "touch": ""
  },
  {
@@ -4410,7 +4410,7 @@ window.PB_DISCOVER = [
   "note_zh": "一键起跑：一款直接在浏览器里运行的单座赛车模拟。据作者说用 Claude 制作。",
   "cover": "https://uploads.wavedash.com/cdn-cgi/image/dpr=1,width=1200,height=675,fit=cover,format=jpeg/jd77jkcrqmc7z7dayv8qtjb0bs8gn01s/j979wvytzntbk72prmy8yywwv58gqfte/assets/wideCover-1792577628043-60fc73ed.webp",
   "embeddable": false,
-  "verified": "2026-11-16",
+  "verified": "2026-11-23",
   "touch": ""
  },
  {
@@ -4429,7 +4429,7 @@ window.PB_DISCOVER = [
   "note_zh": "黄金时刻的雅加达屋顶斗风筝：绞断对手的风筝线，再抢着接住掉落的风筝。开发由 Claude Code 协助。",
   "cover": "https://uploads.wavedash.com/cdn-cgi/image/dpr=1,width=1200,height=675,fit=cover,format=jpeg/jd70kkwy63jb75tn332tqth21h8ga04q/j970dejnn0w0p5zgz4pphjbsms8gfd9m/assets/wideCover-1793495879110-0e95d9a6.webp",
   "embeddable": false,
-  "verified": "2026-11-16",
+  "verified": "2026-11-23",
   "touch": ""
  },
  {
@@ -4448,7 +4448,7 @@ window.PB_DISCOVER = [
   "note_zh": "一款阳光明媚的高尔夫游戏，延续经典高尔夫游戏的精神，作者是 LittleJS 的创建者 Frank Force；Claude 协助编程。",
   "cover": "https://uploads.wavedash.com/cdn-cgi/image/dpr=1,width=1200,height=675,fit=cover,format=jpeg/jd7d4e161fk4kmb2ws9zxht32x8dp09e/j977n8vp5qaqtjnt0npgjf682x8dqdwa/assets/wideCover-1793835501686-e9dbba39.webp",
   "embeddable": false,
-  "verified": "2026-11-16",
+  "verified": "2026-11-23",
   "touch": ""
  },
  {
@@ -4467,7 +4467,7 @@ window.PB_DISCOVER = [
   "note_zh": "夜间漂移竞速，穿过霓虹东京、极光下的挪威山口和亚得里亚海岸；作者自称不会编程，和 Claude 一起写成。",
   "cover": "https://www.nightclub-driftspeed.xyz/assets/ui/og-1200x630.jpg",
   "embeddable": true,
-  "verified": "2026-11-17",
+  "verified": "2026-11-23",
   "touch": false
  },
  {
@@ -4486,7 +4486,7 @@ window.PB_DISCOVER = [
   "note_zh": "会自己发展的低多边形城市建造游戏：看着它成长、接手管理，或规划你自己的超级都市。历时两个月，用 Gemini、Codex 和 Claude 写成。",
   "cover": "https://afkcity.com/og-banner.png",
   "embeddable": true,
-  "verified": "2026-11-17",
+  "verified": "2026-11-23",
   "touch": false
  },
  {
@@ -4505,7 +4505,7 @@ window.PB_DISCOVER = [
   "note_zh": "每天一款全新的数字增长放置游戏，由作者的 Claude Code 工作流制作，并配有自动化试玩测试。",
   "cover": "https://incremendle.com/og.png?v=c8ef7a17",
   "embeddable": true,
-  "verified": "2026-11-17",
+  "verified": "2026-11-23",
   "touch": false
  },
  {
@@ -4543,7 +4543,7 @@ window.PB_DISCOVER = [
   "note_zh": "用 three.js 做的开源等距视角砍杀 RPG：选一位英雄，在夜晚的风暴中一路杀出。由 AI 编程 agent 制作，每一次改动都公开审查。",
   "cover": "https://theloststorm.com/og.jpg",
   "embeddable": true,
-  "verified": "2026-11-17",
+  "verified": "2026-11-23",
   "touch": true,
   "code": "https://github.com/marginsystems/the-lost-storm"
  },
@@ -4563,7 +4563,7 @@ window.PB_DISCOVER = [
   "note_zh": "首尔背景的合作 Boss 战，一个浏览器标签页最多 12 人同玩，专为手机运行而设计；大部分代码用 AI 工具写成。",
   "cover": "https://woodangtang-seoul.dolmeong.workers.dev/og3.jpg",
   "embeddable": true,
-  "verified": "2026-11-17",
+  "verified": "2026-11-23",
   "touch": true
  },
  {
@@ -4582,7 +4582,7 @@ window.PB_DISCOVER = [
   "note_zh": "免费策略游戏，在电脑或手机上建设并保卫一座罗马城市（西班牙语）；作者称其为 vibe coding 作品。",
   "cover": "",
   "embeddable": true,
-  "verified": "2026-11-17",
+  "verified": "2026-11-23",
   "touch": false
  },
  {
@@ -4620,7 +4620,7 @@ window.PB_DISCOVER = [
   "note_zh": "体素即时战略，四支军队（机器人、昆虫、人类、外星人），各有专属终极单位；用 Claude Code 和 three.js 制作。",
   "cover": "https://img.itch.zone/aW1nLzMyMjk2MjMwLmpwZw==/original/UbHRcG.jpg",
   "embeddable": false,
-  "verified": "2026-11-17",
+  "verified": "2026-11-23",
   "touch": ""
  },
  {
@@ -4658,7 +4658,7 @@ window.PB_DISCOVER = [
   "note_zh": "Claude 大约三小时做出的 Roguelite 射击，美术取自作者另一款业余游戏。",
   "cover": "https://img.itch.zone/aW1nLzMyMTQ1MDUzLnBuZw==/original/UN76eL.png",
   "embeddable": false,
-  "verified": "2026-11-17",
+  "verified": "2026-11-23",
   "touch": ""
  },
  {
@@ -4677,7 +4677,7 @@ window.PB_DISCOVER = [
   "note_zh": "一战堑壕建造策略：挖掘壕沟网络，部署机枪和火炮，在一波波进攻中保证部队补给。仍在开发中，用 Claude 生成。",
   "cover": "https://img.itch.zone/aW1nLzMyMjcxMjMzLnBuZw==/original/Y4e46D.png",
   "embeddable": false,
-  "verified": "2026-11-17",
+  "verified": "2026-11-23",
   "touch": ""
  },
  {
@@ -4696,7 +4696,7 @@ window.PB_DISCOVER = [
   "note_zh": "3v3 像素风沙滩排球，同队最多三名玩家（葡萄牙语）；代码由 Claude Code 编写，美术由 Codex 制作，音乐来自代码合成器。",
   "cover": "https://img.itch.zone/aW1nLzMyMjE4MTE0LnBuZw==/original/0mPNnZ.png",
   "embeddable": false,
-  "verified": "2026-11-17",
+  "verified": "2026-11-23",
   "touch": ""
  },
  {
@@ -4715,7 +4715,7 @@ window.PB_DISCOVER = [
   "note_zh": "在八座岛屿间发现遇险的游泳者，把他们拖上岸，别去抓没事的人。非常早期的版本，用 Claude 制作。",
   "cover": "https://img.itch.zone/aW1nLzMyMjA3MTEzLnBuZw==/original/Hz8JvX.png",
   "embeddable": false,
-  "verified": "2026-11-17",
+  "verified": "2026-11-23",
   "touch": ""
  },
  {
@@ -4734,7 +4734,7 @@ window.PB_DISCOVER = [
   "note_zh": "跳槽人生模拟，名字来自韩语俚语“该换工作了”：投简历、等可能永远不会来的回信，一路爬进大厂。用 Claude 制作；源代码公开。",
   "cover": "https://img.itch.zone/aW1nLzMyMjAxMDkxLnBuZw==/original/7%2F%2BBLh.png",
   "embeddable": false,
-  "verified": "2026-11-17",
+  "verified": "2026-11-23",
   "touch": ""
  },
  {
@@ -4753,7 +4753,7 @@ window.PB_DISCOVER = [
   "note_zh": "1994 年的潜行砍杀：一镜到底砍倒全部八名演员，倒带重来每一次 NG，同时保留手里的道具。浏览器里的 Unreal（WebGPU）；代码由 Claude Code 编写。",
   "cover": "https://img.itch.zone/aW1nLzMyMTk2Mjg5LnBuZw==/original/hgiXHq.png",
   "embeddable": false,
-  "verified": "2026-11-17",
+  "verified": "2026-11-23",
   "touch": ""
  },
  {
@@ -4773,6 +4773,424 @@ window.PB_DISCOVER = [
   "cover": "https://img.itch.zone/aW1nLzMyMDI1NTUyLnBuZw==/original/DMDq6N.png",
   "embeddable": false,
   "verified": "2026-11-17",
+  "touch": ""
+ },
+ {
+  "title": "Trichroma",
+  "url": "https://trichroma.namirsab.dev/",
+  "slug": "trichroma",
+  "creator": "namirsab",
+  "source": "https://news.ycombinator.com/item?id=50582578",
+  "platform": "hn",
+  "engine": "",
+  "model": "Claude Code",
+  "genre": "Platformer",
+  "is3d": false,
+  "date": "2026-11-20",
+  "note": "A tough, cute platformer of coloured light: what's solid depends on the light you shine on it, across 63 levels. Built entirely from a phone with Claude Code.",
+  "note_zh": "一个又难又可爱的光色平台跳跃：照上什么颜色的光，决定哪些东西是实心的，一共 63 关。完全在手机上用 Claude Code 做成。",
+  "cover": "https://trichroma.namirsab.dev/assets/og.png",
+  "embeddable": false,
+  "verified": "2026-11-24",
+  "touch": ""
+ },
+ {
+  "title": "Lexis World",
+  "url": "https://lexisworld.org/",
+  "slug": "lexis-world",
+  "creator": "piwakawaka",
+  "source": "https://news.ycombinator.com/item?id=50605439",
+  "platform": "hn",
+  "engine": "",
+  "model": "Fable 5.2",
+  "genre": "Puzzle",
+  "is3d": false,
+  "date": "2026-11-22",
+  "note": "An award-winning 2018 kids' game, ported to the browser by Fable 5.2: type real words like DOG or POND and they come to life on a tiny planet.",
+  "note_zh": "一款 2018 年得过奖的儿童游戏，由 Fable 5.2 移植到浏览器：输入 DOG、POND 这样的真实单词，它们就会出现在一颗小星球上。",
+  "cover": "",
+  "embeddable": true,
+  "verified": "2026-11-24",
+  "touch": ""
+ },
+ {
+  "title": "Blackburn Type D",
+  "url": "https://blackburn-flight.pages.dev/?fly=1",
+  "slug": "blackburn-type-d",
+  "creator": "dun4ev",
+  "source": "https://discourse.threejs.org/t/blackburn-type-d-1912-browser-flight-simulator/97582",
+  "platform": "other",
+  "engine": "three.js",
+  "model": "GPT-6.2 Astra",
+  "genre": "Flight",
+  "is3d": true,
+  "date": "2026-11-22",
+  "note": "Fly a 1912 Blackburn monoplane, timber and fabric, over a city of towers. Built with GPT-6.2 Astra, Blender and three.js.",
+  "note_zh": "驾驶 1912 年的 Blackburn 单翼机（木头骨架、蒙布机翼），在一座高楼林立的城市上空飞行。用 GPT-6.2 Astra、Blender 和 three.js 制作。",
+  "cover": "https://blackburn-flight.pages.dev/flight-preview.jpg",
+  "embeddable": true,
+  "verified": "2026-11-24",
+  "touch": ""
+ },
+ {
+  "title": "JETSUN",
+  "url": "https://antgames.ai/play/jetsun/",
+  "slug": "jetsun",
+  "creator": "AntGames",
+  "source": "https://discourse.threejs.org/t/jetsun-a-side-scrolling-3d-shoot-em-up-in-the-browser-every-model-and-sound-generated-in-code/97580",
+  "platform": "other",
+  "engine": "three.js",
+  "model": "Claude",
+  "genre": "Shooter",
+  "is3d": true,
+  "date": "2026-11-22",
+  "note": "A side-scrolling shoot-'em-up in full 3D: six missions, six bosses, upgrades in the hangar. Code, models, textures, music and sound made by Claude-based agents.",
+  "note_zh": "全 3D 的横版射击：六个任务、六个 Boss，在机库里升级装备。代码、模型、贴图、音乐和音效都由基于 Claude 的 agent 制作。",
+  "cover": "https://antgames.ai/share/jetsun.jpg?v=7c21fc927b",
+  "embeddable": true,
+  "verified": "2026-11-24",
+  "touch": ""
+ },
+ {
+  "title": "Boo-Mas",
+  "url": "https://robinduckett.github.io/boo-mas/",
+  "slug": "boo-mas",
+  "creator": "robinduckett",
+  "source": "https://news.ycombinator.com/item?id=50553152",
+  "platform": "hn",
+  "engine": "three.js",
+  "model": "Fable 5.2",
+  "genre": "Action",
+  "is3d": true,
+  "date": "2026-11-18",
+  "note": "A cute ghost in a Christmas hat, in a three.js game made from a single prompt to Fable 5.2 on max thinking.",
+  "note_zh": "一只戴圣诞帽的可爱小幽灵，一个 three.js 游戏，由 Fable 5.2 在最高思考档位下用一条提示词做成。",
+  "cover": "",
+  "embeddable": true,
+  "verified": "2026-11-24",
+  "touch": ""
+ },
+ {
+  "title": "Name the World",
+  "url": "https://nametheworld.starshadowx2.workers.dev/",
+  "slug": "name-the-world",
+  "creator": "starshadowx2",
+  "source": "https://news.ycombinator.com/item?id=50584994",
+  "platform": "hn",
+  "engine": "",
+  "model": "Claude Sonnet 5",
+  "genre": "Puzzle",
+  "is3d": false,
+  "date": "2026-11-21",
+  "note": "An atlas quiz: name every country, mix modes, share your results card. Built on the free tier of Claude (Sonnet 5 and 5.5).",
+  "note_zh": "地图测验：说出每一个国家，各种模式可以叠加，玩完生成可分享的成绩卡。只用免费版 Claude（Sonnet 5 和 5.5）做成。",
+  "cover": "https://nametheworld.starshadowx2.workers.dev/preview.png",
+  "embeddable": true,
+  "verified": "2026-11-24",
+  "touch": ""
+ },
+ {
+  "title": "Grand Treasure Island",
+  "url": "https://grandtreasureisland.vercel.app/",
+  "slug": "grand-treasure-island",
+  "creator": "phpp",
+  "source": "https://news.ycombinator.com/item?id=50546796",
+  "platform": "hn",
+  "engine": "Godot",
+  "model": "Opus 5.5",
+  "genre": "Adventure",
+  "is3d": true,
+  "date": "2026-11-18",
+  "note": "Life-size Treasure Island in San Francisco Bay: 16 miles of road, about 200 buildings, 400+ cars to borrow and a jetpack. Code and 3D models by teams of Opus 5.5 agents.",
+  "note_zh": "1:1 还原旧金山湾里的金银岛：16 英里道路、约 200 栋建筑、400 多辆可以“借”的车，还有喷气背包。代码和 3D 模型都由多组 Opus 5.5 agent 完成。",
+  "cover": "",
+  "embeddable": true,
+  "verified": "2026-11-24",
+  "touch": ""
+ },
+ {
+  "title": "DockShip42",
+  "url": "https://www.dockship42.com/",
+  "slug": "dockship42",
+  "creator": "ml_comms_eng",
+  "source": "https://news.ycombinator.com/item?id=50519396",
+  "platform": "hn",
+  "engine": "",
+  "model": "Claude Code",
+  "genre": "Arcade",
+  "is3d": false,
+  "date": "2026-11-16",
+  "note": "Land and dock a Starship-style rocket, level by level, with an autopilot intro. Started as a 15-minute Claude Code project.",
+  "note_zh": "一关一关地让星舰式火箭着陆、对接，开头有自动驾驶教学。最初是一个 15 分钟的 Claude Code 小项目。",
+  "cover": "",
+  "embeddable": false,
+  "verified": "2026-11-24",
+  "touch": ""
+ },
+ {
+  "title": "Gunport",
+  "url": "https://engineersneedart.com/gunport/",
+  "slug": "gunport",
+  "creator": "JKCalhoun",
+  "source": "https://news.ycombinator.com/item?id=50599285",
+  "platform": "hn",
+  "engine": "Phosphor3D",
+  "model": "",
+  "genre": "Shooter",
+  "is3d": true,
+  "date": "2026-11-22",
+  "note": "Hold off fighters from a gunport in 80s flight-sim wireframe 3D, on the creator's own canvas engine. The game itself was vibe-coded.",
+  "note_zh": "在炮位上抵挡来袭的战斗机，80 年代飞行模拟风格的线框 3D，跑在作者自己写的 canvas 引擎上。游戏本身是 vibe coding 写的。",
+  "cover": "",
+  "embeddable": true,
+  "verified": "2026-11-24",
+  "touch": ""
+ },
+ {
+  "title": "Maxanti",
+  "url": "https://maxanti.com/",
+  "slug": "maxanti",
+  "creator": "bronlund",
+  "source": "https://news.ycombinator.com/item?id=50516979",
+  "platform": "hn",
+  "engine": "",
+  "model": "",
+  "genre": "Puzzle",
+  "is3d": false,
+  "date": "2026-11-16",
+  "note": "A logic puzzle for maths nerds, built on the discrete Fourier transform; vibe-coded as a birthday present for a maths professor.",
+  "note_zh": "给数学迷的逻辑谜题，原理是离散傅里叶变换；作者用 vibe coding 做给一位数学教授当生日礼物。",
+  "cover": "https://maxanti.com/icons/link.png",
+  "embeddable": false,
+  "verified": "2026-11-24",
+  "touch": ""
+ },
+ {
+  "title": "Jam",
+  "url": "https://jam.resonantdsp.com/",
+  "slug": "jam",
+  "creator": "garrinm",
+  "source": "https://news.ycombinator.com/item?id=50590843",
+  "platform": "hn",
+  "engine": "three.js",
+  "model": "",
+  "genre": "Sim",
+  "is3d": false,
+  "date": "2026-11-21",
+  "note": "A music-making game: write parts on a piano roll, play gigs to earn studio gear, invite friends into your studio. The creator didn't write the code; an agent did.",
+  "note_zh": "做音乐的游戏：在钢琴卷帘上写声部，跑演出赚钱买录音设备，还能拉朋友进你的录音棚一起写。代码不是作者写的，是 agent 写的。",
+  "cover": "https://jam.resonantdsp.com/og.png",
+  "embeddable": true,
+  "verified": "2026-11-24",
+  "touch": ""
+ },
+ {
+  "title": "Meridian",
+  "url": "https://boxdaveb.itch.io/meridian",
+  "slug": "meridian-2",
+  "creator": "boxdaveb",
+  "source": "https://boxdaveb.itch.io/meridian",
+  "platform": "itch",
+  "engine": "",
+  "model": "Claude",
+  "genre": "Flight",
+  "is3d": true,
+  "date": "2026-11-22",
+  "note": "Aerial survey pilot over a black-and-white world drawn like a 1930s travel poster: photograph the land, mind your fuel, earn promotions. Vibe-coded with Fable 5.2 and Opus 5.5.",
+  "note_zh": "在一个像 1930 年代旅行海报一样的黑白世界里当航拍测绘飞行员：拍下地面、盯着油量、一级级升职。用 Fable 5.2 和 Opus 5.5 vibe coding 做成。",
+  "cover": "https://img.itch.zone/aW1nLzMyNjc4MDg5LmpwZw==/original/DPBB3a.jpg",
+  "embeddable": false,
+  "verified": "2026-11-24",
+  "touch": ""
+ },
+ {
+  "title": "The Vicissitudes",
+  "url": "https://bis83.itch.io/the-vicissitudes",
+  "slug": "the-vicissitudes",
+  "creator": "bis83",
+  "source": "https://bis83.itch.io/the-vicissitudes",
+  "platform": "itch",
+  "engine": "",
+  "model": "Opus 5.5",
+  "genre": "Strategy",
+  "is3d": false,
+  "date": "2026-11-22",
+  "note": "An incremental real-time strategy game in short runs: place building cards, survive waves, unlock tech toward a great monument. Generated by Claude Opus 5.5.",
+  "note_zh": "一局很短、反复重来的增量式即时战略：打出建筑卡牌扩张村落，挡住一波波敌人，解锁科技，目标是建成历史奇观。由 Claude Opus 5.5 生成。",
+  "cover": "https://img.itch.zone/aW1nLzMyNjUyOTMyLnBuZw==/original/fJkgB%2F.png",
+  "embeddable": false,
+  "verified": "2026-11-24",
+  "touch": ""
+ },
+ {
+  "title": "PRISM",
+  "url": "https://fowks.itch.io/prism",
+  "slug": "prism",
+  "creator": "fowks",
+  "source": "https://fowks.itch.io/prism",
+  "platform": "itch",
+  "engine": "",
+  "model": "",
+  "genre": "Roguelike",
+  "is3d": false,
+  "date": "2026-11-20",
+  "note": "Defend a light source by bending, splitting and overcharging beams with your prism; three prism classes, bosses, co-op. Vibe-coded.",
+  "note_zh": "用棱镜折射、分光、充能光束来保护光源；三种棱镜职业、Boss 战，支持合作。vibe coding 制作。",
+  "cover": "https://img.itch.zone/aW1nLzMyNTk1NjAyLnBuZw==/original/oGKBej.png",
+  "embeddable": false,
+  "verified": "2026-11-24",
+  "touch": ""
+ },
+ {
+  "title": "Space Atrapos",
+  "url": "https://kilonalios.itch.io/space-atrapos",
+  "slug": "space-atrapos",
+  "creator": "kilonalios",
+  "source": "https://kilonalios.itch.io/space-atrapos",
+  "platform": "itch",
+  "engine": "",
+  "model": "",
+  "genre": "Sim",
+  "is3d": true,
+  "date": "2026-11-20",
+  "note": "A sandbox space RPG in Greek myth: 120 star systems, start on foot with no ship, mine, trade and fly. An AI coding assistant wrote much of the code.",
+  "note_zh": "希腊神话背景的沙盒太空 RPG：120 个星系，开局步行、没有飞船，采矿、跑货、开飞船。大部分代码由 AI 编程助手编写。",
+  "cover": "https://img.itch.zone/aW1nLzMyNjM2MDc4LnBuZw==/original/u%2BgBav.png",
+  "embeddable": false,
+  "verified": "2026-11-24",
+  "touch": ""
+ },
+ {
+  "title": "Flip-Flap Fiona",
+  "url": "https://thespyr.itch.io/flip-flap-fiona",
+  "slug": "flip-flap-fiona",
+  "creator": "thespyr",
+  "source": "https://thespyr.itch.io/flip-flap-fiona",
+  "platform": "itch",
+  "engine": "",
+  "model": "",
+  "genre": "Arcade",
+  "is3d": false,
+  "date": "2026-11-22",
+  "note": "One-tap flapper down the Rainbow River, made in memory of Fiona. Entirely AI-generated, with the creator directing changes.",
+  "note_zh": "一键操作，带着 Fiona 飞过彩虹河，为纪念 Fiona 而做。内容全部由 AI 生成，作者负责提意见和指挥修改。",
+  "cover": "https://img.itch.zone/aW1nLzMyNjQwNDE5LnBuZw==/original/V0kaaZ.png",
+  "embeddable": false,
+  "verified": "2026-11-24",
+  "touch": ""
+ },
+ {
+  "title": "Snake Rush",
+  "url": "https://rozensov.itch.io/snake-rush",
+  "slug": "snake-rush",
+  "creator": "rozensov",
+  "source": "https://rozensov.itch.io/snake-rush",
+  "platform": "itch",
+  "engine": "",
+  "model": "",
+  "genre": "Arcade",
+  "is3d": false,
+  "date": "2026-11-17",
+  "note": "Classic snake that fights back: every five apples the snake speeds up and new walls appear. Vibe-coded.",
+  "note_zh": "会“反击”的经典贪吃蛇：每吃五个苹果蛇就加速，场上还会冒出新的墙。vibe coding 制作。",
+  "cover": "https://img.itch.zone/aW1nLzMyNDU2NDQ4LnBuZw==/original/ElJOlY.png",
+  "embeddable": false,
+  "verified": "2026-11-24",
+  "touch": ""
+ },
+ {
+  "title": "Swiss Army Snake",
+  "url": "https://snakemakermaster.itch.io/swiss-army-snake",
+  "slug": "swiss-army-snake",
+  "creator": "snakemakermaster",
+  "source": "https://snakemakermaster.itch.io/swiss-army-snake",
+  "platform": "itch",
+  "engine": "",
+  "model": "",
+  "genre": "Roguelike",
+  "is3d": false,
+  "date": "2026-11-22",
+  "note": "Endless roguelite snake with three expanding rings, ten power-up trees and four switchable themes. Code and audio built with AI in Google Antigravity.",
+  "note_zh": "无尽肉鸽贪吃蛇：三层不断扩大的环、十条强化树、四套可切换主题。代码和音效用 Google Antigravity 里的 AI 完成。",
+  "cover": "https://img.itch.zone/aW1nLzMyNjg2OTY3LnBuZw==/original/e8ueR9.png",
+  "embeddable": false,
+  "verified": "2026-11-24",
+  "touch": ""
+ },
+ {
+  "title": "Appointment Timing",
+  "url": "https://zero-eigyo-dev.itch.io/apo-timing",
+  "slug": "appointment-timing",
+  "creator": "zero-eigyo-dev",
+  "source": "https://zero-eigyo-dev.itch.io/apo-timing",
+  "platform": "itch",
+  "engine": "",
+  "model": "Claude",
+  "genre": "Arcade",
+  "is3d": false,
+  "date": "2026-11-21",
+  "note": "A 45-second one-tap sales game: call each client the moment their mood meter turns green. Made entirely by Claude for a salesman with no coding experience. Japanese UI.",
+  "note_zh": "45 秒的一键营销小游戏：客户的心情条变绿的瞬间打电话约见。一位没有编程经验的销售员让 Claude 做出了全部内容。界面是日文。",
+  "cover": "https://img.itch.zone/aW1nLzMyNjI5Mzc1LnBuZw==/original/7BJyJ%2F.png",
+  "embeddable": false,
+  "verified": "2026-11-24",
+  "touch": ""
+ },
+ {
+  "title": "Forest Chaos",
+  "url": "https://retroslopr.itch.io/forest-chaos",
+  "slug": "forest-chaos",
+  "creator": "retroslopr",
+  "source": "https://retroslopr.itch.io/forest-chaos",
+  "platform": "itch",
+  "engine": "",
+  "model": "",
+  "genre": "Action",
+  "is3d": true,
+  "date": "2026-11-21",
+  "note": "Smash everything in an endless low-poly forest, chain gem combos and fight off slime waves at night. AI did the code, graphics and sound; the idea is human.",
+  "note_zh": "在无尽的低多边形森林里砸碎一切，连击收集宝石，晚上抵挡一波波史莱姆。代码、美术和音效由 AI 完成，创意来自作者本人。",
+  "cover": "https://img.itch.zone/aW1nLzMyNjEyMDE2LmpwZw==/original/YddIUQ.jpg",
+  "embeddable": false,
+  "verified": "2026-11-24",
+  "touch": ""
+ },
+ {
+  "title": "Super Anthropic IPO",
+  "url": "https://protomo.itch.io/super-anthropic-ipo",
+  "slug": "super-anthropic-ipo",
+  "creator": "protomo",
+  "source": "https://protomo.itch.io/super-anthropic-ipo",
+  "platform": "itch",
+  "engine": "",
+  "model": "GPT-6.2 Astra",
+  "genre": "Sim",
+  "is3d": false,
+  "date": "2026-11-18",
+  "note": "A joke trading game: trade Claude's $80 IPO with a crab for a broker. Fully developed by GPT-6.2 Astra.",
+  "note_zh": "恶搞交易游戏：在一只螃蟹经纪人的帮助下炒 Claude 的 80 美元 IPO。完全由 GPT-6.2 Astra 开发。",
+  "cover": "https://img.itch.zone/aW1nLzMyNTAxNTI5LmdpZg==/original/re5Bk2.gif",
+  "embeddable": false,
+  "verified": "2026-11-24",
+  "touch": ""
+ },
+ {
+  "title": "VERTI-GO!",
+  "url": "https://davidguti-3d.itch.io/verti-go",
+  "slug": "verti-go",
+  "creator": "davidguti-3d",
+  "source": "https://davidguti-3d.itch.io/verti-go",
+  "platform": "itch",
+  "engine": "",
+  "model": "Claude",
+  "genre": "Arcade",
+  "is3d": false,
+  "date": "2026-11-21",
+  "note": "A Christmas arcade climber up three Barcelona landmarks, a love letter to the 80s window-climbing arcades. Code and pixel art made with Claude.",
+  "note_zh": "圣诞版街机攀爬：爬上巴塞罗那的三座地标，致敬 80 年代的爬楼街机。代码和像素美术用 Claude 制作。",
+  "cover": "https://img.itch.zone/aW1nLzMyNjU1MjA3LmpwZw==/original/fF%2FIiF.jpg",
+  "embeddable": false,
+  "verified": "2026-11-24",
   "touch": ""
  }
 ];

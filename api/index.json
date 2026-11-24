@@ -1,7 +1,7 @@
 {
  "name": "Playbook API",
  "version": 1,
- "updated": "2026-11-17T20:49:57+00:00",
+ "updated": "2026-11-24T12:24:37+00:00",
  "base": "https://rexgu9911.github.io/playbook/api",
  "endpoints": {
   "recipes": "recipes.json",
@@ -12,7 +12,7 @@
   "recipes": 18,
   "originals": 6,
   "mechanics": 30,
-  "discover": 251
+  "discover": 273
  },
  "notes": "Recipes and mechanics are Playbook's own work (MIT). Discover entries belong to their creators: link and credit only."
 }

@@ -2,6 +2,39 @@
 // Each pick points at a Discover entry by URL; the game itself stays on its creator's site.
 window.PB_WEEKS = [
  {
+  "id": "2026-11-23",
+  "no": 3,
+  "intro": "Week three: a life-size island built by teams of agents, a flight game drawn like a 1930s travel poster, a light-bending platformer made on a phone, a music game with gigs and a studio, and a prize-winning kids' game given a second life in the browser.",
+  "intro_zh": "第三期：一群 agent 1:1 建出来的金银岛；画面像 1930 年代旅行海报的飞行游戏；在手机上做出来的光色平台跳跃；能跑演出、开录音棚的音乐游戏；还有一款得过奖的儿童游戏在浏览器里重获新生。",
+  "picks": [
+   {
+    "url": "https://grandtreasureisland.vercel.app/",
+    "why": "One person set up teams of Opus 5.5 agents and let them build a life-size Treasure Island: every road, about 200 buildings and 400+ cars you can borrow. The creator didn't write the code or make the models.",
+    "why_zh": "一个人搭好几组 Opus 5.5 agent，让它们把金银岛按 1:1 建出来：每条路、约 200 栋建筑、400 多辆能“借”的车。代码和模型都不是作者做的。"
+   },
+   {
+    "url": "https://boxdaveb.itch.io/meridian",
+    "why": "A flight game that looks like a 1930s travel poster: photograph the land, watch your fuel, thread the viaduct arches. Calm, striking and vibe-coded with Claude.",
+    "why_zh": "一个看起来像 1930 年代旅行海报的飞行游戏：航拍地面、盯着油量、从高架桥的拱洞里穿过去。安静、好看，用 Claude vibe coding 做成。"
+   },
+   {
+    "url": "https://trichroma.namirsab.dev/",
+    "why": "63 levels where the colour of the light decides what's solid. A real, hard platformer, built entirely from a phone with Claude Code and tuned with friends' playtests.",
+    "why_zh": "63 关，光的颜色决定哪些东西是实心的。一个真正有难度的平台跳跃，完全在手机上用 Claude Code 做成，再靠朋友试玩一点点打磨。"
+   },
+   {
+    "url": "https://jam.resonantdsp.com/",
+    "why": "Write parts on a piano roll, play gigs to earn gear, bring friends into your studio. A music game that teaches you something, and the creator says the agent wrote the code.",
+    "why_zh": "在钢琴卷帘上写声部，跑演出赚设备，拉朋友进录音棚。一个能顺便学到乐理的音乐游戏，作者说代码是 agent 写的。"
+   },
+   {
+    "url": "https://lexisworld.org/",
+    "why": "An award-winning 2018 kids' game that never found its audience, brought to the browser by Fable 5.2, which also fixed the planet gravity that once drove its maker to tears.",
+    "why_zh": "一款 2018 年得过奖却没找到玩家的儿童游戏，由 Fable 5.2 搬到浏览器上，顺手解决了当年让作者崩溃的星球重力问题。"
+   }
+  ]
+ },
+ {
   "id": "2026-11-16",
   "no": 2,
   "intro": "Week two: a photoreal Manhattan you can drive and fly through, a logistics sim written by arguing agents, a body-cam shooter in plain three.js, a web crawler's own platformer, and a tennis game that's more than it looks.",
