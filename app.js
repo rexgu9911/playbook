@@ -255,15 +255,7 @@
       .sort((x, y) => newCover(y) - newCover(x) || y.games.length - x.games.length).slice(0, 10);
     const followCards = follow.map((c, i) => crcard(c, i, seen)).join('');
     const avoid0 = new Set(seen); follow.forEach(c => seen.add(crTop(c, avoid0).url));
-    const jams = DISC.filter(d => d.platform === 'jam' && !seen.has(d.url)).sort((a, b) => (a.cover ? 0 : 1) - (b.cover ? 0 : 1) || byNew(a, b));
-    const show = SHOWCASE.map(s => mechBySlug[s]).filter(Boolean);
     const wk = issue ? weekName(issue.id).replace(/, \d{4}$/, '') : '';
-    const tiles = [
-      ['#/mechanics', tabIc.mech, 'Game feel', `${mechanics.length} parts`, 'Hit-stop, shake, dodge roll, combos'],
-      ['#/games', tabIc.recipes, 'Recipes', `${games.filter(g => !g.parent).length} games`, 'Open games you can remake'],
-      ['#/studio', ic.code, 'Studio', 'Free', 'Sound effects and pixel sprites for your game'],
-      ['#/play', ic.up, 'Submit a game', 'Free', 'Made one, or found one? Send it in', 'data-submit-game'],
-    ];
     app.innerHTML = `
       <section class="hx2">
         <div class="wrap hx2-head">
@@ -271,7 +263,7 @@
           <h1 class="hx2-h" data-noi18n aria-label="${ZH ? '玩最好的 AI 网页游戏' : 'Play the best AI-made web games'}">${ZH ? `玩最好的<span class="hx2-rot">${['vibe', 'AI 做的', '一句话做出的', '一个周末做完的'].map((w, i) => `<b class="${i ? '' : 'on'}">${w}</b>`).join('')}</span>网页游戏`
             : `Play the best <span class="hx2-rot">${['vibe-coded', 'AI-made', 'one-prompt', 'weekend-built'].map((w, i) => `<b class="${i ? '' : 'on'}">${w}</b>`).join('')}</span> games`}</h1>
           <p>Hand-picked web games made with AI. Free, no download, and every one credited to the person who made it.</p>
-          <div class="hx2-acts"><a class="btn btn-accent" href="#/play">Play now</a><a class="btn" href="#/make">Make one</a></div>
+          <div class="hx2-acts"><a class="btn btn-accent" href="#/play">Play now</a><a class="btn" href="#/create">Make one</a></div>
         </div>
         ${heroGames.length > 2 ? `<div class="cf" id="cf" tabindex="0" aria-roledescription="carousel" aria-label="Featured games">
           ${heroGames.map((d, i) => { const pi = picks.indexOf(d); return `<a class="cf-card" href="${gLink(d)}" data-i="${i}" aria-label="${esc(d.title)}"><img src="${esc(d.cover)}" alt="" loading="${i < 4 ? 'eager' : 'lazy'}" decoding="async" referrerpolicy="no-referrer" onerror="this.remove()"><span class="cf-shade"></span><span class="cf-meta"><span class="chip ${pi > -1 ? 'hot' : ''}">${pi > -1 ? `Pick #${pi + 1}` : 'All-time best'}</span><b>${esc(d.title)}</b><span>${esc(d.creator || host(d.url))}</span></span></a>`; }).join('')}
@@ -286,38 +278,17 @@
       </section>
       ${rec.length ? `<div class="wrap">${rail({ title: 'Continue playing', sub: 'Games you opened recently, kept in this browser.', href: '#/library', more: 'Your library', items: rec.map(gcard).join('') })}</div>` : ''}
 
-      <div class="ticker" aria-label="Playbook at a glance"><div class="ticker-in">${(() => {
-        const items = [`${DISC.length} vibe-coded games`, `${CREATORS.length} creators`, ...fresh.slice(0, 3).map(d => `New: ${d.title}`),
-          'Cursor Vibe Jam winners inside', `${mechanics.length} game-feel parts for your agent`, 'Free and open-source MCP'];
-        const run = items.map(t => `<span>${esc(t)}</span><i aria-hidden="true">✦</i>`).join('');
-        return `<div class="ticker-run">${run}</div><div class="ticker-run" aria-hidden="true">${run}</div>`;
-      })()}</div></div>
-
-
       <div class="wrap idx">
         ${best.length ? rail({ title: 'All-time best', sub: 'The vibe-coded games people keep coming back to: jam winners and the ones that went viral.', href: '#/play', more: `All ${DISC.length}`, items: best.map(gcard).join('') }) : ''}
         ${rail({ title: 'New this week', sub: 'Fresh from X, game jams and itch. Every card opens the creator’s own page.', href: '#/play', more: `All ${DISC.length}`, items: fresh.map(gcard).join('') })}
         ${rail({ title: 'Creators to follow', sub: 'The people behind the best vibe games right now.', href: '#/creators', more: `All ${CREATORS.length}`, cls: 'cr', items: followCards })}
-
-        <section class="promo2 light">
-          <div class="promo-big calm rv">
-            <span class="pb-tag"><span class="dot"></span>For vibe coders · free and open source</span>
-            <h2>Make yours feel this good<span>Game feel, recipes and search, inside your own coding agent</span></h2>
-            <div class="cmd"><code><b>$</b> ${esc(MCP_CMD)}</code><button class="copy" data-copy="${esc(MCP_CMD)}">Copy</button></div>
-            <div class="pb-acts"><a class="btn btn-ink" href="#/make">Start here</a><a class="btn" href="#/mcp">Cursor, Codex, Desktop</a></div>
-          </div>
-          <div class="tiles2">${tiles.map((t, k) => `<a class="tile2 rv" style="--d:${k * 50}ms" href="${t[0]}" ${t[5] || ''}><span class="ti">${t[1]}</span><div><h3>${t[2]} <em>${t[3]}</em></h3><p>${t[4]}</p></div></a>`).join('')}</div>
-        </section>
-
-        ${rail({ title: 'Game feel, ready to install', sub: 'What a one-line prompt gets wrong. Poke the live demo, then add it to your game by name.', href: '#/mechanics', more: `All ${mechanics.length}`, cls: 'mech', items: show.map(mcard).join('') })}
 
         <section class="section">
           <div class="sec-head"><div><h2>Browse by genre</h2><p>${DISC.length} vibe-coded games, sorted the way you like to play.</p></div><a class="link" href="#/play">All ${DISC.length} games</a></div>
           <div class="gtiles">${genreTiles(8)}</div>
         </section>
 
-        ${jams.length ? rail({ title: 'From the game jams', sub: 'Winners and standouts from Cursor Vibe Jam and other AI game jams.', href: '#/play', items: jams.slice(0, 12).map(gcard).join('') }) : ''}
-
+        <a class="hub-cta rv" href="#/create"><div><span class="tag"><span class="dot"></span>Create</span><h2>Make your own game</h2><p>Free sound effects, pixel sprites and music loops, open templates and game feel, all in one place.</p></div><span class="btn btn-accent">Start creating</span></a>
       </div>`;
     bindRails(app);
     bindHero(heroGames, picks, whyOf);
@@ -362,80 +333,42 @@
     if (!CALM) cfTimer = setInterval(() => { if (!cf.isConnected) return clearInterval(cfTimer); if (!hover && !document.hidden && cf.getBoundingClientRect().bottom > 0) show(c + 1); }, 5000);
   }
 
-  // ---------- make: the toolkit hub for vibe coders ----------
-  function makePage() {
+  // ---------- create: one hub for making games (AI studio, asset makers, templates, game feel, MCP) ----------
+  function createHub() {
     const originals = games.filter(g => !g.parent);
-    const show = SHOWCASE.map(s => mechBySlug[s]).filter(Boolean);
-    const steps = [
-      ['Connect your agent', 'Claude Code, Cursor or Codex. One command. No account, no API key.', `<div class="cmd"><code><b>$</b> ${esc(MCP_CMD)}</code><button class="copy" data-copy="${esc(MCP_CMD)}">Copy</button></div><a class="link" href="#/mcp">Other clients</a>`],
-      ['Add game feel', `${mechanics.length} parts, each with a live demo and its key numbers. Ask: “add hit-stop to my game”.`, '<a class="link" href="#/mechanics">Browse game feel</a>'],
-      ['Start from a recipe', `${originals.length} open games with prompt, mechanics and source. Ask: “remake Neon Drift, but underwater”.`, '<a class="link" href="#/games">Browse recipes</a>'],
-      ['Share it', 'Made something good? Send it in. The best ones go into the weekly picks, credited to you.', '<button class="link" data-submit-game>Submit a game</button>'],
+    const show = SHOWCASE.map(s => mechBySlug[s]).filter(Boolean).slice(0, 4);
+    const tools = [
+      ['#/studio/sfx', 'Sound effects', 'Coins, jumps, lasers, explosions. Download a WAV or copy the code.'],
+      ['#/studio/sprites', 'Pixel sprites', 'Characters, ships and items with an idle animation, as a sprite sheet.'],
+      ['#/studio/music', 'Music loops', 'Short chiptune loops in the mood you pick, made to loop.'],
     ];
     app.innerHTML = `
       <section class="page-head dots"><div class="wrap">
-        <span class="tag"><span class="dot"></span>For vibe coders</span>
-        <h1>Make vibe games that <em>feel good</em></h1>
-        <p>A one-line prompt gets you a game that runs. Playbook helps with the rest: the timing, impact and polish that keep people playing, pulled straight into your own coding agent.</p>
+        <span class="tag"><span class="dot"></span>Create</span>
+        <h1>Make a <em>game</em></h1>
+        <p>Everything for making web games in one place. The asset makers are free and run in your browser, and every finished game can be submitted to Playbook.</p>
       </div></section>
       <div class="wrap">
-        <section class="idea rv">
-          <div class="idea-l"><span class="tag"><span class="dot"></span>Start from one sentence</span><h2>What do you want to make?</h2><p>Describe your game. We write the prompt and pick the game-feel parts, and your own agent builds it, so there's nothing to pay us.</p></div>
-          <form class="idea-r" id="ideaForm"><div class="idea-row"><input id="ideaIn" maxlength="200" required autocomplete="off" placeholder="${ZH ? '比如：一个鱼会反击的治愈钓鱼游戏' : 'e.g. a cozy fishing game where the fish fight back'}"><button class="btn btn-accent" type="submit">Write my prompt</button></div>
-            <div class="idea-ex">${(ZH ? ['沉没城市里的魂系 Boss 战', '会漂移的超市购物车赛车', '在云上跳跃的猫咪平台跳跃', '一波波怪物的割草肉鸽'] : ['a souls-like boss fight in a sunken city', 'a shopping-cart drift racer', 'a cat platformer above the clouds', 'a horde survivor with weird upgrades']).map(t => `<button type="button" class="chip" data-idea="${esc(t)}">${esc(t)}</button>`).join('')}</div>
-            <div id="ideaOut" hidden><div class="prompt" id="ideaPrompt" data-noi18n></div><div class="idea-parts" id="ideaParts"></div>
-              <div class="prompt-row"><a class="link" href="#/mcp">Connect the Playbook MCP first</a><button class="copy" type="button" id="ideaCopy">Copy prompt</button></div>
-              <a class="st-hook" href="#/studio">Need sound effects and sprites too? Make them free in Studio →</a></div>
-          </form>
+        ${LOCAL ? `<a class="hub-studio rv" href="#/create/studio"><span class="tag"><span class="dot"></span>AI game studio · local preview</span><h2>Describe a game. Play it. Keep changing it.</h2><p>The AI plans the game with you, writes the whole thing, and you refine it by chatting. Shown only on this computer until accounts and credits are ready.</p><span class="btn btn-accent">Open the studio</span></a>` : ''}
+        <section class="section tight">
+          <div class="sec-head"><div><h2>Make the assets</h2><p>Free, no account, and what you make is yours.</p></div></div>
+          <div class="hub-tools">${tools.map(([h, t, p], i) => `<a class="hub-tool rv" style="--d:${i * 50}ms" href="${h}"><b>${t}</b><span>${p}</span></a>`).join('')}</div>
         </section>
-        <div class="stack">${steps.map((x, k) => `<div class="scard c${k}" style="--k:${k}"><div class="scard-l"><span class="n">${String(k + 1).padStart(2, '0')} / ${String(steps.length).padStart(2, '0')}</span><h3>${x[0]}</h3></div><div class="scard-r"><p>${x[1]}</p><div class="sx">${x[2]}</div></div></div>`).join('')}</div>
-        <section class="section">
-          <div class="sec-head"><div><h2>Game feel, ready to install</h2><p>Poke the live demo, then add it by name.</p></div><a class="link" href="#/mechanics">All ${mechanics.length}</a></div>
-          <div class="mgrid" id="makeMech">${show.map(mcard).join('')}</div>
+        <section class="section tight">
+          <div class="sec-head"><div><h2>Start from a template</h2><p>Open games with their prompt, mechanics, look and sound. Remake one in your own way.</p></div><a class="link" href="#/games">All ${originals.length}</a></div>
+          <div class="wall three">${originals.map(g => card(g, { verb: true })).join('')}</div>
         </section>
-        <section class="section">
-          <div class="sec-head"><div><h2>Open recipes</h2><p>Whole games you can remake: prompt, mechanics, look, sound and source.</p></div><a class="link" href="#/games">All ${originals.length}</a></div>
-          <div class="wall three">${originals.slice(0, 6).map(g => card(g, { verb: true })).join('')}</div>
+        <section class="section tight">
+          <div class="sec-head"><div><h2>Game feel</h2><p>${mechanics.length} small parts that make a game feel good, each with a live demo and its key numbers.</p></div><a class="link" href="#/mechanics">All ${mechanics.length}</a></div>
+          <div class="mgrid" id="hubMech">${show.map(mcard).join('')}</div>
         </section>
+        <section class="section tight"><div class="hub-dev rv">
+          <div><span class="tag"><span class="dot"></span>For coding agents</span><h2>Use Playbook in your own agent</h2><p>Templates, game feel and search inside Claude Code, Cursor or Codex. Free and open source.</p></div>
+          <div class="cmd"><code><b>$</b> ${esc(MCP_CMD)}</code><button class="copy" data-copy="${esc(MCP_CMD)}">Copy</button></div>
+          <a class="link" href="#/mcp">Other clients</a>
+        </div></section>
       </div>`;
-    $$('#makeMech .media').forEach(m => m.style.pointerEvents = 'none');
-    bindIdea();
-  }
-
-  // one-sentence idea -> a prompt for the user's own agent, with matching game-feel parts (no generation on our side)
-  const IDEA_RULES = [
-    [/shoot|gun|fps|blast|space|射击|枪|飞船/i, ['muzzle-flash', 'screen-shake', 'hit-stop', 'damage-numbers']],
-    [/platform|jump|climb|跳|平台|攀/i, ['platformer-controller', 'double-jump', 'squash-stretch', 'camera-follow']],
-    [/fight|combat|sword|boss|brawl|souls|duel|战斗|打|剑|魂|决斗/i, ['combo-window', 'hit-stop', 'dodge-roll', 'iframes-blink', 'health-bar-lag']],
-    [/race|racing|racer|car|drift|kart|cart|赛车|漂移|卡丁|购物车/i, ['dash-trail', 'camera-follow', 'screen-shake', 'impact-zoom']],
-    [/survivor|horde|wave|rogue|割草|肉鸽|波次|怪物/i, ['wave-spawner', 'upgrade-cards', 'pickup-magnet', 'damage-numbers']],
-    [/dungeon|rpg|loot|quest|地牢|装备|冒险/i, ['dungeon-gen', 'loot-reveal', 'upgrade-cards', 'number-roll']],
-    [/grapple|swing|hook|钩|摆荡/i, ['grapple-hook']],
-    [/top-?down|twin|俯视/i, ['topdown-movement']],
-    [/puzzle|match|cozy|fish|farm|idle|解谜|消除|钓鱼|种田|治愈|放置/i, ['button-juice', 'particle-burst', 'number-roll', 'procedural-sfx']],
-  ];
-  const ideaParts = t => {
-    const out = [];
-    IDEA_RULES.forEach(([re, ms]) => { if (re.test(t)) ms.forEach(m => out.includes(m) || out.push(m)); });
-    ['screen-shake', 'particle-burst', 'button-juice', 'procedural-sfx'].forEach(m => out.length < 4 && !out.includes(m) && out.push(m));
-    return out.filter(m => mechBySlug[m]).slice(0, 5);
-  };
-  function bindIdea() {
-    const f = $('#ideaForm'); if (!f) return;
-    const run = () => {
-      const t = $('#ideaIn').value.trim(); if (!t) return;
-      const ms = ideaParts(t).map(s => mechBySlug[s]);
-      const p = ZH
-        ? `做一个浏览器游戏：${t}。\n\n做成一个打开就能玩的网页游戏（HTML5 canvas 或 three.js），电脑和手机都能玩。\n用 Playbook MCP 加手感，安装下面这些组件，并按它们的 key numbers 调好：\n${ms.map(m => `- ${m.slug}（${m.name}）`).join('\n')}\n\n完成前自己玩一遍：修掉任何让人觉得慢或不公平的地方，让前 10 秒就好玩。`
-        : `Make a browser game: ${t}.\n\nBuild it as a single web game (HTML5 canvas or three.js) that opens instantly and works on desktop and phone.\nUse the Playbook MCP for game feel. Install these parts and tune them with their key numbers:\n${ms.map(m => `- ${m.slug} (${m.name})`).join('\n')}\n\nBefore you finish, play it yourself: fix anything that feels slow or unfair, and make the first 10 seconds fun.`;
-      $('#ideaPrompt').textContent = p;
-      $('#ideaCopy').dataset.copy = p;
-      $('#ideaParts').innerHTML = ms.map(m => `<a class="chip" href="#/mechanic/${m.slug}">${esc(m.name)}</a>`).join('');
-      $('#ideaOut').hidden = false;
-      track('idea', t.slice(0, 60), true);
-    };
-    f.addEventListener('submit', e => { e.preventDefault(); run(); });
-    $$('[data-idea]', f).forEach(b => b.addEventListener('click', () => { $('#ideaIn').value = b.dataset.idea; run(); }));
+    $$('#hubMech .media').forEach(m => m.style.pointerEvents = 'none');
   }
 
   function gamesPage(genre) {
@@ -443,7 +376,7 @@
     app.innerHTML = `
       <section class="page-head dots"><div class="wrap">
         <h1>${state.genre === 'All' ? 'Every game is a <em>recipe</em>' : `<em>${esc(state.genre)}</em> recipes`}</h1>
-        <p>${games.length} games you can play right now, each a single HTML file with its prompt, mechanics and art direction open. Pick one and remake it in your agent.</p>
+        <p>${games.length} open games you can play right now, each a single HTML file with its prompt, mechanics and art direction. Pick one and remake it your way.</p>
       </div></section>
       <div class="wrap">${wallControls()}</div>`;
     bindWall();
@@ -487,7 +420,6 @@
   function gamePage(id) {
     const g = byId[id]; if (!g) return notFound();
     const root = g.parent ? byId[g.parent] : g;
-    const kids = games.filter(x => x.parent === root.id);
     const c = creators[g.by];
     app.innerHTML = `
       <section class="gpage"><div class="wrap">
@@ -516,16 +448,6 @@
             <div class="rsec"><label>Sound</label><div style="font-size:14px">${esc(zGame(g, 'audio'))}</div></div>
             <div class="rsec"><label>Prompt</label><div class="prompt">${esc(g.prompt)}</div><div class="prompt-row"><button class="copy" data-copy="${esc(g.prompt)}">Copy prompt</button></div></div>
           </div></aside>
-        </div>
-      </div></section>
-
-      <section class="section tight"><div class="wrap">
-        <div class="sec-head"><div><span class="tag rv">Lineage</span><h2 class="rv" style="--d:60ms">Where it came from,<br>where it went.</h2></div>
-        <p class="rv" style="--d:120ms">Every remake credits its source. ${esc(root.title)} has ${kids.length} remakes on Playbook so far.</p></div>
-        <div class="lineage">
-          ${card(root, { here: root.id === g.id })}
-          <span class="arrow">remixed into →</span>
-          ${kids.map(k => card(k, { here: k.id === g.id })).join('')}
         </div>
       </div></section>
 
@@ -992,6 +914,26 @@
       </div>`;
   }
 
+  // ---------- create: the AI game studio (create.js, loaded on demand; backend is the Playbook Create Worker) ----------
+  // Local only until accounts and credits exist (stage 2). Run the Worker with `npm run dev` in worker/.
+  const CREATE_API = LOCAL ? 'http://127.0.0.1:8787' : '';
+  const CREATE_V = 3;
+  let createLib = null;
+  const loadCreate = () => createLib || (createLib = new Promise(res => {
+    const sc = document.createElement('script'); sc.src = `create.js?v=${CREATE_V}`;
+    sc.onload = () => res(window.PB_CREATE || null); sc.onerror = () => { createLib = null; res(null); };
+    document.head.append(sc);
+  }));
+  function createPage() {
+    app.innerHTML = `<section class="cr-wrap"><div id="crRoot"><div class="empty"><b>Loading the studio…</b>It takes a moment the first time.</div></div></section>`;
+    loadCreate().then(lib => {
+      const box = $('#crRoot'); if (!box?.isConnected) return;
+      if (!lib) { box.innerHTML = '<div class="empty"><b>Could not load the studio</b>Check your connection and reload the page.</div>'; I18N?.apply(box); return; }
+      lib.mount(box, { api: CREATE_API, esc, toast, track, copy: txt => copy(txt), apply: I18N ? r => I18N.apply(r) : null, tr: t => (I18N ? I18N.tr(t) : t), zh: ZH,
+        recipes: games.filter(g => !g.parent).map(g => ({ id: g.id, title: g.title, src: g.src })) });
+    });
+  }
+
   // ---------- studio: free asset makers that run in the browser (studio.js, loaded on demand) ----------
   // AI generation (prepaid credits) comes later; these tools stay free and need no account or server.
   const STUDIO_V = 4;
@@ -1025,7 +967,7 @@
         <section class="st-tool" id="stTool" aria-live="polite"><div class="empty"><b>Loading the studio…</b>It takes a moment the first time.</div></section>
         <section class="st-pack" id="stPack"></section>
         <section class="section tight">
-          <div class="sec-head"><div><h2>Use it in your game</h2></div><a class="link" href="#/make">Start a game</a></div>
+          <div class="sec-head"><div><h2>Use it in your game</h2></div><a class="link" href="#/create">All creation tools</a></div>
           <ol class="st-gets">${steps.map(([h, p], i) => `<li class="rv"><span class="wkp-n">${String(i + 1).padStart(2, '0')}</span><h3>${h}</h3><p>${p}</p></li>`).join('')}</ol>
         </section>
         <section class="section tight"><div class="st-next rv">
@@ -1387,7 +1329,7 @@
 
   // ---------- search palette (⌘K or /) ----------
   const cmdk = $('#cmdk'), cmdkIn = $('#cmdkInput'), cmdkList = $('#cmdkList');
-  const PAGES = [['Weekly picks', '#/weeks'], ['Quality standards', '#/standards'], ['Guides', '#/guides'], ['Library', '#/library'], ['Play all games', '#/play'], ['Creators', '#/creators'], ['Make: start here', '#/make'], ['Game feel (mechanics)', '#/mechanics'], ['Open recipes', '#/games'], ['Connect Playbook MCP', '#/mcp'], ['Studio: sound effects', '#/studio/sfx'], ['Studio: pixel sprites', '#/studio/sprites'], ['Studio: music loops', '#/studio/music']];
+  const PAGES = [['Weekly picks', '#/weeks'], ['Quality standards', '#/standards'], ['Guides', '#/guides'], ['Library', '#/library'], ['Play all games', '#/play'], ['Creators', '#/creators'], ['Create', '#/create'], ['Game feel (mechanics)', '#/mechanics'], ['Open recipes', '#/games'], ['Connect Playbook MCP', '#/mcp'], ['Studio: sound effects', '#/studio/sfx'], ['Studio: pixel sprites', '#/studio/sprites'], ['Studio: music loops', '#/studio/music']];
   let cmdkItems = [], cmdkSel = 0;
   const lc = s => String(s || '').toLowerCase();
   function searchAll(q) {
@@ -1501,7 +1443,7 @@
     const path = hash.replace(/^#/, '').split('?')[0];
     const [, page = '', arg = '', sub = ''] = path.split('/');
     // old or retired routes (the Jam and Publish pages return when they are real)
-    const moved = { charts: '#/play', creator: '#/creators', jam: '#/play', publish: '#/make' }[page];
+    const moved = { charts: '#/play', creator: '#/creators', jam: '#/play', publish: '#/create', make: '#/create' }[page];
     if (moved) { location.replace(moved); return; }
     if (curHash !== null) SCROLL[curHash] = scrollY;
     const back = Date.now() - clickNav > 700 ? SCROLL[hash] : undefined;
@@ -1509,18 +1451,19 @@
     unhydrate(app);
     stopPreview(); closeSearch();
     closeModal();
-    const nav = { '': 'home', library: 'library', studio: 'studio', standards: 'play', play: 'play', g: 'play', week: 'play', weeks: 'play', saved: 'library', guides: 'play', guide: 'play', discover: 'play', review: 'play', make: 'make', game: 'make', games: 'make', mechanics: 'make', mechanic: 'make', mcp: 'make', creators: 'creators', c: 'creators' }[page];
+    const nav = { '': 'home', play: 'play', discover: 'play', g: 'play', week: 'play', weeks: 'play', guides: 'play', guide: 'play', standards: 'play', creators: 'play', c: 'play', review: 'play',
+      create: 'create', studio: 'create', game: 'create', games: 'create', mechanics: 'create', mechanic: 'create', mcp: 'create', library: 'library', saved: 'library' }[page];
     $$('[data-nav]').forEach(a => a.classList.toggle('on', a.dataset.nav === nav));
-    const tab = { home: 'home', play: 'play', make: 'make', creators: 'creators', library: 'library' }[nav];
+    const tab = { home: 'home', play: 'play', create: 'create', library: 'library' }[nav];
     $$('[data-tab]').forEach(a => a.classList.toggle('on', a.dataset.tab === tab));
     const a = decodeURIComponent(arg);
-    ({ '': home, studio: () => studioPage(a), library: savedPage, standards: standardsPage, saved: savedPage, guides: guidesPage, guide: () => guidePage(a), week: () => weekPage(a), weeks: weeksPage, g: () => discGamePage(a), play: () => discoverPage(a), discover: () => discoverPage(a), make: makePage, creators: creatorsPage, c: () => creatorProfile(a), games: () => gamesPage(a), mcp: mcpPage, game: () => gamePage(a), mechanics: mechanicsPage, mechanic: () => mechanicPage(a), review: LOCAL ? reviewPage : notFound }[page] || notFound)();
+    ({ '': home, create: () => (a === 'studio' ? (LOCAL ? createPage() : notFound()) : createHub()), studio: () => studioPage(a), library: savedPage, standards: standardsPage, saved: savedPage, guides: guidesPage, guide: () => guidePage(a), week: () => weekPage(a), weeks: weeksPage, g: () => discGamePage(a), play: () => discoverPage(a), discover: () => discoverPage(a), creators: creatorsPage, c: () => creatorProfile(a), games: () => gamesPage(a), mcp: mcpPage, game: () => gamePage(a), mechanics: mechanicsPage, mechanic: () => mechanicPage(a), review: LOCAL ? reviewPage : notFound }[page] || notFound)();
     hydrate();
     window.scrollTo(0, back || 0);
     if (sub === 'kit') requestAnimationFrame(() => $('.kit')?.scrollIntoView({ block: 'start' }));
     if (sub === 'claim') { if (page === 'g' && G_BY[a]) claimModal(G_BY[a]._i); if (page === 'c' && crBySlug[a]) claimCreatorModal(a); }
     const ttl = page === 'game' && byId[a] ? byId[a].title : page === 'mechanic' && mechBySlug[a] ? mechBySlug[a].name : page === 'c' && crBySlug[a] ? crBySlug[a].handle : page === 'g' && G_BY[a] ? G_BY[a].title : page === 'week' && WEEKS.find(w => w.id === a) ? `Week of ${weekName(a)}` : page === 'guide' && GUIDES.find(x => x.slug === a) ? GUIDES.find(x => x.slug === a).title
-      : { studio: 'Studio', library: 'Library', standards: 'Quality standards', saved: 'Library', guides: 'Guides', weeks: 'Weekly picks', play: 'Play', discover: 'Play', make: 'Make', creators: 'Creators', mechanics: 'Game feel', games: 'Recipes', mcp: 'Connect MCP' }[page];
+      : { create: a === 'studio' ? 'AI game studio' : 'Create', studio: 'Studio', library: 'Library', standards: 'Quality standards', saved: 'Library', guides: 'Guides', weeks: 'Weekly picks', play: 'Play', discover: 'Play', creators: 'Creators', mechanics: 'Game feel', games: 'Recipes', mcp: 'Connect MCP' }[page];
     document.title = ttl ? `${ttl} — Playbook` : 'Playbook — the home of vibe gaming';
     track('/' + path.replace(/^\//, ''), document.title);
     if (I18N) document.title = I18N.tr(document.title);

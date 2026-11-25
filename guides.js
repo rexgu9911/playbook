@@ -23,7 +23,7 @@ window.PB_GUIDES = [
    "https://wavedash.com/games/pando-garden",
    "https://longsilence.anshu.dev/"
   ],
-  "updated": "2026-11-24"
+  "updated": "2026-11-25"
  },
  {
   "slug": "vibe-jam-2026-winners",
@@ -53,7 +53,7 @@ window.PB_GUIDES = [
    "https://playnapless.com",
    "https://kottbullar-metal.vercel.app"
   ],
-  "updated": "2026-11-24"
+  "updated": "2026-11-25"
  },
  {
   "slug": "best-vibe-coded-racing-games",
@@ -76,7 +76,7 @@ window.PB_GUIDES = [
    "https://rally-positano.sachasayan.com",
    "https://js-drift.fly.dev/"
   ],
-  "updated": "2026-11-24"
+  "updated": "2026-11-25"
  },
  {
   "slug": "made-with-claude-fable-5-2",
@@ -106,7 +106,7 @@ window.PB_GUIDES = [
    "https://robinduckett.github.io/boo-mas/",
    "https://op7418.github.io/guizang-game-skill/"
   ],
-  "updated": "2026-11-24"
+  "updated": "2026-11-25"
  },
  {
   "slug": "vibe-coded-games-for-your-phone",
@@ -136,6 +136,6 @@ window.PB_GUIDES = [
    "https://tailgrab.io/",
    "https://seiryu.miraicode.one/"
   ],
-  "updated": "2026-11-24"
+  "updated": "2026-11-25"
  }
 ];

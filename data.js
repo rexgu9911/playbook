@@ -87,7 +87,8 @@ window.PB = (() => {
   ];
 
   const games = [];
-  bases.forEach(b => b.themes.forEach((t, i) => {
+  // only the original of each recipe is listed (the colour variants were cut on 2026-11-26; their themes stay in the data for the game files)
+  bases.forEach(b => b.themes.slice(0, 1).forEach((t, i) => {
     games.push({
       id: i === 0 ? b.slug : `${b.slug}-${i}`,
       base: b.slug, theme: i,
