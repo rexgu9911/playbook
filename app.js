@@ -1463,7 +1463,7 @@
     if (sub === 'kit') requestAnimationFrame(() => $('.kit')?.scrollIntoView({ block: 'start' }));
     if (sub === 'claim') { if (page === 'g' && G_BY[a]) claimModal(G_BY[a]._i); if (page === 'c' && crBySlug[a]) claimCreatorModal(a); }
     const ttl = page === 'game' && byId[a] ? byId[a].title : page === 'mechanic' && mechBySlug[a] ? mechBySlug[a].name : page === 'c' && crBySlug[a] ? crBySlug[a].handle : page === 'g' && G_BY[a] ? G_BY[a].title : page === 'week' && WEEKS.find(w => w.id === a) ? `Week of ${weekName(a)}` : page === 'guide' && GUIDES.find(x => x.slug === a) ? GUIDES.find(x => x.slug === a).title
-      : { create: a === 'studio' ? 'AI game studio' : 'Create', studio: 'Studio', library: 'Library', standards: 'Quality standards', saved: 'Library', guides: 'Guides', weeks: 'Weekly picks', play: 'Play', discover: 'Play', creators: 'Creators', mechanics: 'Game feel', games: 'Recipes', mcp: 'Connect MCP' }[page];
+      : { create: a === 'studio' ? (LOCAL ? 'AI game studio' : '') : 'Create', studio: 'Studio', library: 'Library', standards: 'Quality standards', saved: 'Library', guides: 'Guides', weeks: 'Weekly picks', play: 'Play', discover: 'Play', creators: 'Creators', mechanics: 'Game feel', games: 'Templates', mcp: 'Connect MCP' }[page];
     document.title = ttl ? `${ttl} — Playbook` : 'Playbook — the home of vibe gaming';
     track('/' + path.replace(/^\//, ''), document.title);
     if (I18N) document.title = I18N.tr(document.title);
