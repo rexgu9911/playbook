@@ -179,7 +179,7 @@
       <div class="mmeta"><h3>${esc(m.name)}</h3><div class="row"><span>${esc(m.cat)}</span><span>Live demo</span></div></div>
     </a>`;
 
-  const GENRES = ['All', '3D', 'Racing', 'Survivor', 'Platformer', 'Shooter', 'Puzzle', 'Action', 'Rhythm', 'Sports', 'Strategy'];
+  const GENRES = ['All', '3D', 'Racing', 'Survivor', 'Platformer', 'Runner', 'Shooter', 'Puzzle', 'Physics', 'Action', 'Rhythm', 'Sports', 'Strategy', 'Cards'];
 
   // ---------- pages ----------
   const state = { genre: 'All', mcat: 'All', client: 'Claude Code' };
@@ -988,7 +988,7 @@
   const PROD_CREATE_API = '';
   const previewApi = () => { try { const v = localStorage.getItem('pb-create-api') || ''; return /^https:\/\/[a-z0-9.-]+(:\d+)?$/i.test(v) ? v : ''; } catch { return ''; } };
   const CREATE_API = LOCAL ? 'http://127.0.0.1:8787' : (PROD_CREATE_API || previewApi());
-  const CREATE_V = 8, CLOUD_V = 2;
+  const CREATE_V = 10, CLOUD_V = 2;
   const libs = {};
   const loadLib = (file, v, name) => libs[file] || (libs[file] = new Promise(res => {
     const sc = document.createElement('script'); sc.src = `${file}?v=${v}`;
@@ -1045,6 +1045,7 @@
             <a class="btn" href="${esc(g.playUrl)}" target="_blank" rel="noopener">Full screen ↗</a>
             ${g.mine ? `<a class="btn" href="#/create/studio">Edit in the studio</a>` : `<button class="link" id="mdReport">Report</button>`}
           </div>
+          <section class="made-board" id="mdBoard" hidden></section>
           <p class="made-fine">Made with Playbook Create and published by its creator. Games run in a locked-down sandbox and can't see your account.</p>
         </div></section>`;
       I18N?.apply(app);
@@ -1063,6 +1064,59 @@
     };
     draw();
     cloud.req(`/api/games/${gid}/play`, { method: 'POST' }).catch(() => {});
+
+    // Leaderboard: the game reports scores with window.playbook.gameOver(score) (the SDK is added when it is served).
+    // Signed-in players' scores are saved (best per player); others are asked to sign in. Shown once there is a score.
+    let board = { scores: [], you: null }, pending = null, lastAt = 0;
+    const drawBoard = note => {
+      const el = $('#mdBoard'); if (!el) return;
+      if (!board.scores.length && !note) { el.hidden = true; return; }
+      el.hidden = false;
+      el.innerHTML = `<div class="mb-head"><h2>Leaderboard</h2>${board.you ? `<span class="muted small">${ZH ? `你的最好成绩 <b>${board.you.best}</b> · 第 ${board.you.rank} 名` : `Your best <b>${board.you.best}</b> · #${board.you.rank}`}</span>` : ''}</div>
+        ${note || ''}
+        ${board.scores.length ? `<ol class="mb-list">${board.scores.map(r => `<li class="${r.you ? 'you' : ''}"><span class="mb-rank">${r.rank}</span><span class="mb-name" data-noi18n>${r.you ? (ZH ? '你' : 'You') : esc(r.name)}</span><span class="mb-score">${r.score}</span></li>`).join('')}</ol>` : ''}`;
+      I18N?.apply(el);
+      $('#mbSave', el)?.addEventListener('click', async () => { if (await cloud.signIn(ZH ? '登录后，你的分数会进入排行榜。' : 'Sign in to put your score on the leaderboard.')) send(pending); });
+    };
+    const loadBoard = async () => { try { board = await cloud.getJSON(`/api/games/${gid}/scores`); drawBoard(); } catch {} };
+    const send = async score => {
+      if (score == null) return;
+      if (!cloud.user) { pending = score; return drawBoard(`<div class="mb-note"><span>${ZH ? `你得了 <b>${score}</b> 分。` : `You scored <b>${score}</b>.`}</span><button class="btn btn-accent" id="mbSave">${ZH ? '登录并保存分数' : 'Sign in to save it'}</button></div>`); }
+      pending = null;
+      try {
+        const j = await cloud.getJSON(`/api/games/${gid}/scores`, { method: 'POST', body: { score } });
+        board = { scores: j.scores, you: { best: j.best, rank: j.rank } };
+        drawBoard(j.improved ? `<div class="mb-note good"><span>${ZH ? `新纪录：<b>${j.best}</b>，第 ${j.rank} 名` : `New best: <b>${j.best}</b>, #${j.rank}`}</span></div>` : '');
+      } catch (e) { toast(e.message); }
+    };
+    // Cloud saves: window.playbook.save(data) / load(). Signed in: kept in the account; signed out: in this browser
+    // (a browser save is moved to the account the first time a signed-in player loads with no cloud save yet).
+    const LKEY = `pb-save-${gid}`;
+    const local = { get: () => { try { return localStorage.getItem(LKEY); } catch { return null; } }, set: v => { try { localStorage.setItem(LKEY, v); } catch {} } };
+    const onSave = async (d, f) => {
+      if (d.__pbGame === 'save' && typeof d.data === 'string' && d.data.length <= 16384) {
+        local.set(d.data);
+        if (cloud.user) cloud.req(`/api/games/${gid}/save`, { method: 'PUT', body: { data: d.data } }).catch(() => {});
+      } else if (d.__pbGame === 'load' && typeof d.id === 'string') {
+        let data = null;
+        if (cloud.user) {
+          try { data = (await cloud.getJSON(`/api/games/${gid}/save`)).data; } catch {}
+          if (data == null && local.get()) { data = local.get(); cloud.req(`/api/games/${gid}/save`, { method: 'PUT', body: { data } }).catch(() => {}); }
+        } else data = local.get();
+        try { f.contentWindow.postMessage({ __pbReply: d.id, data }, '*'); } catch {}
+      }
+    };
+    const onScore = e => {
+      if (!document.body.contains($('#mdBoard'))) return removeEventListener('message', onScore);
+      const f = $('.made-frame iframe');
+      const d = e.data;
+      if (f && e.source === f.contentWindow && d && (d.__pbGame === 'save' || d.__pbGame === 'load')) return onSave(d, f);
+      if (!f || e.source !== f.contentWindow || !d || (d.__pbGame !== 'gameOver' && d.__pbGame !== 'score') || typeof d.score !== 'number') return;
+      if (Date.now() - lastAt < 1500) return;   // a game that reports every frame doesn't flood the server
+      lastAt = Date.now(); send(d.score);
+    };
+    addEventListener('message', onScore);
+    cloud.ready.then(loadBoard);
   }
 
   // ---------- studio: free asset makers that run in the browser (studio.js, loaded on demand) ----------

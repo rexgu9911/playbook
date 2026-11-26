@@ -32,6 +32,10 @@
   // an optional screenshot of the biggest canvas; {__pbCmd:'input'} presses keys and clicks like a first-time player.
   const PROBE = `<script data-pb-probe>(function(){
 var errs=0,frames=0,types={},P=parent;
+window.playbook=window.playbook||(function(){var n=0,w={};function g(t,v){try{P.postMessage({__pbGame:t,score:typeof v==='number'&&isFinite(v)?Math.floor(v):null},'*')}catch(e){}}
+addEventListener('message',function(e){var d=e.data;if(e.source===P&&d&&d.__pbReply&&w[d.__pbReply]){w[d.__pbReply](d.data==null?null:d.data);delete w[d.__pbReply]}});
+return{ready:function(){g('ready')},gameOver:function(v){g('gameOver',v)},submitScore:function(v){g('score',v)},save:function(v){try{var j=JSON.stringify(v);if(j&&j.length<=16384)P.postMessage({__pbGame:'save',data:j},'*')}catch(e){}},
+load:function(){return new Promise(function(r){var id='l'+(++n);var t=setTimeout(function(){delete w[id];r(null)},1500);w[id]=function(j){clearTimeout(t);try{r(j==null?null:JSON.parse(j))}catch(e){r(null)}};try{P.postMessage({__pbGame:'load',id:id},'*')}catch(e){}})}}})();
 var s=function(m){errs++;try{P.postMessage({__pbErr:String(m).slice(0,1500)},'*')}catch(e){}};
 addEventListener('error',function(e){s((e.message||'Script error')+(e.lineno?' (line '+e.lineno+')':''))});
 addEventListener('unhandledrejection',function(e){var r=e.reason;s('Unhandled promise rejection: '+(r&&r.message||r))});
@@ -231,9 +235,17 @@ if(d.shot&&o){try{out.shot=o.toDataURL('image/jpeg',0.82)}catch(x){}}P.postMessa
       setTimeout(() => { try { f.focus(); } catch {} }, 300);
     };
     // price on the button: an estimate from list prices (new game ≈ 18k output tokens; an edit ≈ 2.5k output plus reading the file)
-    const curModel = () => st.models.find(x => x.id === st.model);
+    // "Auto" (the default when real models are on): Opus 5.5 plans and writes new games, Sonnet 5.5 (half the price) makes changes and fixes.
+    const AUTO = { plan: 'claude-opus-5-5', new: 'claude-opus-5-5', edit: 'claude-sonnet-5-5' };
+    const hasAuto = () => st.real && Object.values(AUTO).every(id => st.models.some(m => m.id === id));
+    const pick = (kind = 'auto') => {
+      if (st.model !== 'auto') return st.model;
+      const k = kind === 'plan' ? 'plan' : (kind === 'fix' || kind === 'edit' || (kind === 'auto' && ver())) ? 'edit' : 'new';
+      return AUTO[k];
+    };
+    const curModel = kind => st.models.find(x => x.id === pick(kind));
     const estimate = (kind = 'auto') => {
-      const m = curModel(); if (!m) return 0;
+      const m = curModel(kind); if (!m) return 0;
       if (!m.price?.output) return m.id === 'mock' && cloud?.user ? (kind === 'plan' ? Math.ceil(st.credit.mock / 4) : st.credit.mock) : 0;
       if (kind === 'plan') return Math.ceil(((800 * m.price.input + 1500 * m.price.output) / 1e6) * st.credit.markup / st.credit.usd);
       const v = ver(), edit = kind === 'fix' || (kind === 'auto' && v);
@@ -345,7 +357,7 @@ if(d.shot&&o){try{out.shot=o.toDataURL('image/jpeg',0.82)}catch(x){}}P.postMessa
       drawAcct();
       sync(p);
     };
-    const open = p => { st.project = p; st.cur = p.versions.length - 1; st.fixStreak = 0; drawAll(); };
+    const open = p => { st.project = p; st.cur = p.versions.length - 1; st.fixStreak = 0; st.save = null; drawAll(); };
     async function openCloud(pid) {
       const j = await cloud.getJSON(`/api/projects/${pid}`);
       const p = { id: j.project.id, title: j.project.title, plan: j.project.plan, setup: j.project.setup, messages: j.project.messages || [], gameId: j.project.gameId, remixOf: j.project.remixOf, created: j.project.created, updated: j.project.updated,
@@ -441,12 +453,12 @@ if(d.shot&&o){try{out.shot=o.toDataURL('image/jpeg',0.82)}catch(x){}}P.postMessa
       if (!(await canSpend(estimate('plan'), T('Plan the game', '规划游戏')))) return;
       w.err = ''; w.step = 'planning'; w.t0 = Date.now(); drawMsgs();
       try {
-        const j = cloud ? await cloud.getJSON('/api/plan', { method: 'POST', body: { model: st.model, idea, setup: setupText(w) } })
-          : await (async () => { const r = await fetch(`${host.api}/api/plan`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ model: st.model, idea, setup: setupText(w) }) }); const x = await r.json().catch(() => ({})); if (!r.ok) throw Object.assign(new Error(x.error || `Request failed (${r.status})`), { status: r.status }); return x; })();
+        const j = cloud ? await cloud.getJSON('/api/plan', { method: 'POST', body: { model: pick('plan'), idea, setup: setupText(w) } })
+          : await (async () => { const r = await fetch(`${host.api}/api/plan`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ model: pick('plan'), idea, setup: setupText(w) }) }); const x = await r.json().catch(() => ({})); if (!r.ok) throw Object.assign(new Error(x.error || `Request failed (${r.status})`), { status: r.status }); return x; })();
         if (!j.plan) throw new Error('The plan came back empty. Try again.');
         cloud?.setBalance(j.balance);
         w.plan = j.plan; w.planCredits = j.credits || 0; w.answers = []; w.style = -1; w.step = 'q0';
-        host.track('create/plan', st.model, true);
+        host.track('create/plan', pick('plan'), true);
       } catch (e) {
         cloud?.setBalance(e.data?.balance);
         w.err = e.status === 402 ? T('Not enough credits for this. Top up to continue.', 'credits 不够了，充值后继续。') : e.status === 0 ? T('Could not reach Playbook Create. Is the local server running?', '连不上 Playbook Create，本地服务器开着吗？') : host.tr(e.message);
@@ -486,7 +498,7 @@ if(d.shot&&o){try{out.shot=o.toDataURL('image/jpeg',0.82)}catch(x){}}P.postMessa
       let done = null, failed = '', status = 200, failData = null;
       try {
         if (cloud?.user) { await sync(p); if (!p.cloud) throw Object.assign(new Error(st.syncErr || T('Could not save the project to your account.', '无法把项目存进账号。')), { status: 0 }); }
-        const body = { model: st.model, prompt: error ? 'Fix the error so the game runs.' : prompt, html: base?.html, error, history, plan: p.plan, setup: p.setup, projectId: cloud?.user ? p.id : undefined };
+        const body = { model: pick(error ? 'fix' : base ? 'edit' : 'new'), prompt: error ? 'Fix the error so the game runs.' : prompt, html: base?.html, error, history, plan: p.plan, setup: p.setup, projectId: cloud?.user ? p.id : undefined };
         const r = cloud ? await cloud.req('/api/generate', { method: 'POST', body, signal: ctl.signal })
           : await fetch(`${host.api}/api/generate`, { method: 'POST', signal: ctl.signal, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
         if (!r.ok || !r.body) { status = r.status; failed = (await r.json().catch(() => ({}))).error || `Request failed (${r.status})`; }
@@ -514,7 +526,7 @@ if(d.shot&&o){try{out.shot=o.toDataURL('image/jpeg',0.82)}catch(x){}}P.postMessa
         p.versions.push({ html: done.html, summary: done.summary, prompt: error ? 'Fix: ' + error.slice(0, 60) : prompt, at: Date.now(), model: done.model, credits: done.credits, costUsd: done.costUsd, usage: done.usage, mode: done.mode });
         st.cur = p.versions.length - 1;
         p.messages.push({ role: 'ai', text: done.summary, v: st.cur, credits: done.credits, free: !!done.free, mode: done.mode });
-        host.track('create/generate', st.model, true);
+        host.track('create/generate', body.model, true);
         drawMsgs(); drawVersions(); drawFrame(); drawPrice(); drawTune(); setView('game');
       } else {
         if (error) st.fixStreak--;
@@ -759,6 +771,14 @@ if(d.shot&&o){try{out.shot=o.toDataURL('image/jpeg',0.82)}catch(x){}}P.postMessa
       const f = $('iframe', frameBox);
       if (!root.isConnected) return removeEventListener('message', onMsg);
       if (f && e.source === f.contentWindow && e.data && typeof e.data.__pbErr === 'string' && !st.err) showErr(e.data.__pbErr);
+      // the game saves progress through the Playbook SDK: in the studio, saves last until the page is reloaded
+      if (f && e.source === f.contentWindow && e.data && e.data.__pbGame === 'save' && typeof e.data.data === 'string') st.save = e.data.data;
+      if (f && e.source === f.contentWindow && e.data && e.data.__pbGame === 'load' && typeof e.data.id === 'string') { try { f.contentWindow.postMessage({ __pbReply: e.data.id, data: st.save ?? null }, '*'); } catch {} }
+      // the game reported a score through the Playbook SDK: once published, it goes on the game's leaderboard
+      if (f && e.source === f.contentWindow && e.data && (e.data.__pbGame === 'gameOver' || e.data.__pbGame === 'score') && typeof e.data.score === 'number' && Date.now() - (st.scoreAt || 0) > 4000) {
+        st.scoreAt = Date.now();
+        host.toast(host.zh ? `排行榜已接通：游戏上报了 ${e.data.score} 分。发布后会进入这款游戏的排行榜。` : `Leaderboard works: the game reported a score of ${e.data.score}. Once published, scores go on its leaderboard.`);
+      }
     };
     addEventListener('message', onMsg);
 
@@ -774,8 +794,10 @@ if(d.shot&&o){try{out.shot=o.toDataURL('image/jpeg',0.82)}catch(x){}}P.postMessa
         $('#crMode', root).textContent = host.tr('Studio server offline');
       } else {
         let saved = null; try { saved = localStorage.getItem('pb-create-model'); } catch {}
-        st.model = st.models.some(m => m.id === saved) ? saved : (st.models.find(m => m.id === 'claude-opus-5-5') || st.models[0]).id;
-        sel.innerHTML = st.models.map(m => `<option value="${esc(m.id)}" ${m.id === st.model ? 'selected' : ''}>${esc(m.label)}</option>`).join('');
+        const auto = hasAuto();
+        st.model = (saved === 'auto' && auto) || st.models.some(m => m.id === saved) ? saved : auto ? 'auto' : (st.models.find(m => m.id === 'claude-opus-5-5') || st.models[0]).id;
+        sel.innerHTML = (auto ? `<option value="auto" ${st.model === 'auto' ? 'selected' : ''} title="${T('Opus 5.5 for new games, Sonnet 5.5 for changes', '新游戏用 Opus 5.5，修改用 Sonnet 5.5')}">${T('Auto (recommended)', '自动（推荐）')}</option>` : '')
+          + st.models.map(m => `<option value="${esc(m.id)}" ${m.id === st.model ? 'selected' : ''}>${esc(m.label)}</option>`).join('');
         $('#crMode', root).textContent = host.tr(st.real ? '' : 'Demo mode');
       }
       drawAcct();

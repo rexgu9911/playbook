@@ -10,12 +10,12 @@
 
   const MON = { Jan: 1, Feb: 2, Mar: 3, Apr: 4, May: 5, Jun: 6, Jul: 7, Aug: 8, Sep: 9, Oct: 10, Nov: 11, Dec: 12 };
   const G = { Action: '动作', Adventure: '冒险', Sim: '模拟', Shooter: '射击', Puzzle: '解谜', Strategy: '策略', Racing: '竞速', Arcade: '街机',
-    Sports: '体育', RPG: '角色扮演', Roguelike: 'Roguelike', Flight: '飞行', Platformer: '平台跳跃', Survivor: '幸存者', Other: '其他', Rhythm: '节奏', 'Tower defense': '塔防',
+    Sports: '体育', RPG: '角色扮演', Roguelike: 'Roguelike', Flight: '飞行', Platformer: '平台跳跃', Survivor: '幸存者', Other: '其他', Rhythm: '节奏', 'Tower defense': '塔防', Cards: '卡牌', Physics: '物理', Runner: '跑酷',
     Movement: '移动', Feel: '手感', Progression: '成长', Feedback: '反馈', Camera: '镜头', Combat: '战斗', UI: '界面', Audio: '音效', Generation: '生成' };
   const P = { 'Game jam': 'Game Jam', Web: '网页', X: 'X', YouTube: 'YouTube', 'Hacker News': 'Hacker News', Reddit: 'Reddit', 'itch.io': 'itch.io', Wavedash: 'Wavedash' };
   const g = s => G[s] || s;
   const week = (m, d, y) => `${y ? y + '年' : ''}${MON[m]}月${d}日这一周`;
-  const GENRE_RX = '(Action|Adventure|Sim|Shooter|Puzzle|Strategy|Racing|Arcade|Sports|RPG|Roguelike|Flight|Platformer|Survivor|Rhythm|Tower defense|Other)';
+  const GENRE_RX = '(Action|Adventure|Sim|Shooter|Puzzle|Strategy|Racing|Arcade|Sports|RPG|Roguelike|Flight|Platformer|Survivor|Rhythm|Tower defense|Cards|Physics|Runner|Other)';
 
   // exact strings (text nodes, attributes, or whole elements; {0} {1} keep the element's own links)
   const D = {
@@ -28,7 +28,8 @@
     'A neon snake that leaves a glowing trail': '一条留下发光轨迹的霓虹贪吃蛇', 'A one-button runner where you jump to the beat': '跟着节拍跳的单键跑酷', 'A cozy marble maze you tilt to roll': '倾斜木板让弹珠滚动的治愈迷宫', 'A top-down space shooter with a boss': '有 Boss 的俯视角太空射击',
     'Describe a game. Play it right away.': '描述一款游戏，马上就能玩。', 'The AI plans it with you, writes it and tests it. Keep changing it by chatting, then publish it here.': 'AI 和你一起规划、写好并试玩。在对话里接着改，做好了发布到这里。',
     // open source credits (2026-11-26 rebuild)
-    'Open source': '开源致谢', 'Built on open source': '建立在<em>开源</em>之上',
+    'Open source': '开源致谢', 'Leaderboard': '排行榜',
+    'Built on open source': '建立在<em>开源</em>之上',
     'The projects Playbook uses, what each one does here, and its license. Thank you to everyone who made them.': 'Playbook 用到的开源项目、在这里的用途和许可证。感谢做出它们的每一个人。',
     'Game-making handbooks (genres, controls, game feel, audio, quality checks). Condensed and rewritten as the knowledge the AI studio uses when it writes a game.': '游戏制作手册（玩法类型、操作、手感、音频、质量检查）。经过压缩和改写，成为 AI 工作室写游戏时用的知识。',
     'Part of those handbooks was ported from here by OpenGame. Its license and copyright travel with them.': '其中一部分手册是 OpenGame 从这里移植的，它的许可证和版权声明随手册一起保留。',
@@ -268,10 +269,10 @@
     [/^(\d+) of (\d+) games$/, (_, a, b) => `${a} / ${b} 款游戏`], [/^· (\d+) preview on hover$/, (_, n) => `· ${n} 款悬停可预览`],
     [/^Source · (.+) ↗$/, (_, p) => `来源 · ${P[p] || p} ↗`],
     [/^(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec) (\d{4})$/, (_, m, y) => `${y}年${MON[m]}月`],
-    [new RegExp(`^${GENRE_RX}( · .+)?$`), (_, a, rest = '') => g(a) + rest],
+    [new RegExp(`^${GENRE_RX}( · .+)?$`), (_, a, rest = '') => g(a) + rest.replace(new RegExp(`(?<= · )${GENRE_RX}(?= · |$)`, 'g'), m => g(m))],
     [/^(Movement|Feel|Progression|Feedback|Camera|Combat|UI|Audio|Generation)$/, (_, a) => g(a)],
     [/^Playbook (original|remix) · (.+)$/, (_, k, a) => `Playbook ${k === 'original' ? '原创' : '改编'} · ${g(a)}`], [/^Playbook · (.+)$/, (_, a) => `Playbook · ${g(a)}`],
-    [new RegExp(`^(.+?) · ${GENRE_RX}( · .+)?$`), (_, a, b, rest = '') => `${a} · ${g(b)}${rest}`],
+    [new RegExp(`^(.+?) · ${GENRE_RX}( · .+)?$`), (_, a, b, rest = '') => `${a} · ${g(b)}${rest.replace(new RegExp(`(?<= · )${GENRE_RX}(?= · |$)`, 'g'), m => g(m))}`],
     [/^(Game jam|Web)$/, (_, p) => P[p]],
     [/^Play on (.+) ↗$/, (_, h) => `在 ${h} 上玩 ↗`], [/^More from (.+)$/, (_, c) => `更多来自 ${c} 的作品`],
     [/^More (\w+) games$/, (_, a) => `更多${g(a[0].toUpperCase() + a.slice(1))}游戏`], [/^All (\w+)$/, (_, a) => `全部${g(a[0].toUpperCase() + a.slice(1))}`],

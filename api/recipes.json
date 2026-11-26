@@ -413,5 +413,168 @@
   "source_raw": "https://raw.githubusercontent.com/rexgu9911/playbook/main/games/bloom-guard.html",
   "theme_param": "theme=0",
   "license": "MIT"
+ },
+ {
+  "id": "ember-deck",
+  "title": "Ember Deck",
+  "kind": "original",
+  "remix_of": null,
+  "genres": [
+   "Cards",
+   "Strategy"
+  ],
+  "is3d": false,
+  "engine": "Canvas 2D",
+  "files": 1,
+  "controls": "Tap / click a card or drag it up onto the enemy · E or End Turn ends your turn · 1-9 play cards",
+  "mechanics": [
+   {
+    "slug": "upgrade-cards",
+    "name": "Pick 1 of 3"
+   },
+   {
+    "slug": "damage-numbers",
+    "name": "Damage Numbers"
+   },
+   {
+    "slug": "screen-shake",
+    "name": "Trauma Screen Shake"
+   },
+   {
+    "slug": "hit-stop",
+    "name": "Hit Stop"
+   },
+   {
+    "slug": "particle-burst",
+    "name": "Layered Particle Burst"
+   },
+   {
+    "slug": "health-bar-lag",
+    "name": "Health Bar Lag"
+   },
+   {
+    "slug": "procedural-sfx",
+    "name": "Procedural SFX"
+   }
+  ],
+  "art_direction": "Warm ember and charcoal · stone archway · glowing cards",
+  "palette": [
+   "#1a0f0b",
+   "#ff7a2a"
+  ],
+  "sound": "Card flicks and whooshes, meaty hit thumps, shield clangs, burn sizzle, shuffle ticks (WebAudio)",
+  "prompt": "Make a compact deckbuilding dungeon run in one HTML file on Canvas 2D. Start with a 10-card deck (strikes, guards and two utility cards), draw 5 a turn with 3 energy, and play cards by tapping them or dragging them up onto the enemy. Each enemy shows its next intent (attack, block or buff) above its head. A run is 7 fights ending in a boss, HP carries over, and after each win you pick 1 of 3 new cards from about 15 originals with keywords like burn, shield, draw and retain. Draw the cards procedurally (frame, cost gem, icon per type) and lay the hand out as a fan along the bottom so it works in phone portrait. Make the cards feel great: hover lift, fly-to-target tweens, damage numbers, hit flash, hit-stop and screen shake on big hits, and an animated shuffle when the draw pile runs out.",
+  "play_url": "https://rexgu9911.github.io/playbook/games/ember-deck.html?theme=0",
+  "page_url": "https://rexgu9911.github.io/playbook/#/game/ember-deck",
+  "source_url": "https://rexgu9911.github.io/playbook/games/ember-deck.html",
+  "source_raw": "https://raw.githubusercontent.com/rexgu9911/playbook/main/games/ember-deck.html",
+  "theme_param": "theme=0",
+  "license": "MIT"
+ },
+ {
+  "id": "gravity-well",
+  "title": "Gravity Well",
+  "kind": "original",
+  "remix_of": null,
+  "genres": [
+   "Physics",
+   "Puzzle"
+  ],
+  "is3d": false,
+  "engine": "Canvas 2D",
+  "files": 1,
+  "controls": "Tap / click to drop a well, drag to move it, tap it to remove · Space launches · Tab switches pull / push · arrows + Enter place by keyboard",
+  "mechanics": [
+   {
+    "slug": "particle-burst",
+    "name": "Layered Particle Burst"
+   },
+   {
+    "slug": "screen-shake",
+    "name": "Trauma Screen Shake"
+   },
+   {
+    "slug": "hit-stop",
+    "name": "Hit Stop"
+   },
+   {
+    "slug": "dash-trail",
+    "name": "Dash + Afterimage"
+   },
+   {
+    "slug": "procedural-sfx",
+    "name": "Procedural SFX"
+   }
+  ],
+  "art_direction": "Deep-space neon · warped space-time grid · glowing comet",
+  "palette": [
+   "#18205a",
+   "#7ff4ff"
+  ],
+  "sound": "Deep well whomps, launch whoosh, rising pentatonic star chimes, portal arpeggio and crash rumble (WebAudio)",
+  "prompt": "Make a gravity-slingshot physics puzzle in one HTML file on Canvas 2D. A comet waits on a launch pad; before launch the player taps to drop a few gravity wells (drag to move, tap to remove) and sees a faint predicted path for the first second of flight. On Launch the comet flies under inverse-square pull from every well and planet, integrated with semi-implicit Euler in fixed sub-steps, and must collect every star to open the exit portal without hitting asteroids or planets, falling into a well or leaving the field. 12 hand-made levels in a 600 x 400 world that turns upright on portrait phones, each adding one idea (one well, rocks, hairpin turns, planets, two wells, push wells, a moving rock), with 1-3 stars for solving in par wells or fewer. Add a warped space-time grid, a glowing comet trail, star bursts with rising chimes, a swirling portal, crash shake and a level-complete card; the attract mode replays a stored solution for each level.",
+  "play_url": "https://rexgu9911.github.io/playbook/games/gravity-well.html?theme=0",
+  "page_url": "https://rexgu9911.github.io/playbook/#/game/gravity-well",
+  "source_url": "https://rexgu9911.github.io/playbook/games/gravity-well.html",
+  "source_raw": "https://raw.githubusercontent.com/rexgu9911/playbook/main/games/gravity-well.html",
+  "theme_param": "theme=0",
+  "license": "MIT"
+ },
+ {
+  "id": "trail-dash",
+  "title": "Trail Dash",
+  "kind": "original",
+  "remix_of": null,
+  "genres": [
+   "Runner",
+   "Action"
+  ],
+  "is3d": false,
+  "engine": "Canvas 2D",
+  "files": 1,
+  "controls": "Tap / click / Space / ↑ to jump (hold = higher, again in the air) · swipe down / ↓ / S to slide",
+  "mechanics": [
+   {
+    "slug": "platformer-controller",
+    "name": "Platformer Controller"
+   },
+   {
+    "slug": "double-jump",
+    "name": "Double Jump"
+   },
+   {
+    "slug": "squash-stretch",
+    "name": "Squash & Stretch"
+   },
+   {
+    "slug": "screen-shake",
+    "name": "Trauma Screen Shake"
+   },
+   {
+    "slug": "hit-stop",
+    "name": "Hit Stop"
+   },
+   {
+    "slug": "dash-trail",
+    "name": "Dash + Afterimage"
+   },
+   {
+    "slug": "procedural-sfx",
+    "name": "Procedural SFX"
+   }
+  ],
+  "art_direction": "Dusk mountain trail · low sun · fox courier with a satchel",
+  "palette": [
+   "#30214a",
+   "#ff8a3d"
+  ],
+  "sound": "Springy jump sweeps, pentatonic seed chain, near-miss chime, dash whoosh and crash thud (WebAudio)",
+  "prompt": "Make a side-scrolling endless runner in one HTML file on Canvas 2D. A small fox courier runs automatically along a dusk mountain trail: tap or press Space to jump (hold for a higher jump, one extra jump in the air) and swipe down or press Down to slide. Build the trail from hand-authored obstacle chunks (logs, log piles, hanging vines to duck, gaps, stones that roll in) whose spacing is measured in seconds of travel, so patterns stay fair as speed ramps up. Add coyote time and jump buffering, glowing seeds to collect, a short dash power-up that smashes obstacles, near-miss bonuses, squash and stretch, landing dust, four parallax layers, screen shake and hit-stop on a crash, and an AI runner for the attract mode that simulates its options a moment ahead.",
+  "play_url": "https://rexgu9911.github.io/playbook/games/trail-dash.html?theme=0",
+  "page_url": "https://rexgu9911.github.io/playbook/#/game/trail-dash",
+  "source_url": "https://rexgu9911.github.io/playbook/games/trail-dash.html",
+  "source_raw": "https://raw.githubusercontent.com/rexgu9911/playbook/main/games/trail-dash.html",
+  "theme_param": "theme=0",
+  "license": "MIT"
  }
 ]

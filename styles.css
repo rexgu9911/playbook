@@ -1486,6 +1486,21 @@ html[lang="zh-CN"] .tag, html[lang="zh-CN"] .chip.hot { letter-spacing: .04em; }
 .made-frame iframe { display: block; width: 100%; height: 100%; border: 0; }
 .made-bar { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; margin-top: 14px; }
 .made-fine { font-size: 13px; color: var(--dim); margin-top: 14px; }
+.made-board { margin-top: 22px; max-width: 560px; background: var(--panel); border: 1px solid var(--line); border-radius: var(--r); padding: 16px 18px; }
+.mb-head { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin-bottom: 10px; }
+.mb-head h2 { font-size: 18px; margin: 0; }
+.mb-head b { color: var(--ink); }
+.mb-note { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; padding: 10px 12px; margin-bottom: 10px; border-radius: var(--r-sm); background: var(--panel-2); font-size: 14px; }
+.mb-note.good { background: var(--accent-soft); color: var(--ink); }
+.mb-note b { color: var(--accent-text); font-variant-numeric: tabular-nums; }
+.mb-list { list-style: none; margin: 0; padding: 0; counter-reset: none; }
+.mb-list li { display: grid; grid-template-columns: 32px minmax(0, 1fr) auto; gap: 10px; align-items: center; padding: 8px 4px; border-top: 1px solid var(--line); font-size: 14px; }
+.mb-list li:first-child { border-top: 0; }
+.mb-list li.you { color: var(--accent-text); font-weight: 600; }
+.mb-rank { color: var(--dim); font-variant-numeric: tabular-nums; }
+.mb-list li:nth-child(-n+3) .mb-rank { color: var(--accent-text); font-weight: 700; }
+.mb-name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.mb-score { font-variant-numeric: tabular-nums; font-weight: 600; color: var(--ink); }
 @media (max-width: 760px) { .made-frame { aspect-ratio: 3 / 4; max-height: 70vh; } .made-wall { grid-template-columns: 1fr 1fr; gap: 12px; } .pbd-card { padding: 22px 18px; } }
 .made-poster.has-cover img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
 .made-poster.has-cover::after { content: ''; position: absolute; inset: 0; background: linear-gradient(to top, rgba(0, 0, 0, .35), transparent 50%); }

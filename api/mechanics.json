@@ -35,7 +35,8 @@
    "Phaser"
   ],
   "used_by": [
-   "sky-hop"
+   "sky-hop",
+   "trail-dash"
   ],
   "license": "MIT"
  },
@@ -81,7 +82,10 @@
    "tile-forge",
    "pulse-lanes",
    "bank-shot",
-   "bloom-guard"
+   "bloom-guard",
+   "ember-deck",
+   "gravity-well",
+   "trail-dash"
   ],
   "license": "MIT"
  },
@@ -130,7 +134,10 @@
    "swarm-arena",
    "core-defender",
    "bank-shot",
-   "bloom-guard"
+   "bloom-guard",
+   "ember-deck",
+   "gravity-well",
+   "trail-dash"
   ],
   "license": "MIT"
  },
@@ -166,7 +173,9 @@
    "tile-forge",
    "pulse-lanes",
    "bank-shot",
-   "bloom-guard"
+   "bloom-guard",
+   "ember-deck",
+   "gravity-well"
   ],
   "license": "MIT"
  },
@@ -223,7 +232,9 @@
   ],
   "used_by": [
    "neon-drift",
-   "grapple-rush"
+   "grapple-rush",
+   "gravity-well",
+   "trail-dash"
   ],
   "license": "MIT"
  },
@@ -244,7 +255,8 @@
    "Phaser"
   ],
   "used_by": [
-   "swarm-arena"
+   "swarm-arena",
+   "ember-deck"
   ],
   "license": "MIT"
  },
@@ -289,7 +301,8 @@
    "swarm-arena",
    "core-defender",
    "tile-forge",
-   "bloom-guard"
+   "bloom-guard",
+   "ember-deck"
   ],
   "license": "MIT"
  },
@@ -576,7 +589,9 @@
    "Three.js",
    "Phaser"
   ],
-  "used_by": [],
+  "used_by": [
+   "trail-dash"
+  ],
   "license": "MIT"
  },
  {
@@ -865,7 +880,8 @@
    "Phaser"
   ],
   "used_by": [
-   "bank-shot"
+   "bank-shot",
+   "trail-dash"
   ],
   "license": "MIT"
  },
@@ -1675,7 +1691,8 @@
    "Phaser"
   ],
   "used_by": [
-   "pulse-lanes"
+   "pulse-lanes",
+   "ember-deck"
   ],
   "license": "MIT"
  },
@@ -2338,7 +2355,10 @@
   ],
   "used_by": [
    "pulse-lanes",
-   "bank-shot"
+   "bank-shot",
+   "ember-deck",
+   "gravity-well",
+   "trail-dash"
   ],
   "license": "MIT"
  },

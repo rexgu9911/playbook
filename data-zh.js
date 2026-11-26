@@ -2,6 +2,18 @@
 // games: by base recipe slug · styles: by theme title · mechanics: by slug (desc, key notes by key name)
 window.PB_ZH = {
  "games": {
+  "trail-dash": {
+   "controls": "点按 / 点击 / 空格 / ↑ 跳跃（按住跳得更高，空中可再跳一次）· 下滑 / ↓ / S 滑铲",
+   "audio": "弹跳音效、拾取种子的五声音阶连击、擦身而过的叮声、冲刺呼啸和撞击闷响（WebAudio）"
+  },
+  "gravity-well": {
+   "controls": "点击或轻触放置引力井，拖动可移动，再点一下移除 · 空格发射 · Tab 切换吸引 / 排斥 · 方向键加回车也能放置",
+   "audio": "引力井的低沉嗡声、发射的呼啸、逐级升高的五声音阶星星叮咚、传送门琶音和撞击轰鸣（WebAudio）"
+  },
+  "ember-deck": {
+   "controls": "点击卡牌或把它向上拖到敌人身上出牌 · E 或「结束回合」按钮结束回合 · 数字键 1-9 出牌",
+   "audio": "出牌的翻动与呼啸声、厚重的击中声、护盾的金属声、灼烧的嘶嘶声、洗牌的哒哒声（WebAudio）"
+  },
   "bloom-guard": {
    "controls": "点击 / 轻触土壤花圃，再选一种花 · 空格开始下一波 · F 加速 · 1 2 3 种花，U 升级，S 出售",
    "audio": "清脆的种植音、种子嗒嗒声、孢子闷响、按音高变化的害虫爆破声（WebAudio）"
@@ -40,6 +52,9 @@ window.PB_ZH = {
   }
  },
  "styles": {
+  "Trail Dash": "黄昏山间小径 · 低垂的夕阳 · 背着邮包的小狐狸信使",
+  "Gravity Well": "深空霓虹 · 弯曲的时空网格 · 发光的彗星",
+  "Ember Deck": "温暖的余烬与炭黑 · 石砌拱门 · 发光的卡牌",
   "Bloom Guard": "温暖柔和的花园 · 陶土花盆 · 呆萌害虫",
   "Bank Shot": "明亮的迷你公园 · 条纹草皮 · 白色围栏",
   "Pulse Lanes": "霓虹夜色 · 月下天际线 · 发光轨道",

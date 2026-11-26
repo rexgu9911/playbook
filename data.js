@@ -114,6 +114,36 @@ window.PB = (() => {
         { title: "Bloom Guard", by: 'Playbook', colors: ["#a9c97f", "#e5845a"], style: "Soft warm garden · terracotta pots · cute pests", plays: 0, remixes: 0, days: 0 },
       ],
     },
+    {
+      slug: 'ember-deck', is3d: false, genres: ["Cards", "Strategy"],
+      controls: "Tap / click a card or drag it up onto the enemy · E or End Turn ends your turn · 1-9 play cards",
+      mechanics: ["upgrade-cards", "damage-numbers", "screen-shake", "hit-stop", "particle-burst", "health-bar-lag", "procedural-sfx"],
+      audio: "Card flicks and whooshes, meaty hit thumps, shield clangs, burn sizzle, shuffle ticks (WebAudio)",
+      prompt: "Make a compact deckbuilding dungeon run in one HTML file on Canvas 2D. Start with a 10-card deck (strikes, guards and two utility cards), draw 5 a turn with 3 energy, and play cards by tapping them or dragging them up onto the enemy. Each enemy shows its next intent (attack, block or buff) above its head. A run is 7 fights ending in a boss, HP carries over, and after each win you pick 1 of 3 new cards from about 15 originals with keywords like burn, shield, draw and retain. Draw the cards procedurally (frame, cost gem, icon per type) and lay the hand out as a fan along the bottom so it works in phone portrait. Make the cards feel great: hover lift, fly-to-target tweens, damage numbers, hit flash, hit-stop and screen shake on big hits, and an animated shuffle when the draw pile runs out.",
+      themes: [
+        { title: "Ember Deck", by: 'Playbook', colors: ["#1a0f0b", "#ff7a2a"], style: "Warm ember and charcoal · stone archway · glowing cards", plays: 0, remixes: 0, days: 0 },
+      ],
+    },
+    {
+      slug: 'gravity-well', is3d: false, genres: ["Physics", "Puzzle"],
+      controls: "Tap / click to drop a well, drag to move it, tap it to remove · Space launches · Tab switches pull / push · arrows + Enter place by keyboard",
+      mechanics: ["particle-burst", "screen-shake", "hit-stop", "dash-trail", "procedural-sfx"],
+      audio: "Deep well whomps, launch whoosh, rising pentatonic star chimes, portal arpeggio and crash rumble (WebAudio)",
+      prompt: "Make a gravity-slingshot physics puzzle in one HTML file on Canvas 2D. A comet waits on a launch pad; before launch the player taps to drop a few gravity wells (drag to move, tap to remove) and sees a faint predicted path for the first second of flight. On Launch the comet flies under inverse-square pull from every well and planet, integrated with semi-implicit Euler in fixed sub-steps, and must collect every star to open the exit portal without hitting asteroids or planets, falling into a well or leaving the field. 12 hand-made levels in a 600 x 400 world that turns upright on portrait phones, each adding one idea (one well, rocks, hairpin turns, planets, two wells, push wells, a moving rock), with 1-3 stars for solving in par wells or fewer. Add a warped space-time grid, a glowing comet trail, star bursts with rising chimes, a swirling portal, crash shake and a level-complete card; the attract mode replays a stored solution for each level.",
+      themes: [
+        { title: "Gravity Well", by: 'Playbook', colors: ["#18205a", "#7ff4ff"], style: "Deep-space neon · warped space-time grid · glowing comet", plays: 0, remixes: 0, days: 0 },
+      ],
+    },
+    {
+      slug: 'trail-dash', is3d: false, genres: ["Runner", "Action"],
+      controls: "Tap / click / Space / ↑ to jump (hold = higher, again in the air) · swipe down / ↓ / S to slide",
+      mechanics: ["platformer-controller", "double-jump", "squash-stretch", "screen-shake", "hit-stop", "dash-trail", "procedural-sfx"],
+      audio: "Springy jump sweeps, pentatonic seed chain, near-miss chime, dash whoosh and crash thud (WebAudio)",
+      prompt: "Make a side-scrolling endless runner in one HTML file on Canvas 2D. A small fox courier runs automatically along a dusk mountain trail: tap or press Space to jump (hold for a higher jump, one extra jump in the air) and swipe down or press Down to slide. Build the trail from hand-authored obstacle chunks (logs, log piles, hanging vines to duck, gaps, stones that roll in) whose spacing is measured in seconds of travel, so patterns stay fair as speed ramps up. Add coyote time and jump buffering, glowing seeds to collect, a short dash power-up that smashes obstacles, near-miss bonuses, squash and stretch, landing dust, four parallax layers, screen shake and hit-stop on a crash, and an AI runner for the attract mode that simulates its options a moment ahead.",
+      themes: [
+        { title: "Trail Dash", by: 'Playbook', colors: ["#30214a", "#ff8a3d"], style: "Dusk mountain trail · low sun · fox courier with a satchel", plays: 0, remixes: 0, days: 0 },
+      ],
+    },
   ];
 
   const games = [];
