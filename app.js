@@ -154,7 +154,7 @@
     up: '<svg viewBox="0 0 24 24"><path d="M12 19V5M5 12l7-7 7 7"/></svg>',
   };
   const media = (g, extra = '', cls = '') =>
-    `<div class="media ${cls}" data-src="${g.src}&attract=1" style="--c1:${g.colors[0]};--c2:${g.colors[1]}"><div class="poster"></div><div class="scan"></div>${extra}</div>`;
+    `<div class="media ${cls}" data-src="${g.src}&attract=1" style="--c1:${g.colors[0]};--c2:${g.colors[1]}"><div class="poster${g.cover ? ' has-cover' : ''}"${g.cover ? ` style="background-image:url('${g.cover}')"` : ''}></div><div class="scan"></div>${extra}</div>`;
   const mmedia = m =>
     `<div class="media plain" data-src="mechanics/${m.slug}.html" style="--c1:#17171c;--c2:#0d0d10"><div class="poster"></div><div class="scan"></div></div>`;
 
@@ -179,7 +179,7 @@
       <div class="mmeta"><h3>${esc(m.name)}</h3><div class="row"><span>${esc(m.cat)}</span><span>Live demo</span></div></div>
     </a>`;
 
-  const GENRES = ['All', '3D', 'Racing', 'Survivor', 'Platformer', 'Shooter', 'Puzzle', 'Action'];
+  const GENRES = ['All', '3D', 'Racing', 'Survivor', 'Platformer', 'Shooter', 'Puzzle', 'Action', 'Rhythm', 'Sports', 'Strategy'];
 
   // ---------- pages ----------
   const state = { genre: 'All', mcat: 'All', client: 'Claude Code' };
@@ -288,7 +288,9 @@
           <div class="gtiles">${genreTiles(8)}</div>
         </section>
 
-        <a class="hub-cta rv" href="#/create"><div><span class="tag"><span class="dot"></span>Create</span><h2>Make your own game</h2><p>Free sound effects, pixel sprites and music loops, open templates and game feel, all in one place.</p></div><span class="btn btn-accent">Start creating</span></a>
+        ${CREATE_API
+          ? `<a class="hub-cta rv" href="#/create"><div><span class="tag"><span class="dot"></span>Playbook Create</span><h2>Describe a game. Play it right away.</h2><p>The AI plans it with you, writes it and tests it. Keep changing it by chatting, then publish it here.</p></div><span class="btn btn-accent">Start creating</span></a>`
+          : `<a class="hub-cta rv" href="#/create"><div><span class="tag"><span class="dot"></span>Create</span><h2>Make your own game</h2><p>Free sound effects, pixel sprites and music loops, open templates and game feel, all in one place.</p></div><span class="btn btn-accent">Start creating</span></a>`}
       </div>`;
     bindRails(app);
     bindHero(heroGames, picks, whyOf);
@@ -334,29 +336,52 @@
   }
 
   // ---------- create: one hub for making games (AI studio, asset makers, templates, game feel, MCP) ----------
+  // The prompt box hands its choices to the studio through sessionStorage ('pb-create-seed'); create.js picks them up.
+  const IDEAS = ['A neon snake that leaves a glowing trail', 'A one-button runner where you jump to the beat', 'A cozy marble maze you tilt to roll', 'A top-down space shooter with a boss'];
+  const SEG = {
+    platform: [['phone', 'Phone'], ['computer', 'Computer'], ['both', 'Both']],
+    orientation: [['portrait', 'Portrait'], ['landscape', 'Landscape']],
+    mode: [['arcade', 'Arcade'], ['levels', 'Levels']],
+  };
   function createHub() {
     const originals = games.filter(g => !g.parent);
     const show = SHOWCASE.map(s => mechBySlug[s]).filter(Boolean).slice(0, 4);
     const tools = [
-      ['#/studio/sfx', 'Sound effects', 'Coins, jumps, lasers, explosions. Download a WAV or copy the code.'],
-      ['#/studio/sprites', 'Pixel sprites', 'Characters, ships and items with an idle animation, as a sprite sheet.'],
-      ['#/studio/music', 'Music loops', 'Short chiptune loops in the mood you pick, made to loop.'],
+      ['#/studio/sfx', 'Sound effects', 'Coins, jumps, lasers, explosions. Download a WAV or copy the code.', '<path d="M4 9v6h4l5 4V5L8 9z"/><path d="M16.5 8.5a5 5 0 0 1 0 7M19 6a8.5 8.5 0 0 1 0 12"/>'],
+      ['#/studio/sprites', 'Pixel sprites', 'Characters, ships and items with an idle animation, as a sprite sheet.', '<path d="M4 4h4v4H4zM16 4h4v4h-4zM8 8h8v4H8zM4 12h16v4H4zM6 16h4v4H6zM14 16h4v4h-4z"/>'],
+      ['#/studio/music', 'Music loops', 'Short chiptune loops in the mood you pick, made to loop.', '<path d="M9 18V5l11-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="17" cy="16" r="3"/>'],
     ];
-    app.innerHTML = `
+    const seed = { platform: 'both', orientation: 'portrait', mode: 'arcade' };
+    const seg = k => `<div class="seg ch-seg" role="group" aria-label="${{ platform: 'Platform', orientation: 'Orientation', mode: 'Mode' }[k]}" data-seg="${k}">${SEG[k].map(([v, t]) => `<button type="button" data-v="${v}" class="${seed[k] === v ? 'on' : ''}" aria-pressed="${seed[k] === v}">${t}</button>`).join('')}</div>`;
+    const hero = CREATE_API ? `
+      <section class="ch-hero"><div class="wrap">
+        <span class="tag"><span class="dot"></span>Playbook Create</span>
+        <h1>Make a game <em>by describing it</em></h1>
+        <p>The AI plans it with you, writes it, tests it, and keeps changing it as you chat. When it is ready, publish it to Playbook.</p>
+        <form class="ch-prompt" id="chPrompt">
+          <textarea id="chIdea" rows="3" maxlength="4000" placeholder="Describe your game: what you do, how you win, how it looks…" aria-label="Your game idea"></textarea>
+          <div class="ch-row">
+            <div class="ch-segs">${seg('platform')}${seg('orientation')}${seg('mode')}</div>
+            <button class="btn btn-accent ch-go" type="submit">Start planning<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
+          </div>
+        </form>
+        <div class="ch-ideas"><span>Try</span>${IDEAS.map(x => `<button class="chip" type="button" data-idea="${esc(x)}">${esc(x)}</button>`).join('')}</div>
+      </div></section>` : `
       <section class="page-head dots"><div class="wrap">
         <span class="tag"><span class="dot"></span>Create</span>
         <h1>Make a <em>game</em></h1>
         <p>Everything for making web games in one place. The asset makers are free and run in your browser, and every finished game can be submitted to Playbook.</p>
-      </div></section>
+      </div></section>`;
+    app.innerHTML = hero + `
       <div class="wrap">
-        ${LOCAL ? `<a class="hub-studio rv" href="#/create/studio"><span class="tag"><span class="dot"></span>AI game studio · local preview</span><h2>Describe a game. Play it. Keep changing it.</h2><p>The AI plans the game with you, writes the whole thing, and you refine it by chatting. Shown only on this computer until accounts and credits are ready.</p><span class="btn btn-accent">Open the studio</span></a>` : ''}
-        <section class="section tight">
-          <div class="sec-head"><div><h2>Make the assets</h2><p>Free, no account, and what you make is yours.</p></div></div>
-          <div class="hub-tools">${tools.map(([h, t, p], i) => `<a class="hub-tool rv" style="--d:${i * 50}ms" href="${h}"><b>${t}</b><span>${p}</span></a>`).join('')}</div>
-        </section>
+        ${CREATE_API ? '<section class="section tight" id="madeRail" hidden></section>' : ''}
         <section class="section tight">
           <div class="sec-head"><div><h2>Start from a template</h2><p>Open games with their prompt, mechanics, look and sound. Remake one in your own way.</p></div><a class="link" href="#/games">All ${originals.length}</a></div>
           <div class="wall three">${originals.map(g => card(g, { verb: true })).join('')}</div>
+        </section>
+        <section class="section tight">
+          <div class="sec-head"><div><h2>Make the assets</h2><p>Free, no account, and what you make is yours.</p></div></div>
+          <div class="hub-tools">${tools.map(([h, t, p, ic], i) => `<a class="hub-tool rv" style="--d:${i * 50}ms" href="${h}"><span class="hub-ic"><svg viewBox="0 0 24 24" aria-hidden="true">${ic}</svg></span><b>${t}</b><span>${p}</span></a>`).join('')}</div>
         </section>
         <section class="section tight">
           <div class="sec-head"><div><h2>Game feel</h2><p>${mechanics.length} small parts that make a game feel good, each with a live demo and its key numbers.</p></div><a class="link" href="#/mechanics">All ${mechanics.length}</a></div>
@@ -369,6 +394,24 @@
         </div></section>
       </div>`;
     $$('#hubMech .media').forEach(m => m.style.pointerEvents = 'none');
+    const form = $('#chPrompt'); if (!form) return;
+    const sync = () => { $('[data-seg="orientation"]', form).hidden = seed.platform === 'computer'; };
+    form.addEventListener('click', e => {
+      const b = e.target.closest('[data-seg] button'); if (!b) return;
+      const k = b.parentElement.dataset.seg; seed[k] = b.dataset.v;
+      $$('button', b.parentElement).forEach(x => { x.classList.toggle('on', x === b); x.setAttribute('aria-pressed', x === b); });
+      sync();
+    });
+    $('.ch-ideas').addEventListener('click', e => { const c = e.target.closest('[data-idea]'); if (!c) return; const t = $("#chIdea"); t.value = c.textContent.trim(); t.focus(); });
+    $('#chIdea').addEventListener('keydown', e => { if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) { e.preventDefault(); form.requestSubmit(); } });
+    form.addEventListener('submit', e => {
+      e.preventDefault();
+      const idea = $('#chIdea').value.trim(); if (!idea) { $('#chIdea').focus(); return; }
+      try { sessionStorage.setItem('pb-create-seed', JSON.stringify({ ...seed, orientation: seed.platform === 'computer' ? '' : seed.orientation, idea })); } catch {}
+      track('create/hub-start', seed.platform, true);
+      location.hash = '#/create/studio';
+    });
+    sync();
   }
 
   function gamesPage(genre) {
@@ -914,24 +957,112 @@
       </div>`;
   }
 
-  // ---------- create: the AI game studio (create.js, loaded on demand; backend is the Playbook Create Worker) ----------
-  // Local only until accounts and credits exist (stage 2). Run the Worker with `npm run dev` in worker/.
-  const CREATE_API = LOCAL ? 'http://127.0.0.1:8787' : '';
-  const CREATE_V = 3;
-  let createLib = null;
-  const loadCreate = () => createLib || (createLib = new Promise(res => {
-    const sc = document.createElement('script'); sc.src = `create.js?v=${CREATE_V}`;
-    sc.onload = () => res(window.PB_CREATE || null); sc.onerror = () => { createLib = null; res(null); };
+  // ---------- open source: what Playbook is built on, with licenses (studio entries only where the studio exists) ----------
+  const OSS = [
+    ['nexu-io/opengame', 'https://github.com/nexu-io/opengame', 'Apache-2.0', 'Game-making handbooks (genres, controls, game feel, audio, quality checks). Condensed and rewritten as the knowledge the AI studio uses when it writes a game.', 'studio'],
+    ['higgsfield-ai/skills', 'https://github.com/higgsfield-ai/skills', 'MIT', 'Part of those handbooks was ported from here by OpenGame. Its license and copyright travel with them.', 'studio'],
+    ['three.js', 'https://github.com/mrdoob/three.js', 'MIT', 'The 3D templates and game-feel demos.', 'site'],
+    ['MCP TypeScript SDK', 'https://github.com/modelcontextprotocol/typescript-sdk', 'MIT', 'The Playbook MCP server for coding agents.', 'site'],
+    ['Zod', 'https://github.com/colinhacks/zod', 'MIT', 'Checks the inputs of the Playbook MCP tools.', 'site'],
+    ['Geist', 'https://github.com/vercel/geist-font', 'OFL-1.1', 'The typeface of this site.', 'site'],
+    ['Silkscreen', 'https://fonts.google.com/specimen/Silkscreen', 'OFL-1.1', 'The pixel display type.', 'site'],
+  ];
+  function openSourcePage() {
+    const rows = OSS.filter(r => r[4] === 'site' || CREATE_API);
+    app.innerHTML = `
+      <section class="page-head dots"><div class="wrap">
+        <span class="tag"><span class="dot"></span>Open source</span>
+        <h1>Built on <em>open source</em></h1>
+        <p>The projects Playbook uses, what each one does here, and its license. Thank you to everyone who made them.</p>
+      </div></section>
+      <div class="wrap">
+        <ul class="oss">${rows.map(([n, u, l, w]) => `<li class="oss-item rv"><div class="oss-h"><a href="${u}" target="_blank" rel="noopener" data-noi18n>${esc(n)} ↗</a><span class="chip" data-noi18n>${esc(l)}</span></div><p>${esc(w)}</p></li>`).join('')}</ul>
+        <p class="muted small oss-note">Each license is kept with the code or text that uses it. Playbook's own site, templates and MCP are open source on <a class="link" href="https://github.com/rexgu9911/playbook" target="_blank" rel="noopener">GitHub</a>.</p>
+      </div>`;
+  }
+
+  // ---------- create: the AI game studio (create.js + cloud.js, loaded on demand; backend is the Playbook Create Worker) ----------
+  // Locally: `npm run dev` in worker/. Live: PROD_CREATE_API, the deployed Worker's URL, set at launch (docs/LAUNCH.md).
+  // Before launch, the owner can try a deployed Worker on the live site from their own browser only:
+  //   localStorage.setItem('pb-create-api', 'https://playbook-create.<account>.workers.dev')
+  const PROD_CREATE_API = '';
+  const previewApi = () => { try { const v = localStorage.getItem('pb-create-api') || ''; return /^https:\/\/[a-z0-9.-]+(:\d+)?$/i.test(v) ? v : ''; } catch { return ''; } };
+  const CREATE_API = LOCAL ? 'http://127.0.0.1:8787' : (PROD_CREATE_API || previewApi());
+  const CREATE_V = 8, CLOUD_V = 2;
+  const libs = {};
+  const loadLib = (file, v, name) => libs[file] || (libs[file] = new Promise(res => {
+    const sc = document.createElement('script'); sc.src = `${file}?v=${v}`;
+    sc.onload = () => res(window[name] || null); sc.onerror = () => { delete libs[file]; res(null); };
     document.head.append(sc);
   }));
-  function createPage() {
+  const loadCloud = () => loadLib('cloud.js', CLOUD_V, 'PB_CLOUD').then(c => c && c.init({ api: CREATE_API, esc, toast, zh: ZH, apply: I18N ? r => I18N.apply(r) : null, tr: t => (I18N ? I18N.tr(t) : t) }));
+  function createPage(open) {
     app.innerHTML = `<section class="cr-wrap"><div id="crRoot"><div class="empty"><b>Loading the studio…</b>It takes a moment the first time.</div></div></section>`;
-    loadCreate().then(lib => {
+    Promise.all([loadLib('create.js', CREATE_V, 'PB_CREATE'), loadCloud()]).then(([lib, cloud]) => {
       const box = $('#crRoot'); if (!box?.isConnected) return;
       if (!lib) { box.innerHTML = '<div class="empty"><b>Could not load the studio</b>Check your connection and reload the page.</div>'; I18N?.apply(box); return; }
-      lib.mount(box, { api: CREATE_API, esc, toast, track, copy: txt => copy(txt), apply: I18N ? r => I18N.apply(r) : null, tr: t => (I18N ? I18N.tr(t) : t), zh: ZH,
+      lib.mount(box, { api: CREATE_API, cloud, open: open || null, esc, toast, track, copy: txt => copy(txt), apply: I18N ? r => I18N.apply(r) : null, tr: t => (I18N ? I18N.tr(t) : t), zh: ZH,
         recipes: games.filter(g => !g.parent).map(g => ({ id: g.id, title: g.title, src: g.src })) });
     });
+  }
+
+  // ---------- made on Playbook: games people published from the studio (served sandboxed by the Worker) ----------
+  const hueOf = s => [...String(s)].reduce((h, c) => (h * 31 + c.charCodeAt(0)) % 360, 7);
+  const madeCard = g => `<a class="made-card rv" href="#/m/${esc(g.id)}" style="--h:${hueOf(g.id)}"><div class="made-poster ${g.coverUrl ? 'has-cover' : ''}">${g.coverUrl ? `<img src="${esc(g.coverUrl)}" alt="" loading="lazy">` : `<b data-noi18n>${esc(g.title)}</b>`}<span class="chip">Made on Playbook</span></div><div class="made-meta"><h3 data-noi18n>${esc(g.title)}</h3><span><span data-noi18n>${esc(g.author || '')}</span> · ${g.plays} plays · ♥ ${g.likes}</span></div></a>`;
+  async function fillMade(el, path, title, sub, empty) {
+    if (!el || !CREATE_API) return;
+    try {
+      const cloud = await loadCloud(); if (!cloud) return;
+      if (path === '/api/me/games') { await cloud.ready; if (!cloud.user) return; }
+      const list = (await cloud.getJSON(path)).games || [];
+      if (!el.isConnected || (!list.length && !empty)) return;
+      el.hidden = false;
+      el.innerHTML = `<div class="sec-head"><div><h2>${title}</h2><p>${sub}</p></div><a class="link" href="#/create/studio">Make one</a></div>${list.length ? `<div class="made-wall">${list.map(madeCard).join('')}</div>` : `<div class="empty"><b>Nothing published yet</b>Publish a game from the studio and it shows up here.</div>`}`;
+      hydrate(el);
+    } catch {}
+  }
+  async function madePage(gid) {
+    app.innerHTML = `<section class="page-head dots"><div class="wrap"><div class="empty"><b>Loading the game…</b></div></div></section>`;
+    const cloud = await loadCloud();
+    let g;
+    try { g = (await cloud.getJSON(`/api/games/${encodeURIComponent(gid)}`)).game; } catch { if (app.isConnected) notFound(); return; }
+    document.title = `${g.title} — Playbook`;
+    const draw = () => {
+      app.innerHTML = `
+        <section class="made-page"><div class="wrap">
+          <div class="crumbs"><a href="#/play">Play</a><span>/</span><span>Made on Playbook</span></div>
+          <div class="made-head">
+            <div><span class="tag"><span class="dot"></span>Made on Playbook</span><h1 data-noi18n>${esc(g.title)}</h1>
+              <p class="made-by">by <b data-noi18n>${esc(g.author)}</b>${g.remixOfGame ? ` · remix of <a href="#/m/${esc(g.remixOfGame.id)}" data-noi18n>${esc(g.remixOfGame.title)}</a>` : ''}</p>
+              ${g.description ? `<p class="made-desc" data-noi18n>${esc(g.description)}</p>` : ''}</div>
+            <div class="made-stats"><span><b>${g.plays}</b> plays</span><span><b id="mdLikes">${g.likes}</b> likes</span><span><b>${g.remixes}</b> remixes</span></div>
+          </div>
+          <div class="made-frame"><iframe src="${esc(g.playUrl)}" title="${esc(g.title)}" sandbox="allow-scripts allow-pointer-lock" allow="autoplay; gamepad; fullscreen; accelerometer" loading="eager"></iframe></div>
+          <div class="made-bar">
+            <button class="btn ${g.liked ? 'btn-accent' : ''}" id="mdLike" aria-pressed="${g.liked}">♥ ${g.liked ? 'Liked' : 'Like'}</button>
+            <button class="btn" id="mdRemix">Remix in the studio</button>
+            <button class="btn" id="mdShare">Copy link</button>
+            <a class="btn" href="${esc(g.playUrl)}" target="_blank" rel="noopener">Full screen ↗</a>
+            ${g.mine ? `<a class="btn" href="#/create/studio">Edit in the studio</a>` : `<button class="link" id="mdReport">Report</button>`}
+          </div>
+          <p class="made-fine">Made with Playbook Create and published by its creator. Games run in a locked-down sandbox and can't see your account.</p>
+        </div></section>`;
+      I18N?.apply(app);
+      $('#mdLike').addEventListener('click', async () => {
+        if (!cloud.user && !(await cloud.signIn(ZH ? '登录后可以点赞。' : 'Sign in to like games.'))) return;
+        try { const j = await cloud.getJSON(`/api/games/${gid}/like`, { method: 'POST' }); g.liked = j.liked; g.likes = j.likes; draw(); } catch (e) { toast(e.message); }
+      });
+      $('#mdRemix').addEventListener('click', async () => {
+        if (!cloud.user && !(await cloud.signIn(ZH ? '登录后可以改编这款游戏，改编免费。' : 'Sign in to remix this game. Remixing is free.'))) return;
+        try { const j = await cloud.getJSON(`/api/games/${gid}/remix`, { method: 'POST' }); location.hash = `#/create/studio/${j.projectId}`; } catch (e) { toast(e.message); }
+      });
+      $('#mdShare').addEventListener('click', () => copy(location.href.split('?')[0]));
+      $('#mdReport')?.addEventListener('click', () => cloud.dialog(`<h2>${ZH ? '举报这款游戏' : 'Report this game'}</h2><form class="pbd-form" id="pbdRep"><label class="pbd-l" for="pbdR">${ZH ? '哪里有问题？' : "What's wrong with it?"}</label><input id="pbdR" maxlength="500" required><button class="btn btn-accent" type="submit">${ZH ? '提交' : 'Send report'}</button></form><p class="pbd-err" id="pbdErr"></p>`, (box, close) => {
+        box.querySelector('#pbdRep').addEventListener('submit', async e => { e.preventDefault(); try { await cloud.req(`/api/games/${gid}/report`, { method: 'POST', body: { reason: box.querySelector('#pbdR').value } }); toast(ZH ? '谢谢，我们会看一下。' : 'Thanks, we will take a look.'); close(true); } catch (x) { box.querySelector('#pbdErr').textContent = x.message; } });
+      }));
+    };
+    draw();
+    cloud.req(`/api/games/${gid}/play`, { method: 'POST' }).catch(() => {});
   }
 
   // ---------- studio: free asset makers that run in the browser (studio.js, loaded on demand) ----------
@@ -999,6 +1130,7 @@
         <div class="lib-stats"><span><b>${rec.length}</b> played</span><span><b>${saved.length}</b> saved</span></div>
       </div></section>
       <div class="wrap">
+        ${CREATE_API ? '<section class="section tight" id="myGames" hidden></section>' : ''}
         ${rec.length ? `<section class="section tight"><div class="sec-head"><div><h2>Recently played</h2></div><button class="link" id="libClear">Clear history</button></div><div class="wall">${rec.map(gcard).join('')}</div></section>` : ''}
         <section class="section tight"><div class="sec-head"><div><h2>Saved</h2></div></div>
           ${saved.length ? `<div class="wall">${saved.map(gcard).join('')}</div>` : `<div class="empty"><b>Nothing saved yet</b>Tap ♡ on any game to save it here.</div>`}</section>
@@ -1066,6 +1198,7 @@
         <div class="acts"><button class="btn btn-accent" data-submit-game>Submit a game</button><a class="btn" href="#/creators">Meet the creators</a><a class="btn" href="#/saved">Saved (${FAVS.size})</a><a class="btn" href="#/guides">Guides</a></div>
       </div></section>
       <div class="wrap">
+        ${CREATE_API && g0 === 'All' ? '<section class="section tight" id="madeRail" hidden></section>' : ''}
         ${g0 === 'All' ? `<section class="rand"><div class="sec-head"><div><h2>Three at random</h2><p>Not sure what to play? Let the arcade pick.</p></div><button class="btn" id="randBtn">Shuffle ↻</button></div><div class="wall three" id="rand3"></div></section>
         <div class="gtiles small">${genreTiles(12)}</div>` : ''}
         <div class="controls">
@@ -1329,7 +1462,7 @@
 
   // ---------- search palette (⌘K or /) ----------
   const cmdk = $('#cmdk'), cmdkIn = $('#cmdkInput'), cmdkList = $('#cmdkList');
-  const PAGES = [['Weekly picks', '#/weeks'], ['Quality standards', '#/standards'], ['Guides', '#/guides'], ['Library', '#/library'], ['Play all games', '#/play'], ['Creators', '#/creators'], ['Create', '#/create'], ['Game feel (mechanics)', '#/mechanics'], ['Open recipes', '#/games'], ['Connect Playbook MCP', '#/mcp'], ['Studio: sound effects', '#/studio/sfx'], ['Studio: pixel sprites', '#/studio/sprites'], ['Studio: music loops', '#/studio/music']];
+  const PAGES = [['Weekly picks', '#/weeks'], ['Quality standards', '#/standards'], ['Guides', '#/guides'], ['Library', '#/library'], ['Play all games', '#/play'], ['Creators', '#/creators'], ['Create', '#/create'], ['Game feel (mechanics)', '#/mechanics'], ['Open recipes', '#/games'], ['Connect Playbook MCP', '#/mcp'], ['Open source', '#/open-source'], ['Studio: sound effects', '#/studio/sfx'], ['Studio: pixel sprites', '#/studio/sprites'], ['Studio: music loops', '#/studio/music']];
   let cmdkItems = [], cmdkSel = 0;
   const lc = s => String(s || '').toLowerCase();
   function searchAll(q) {
@@ -1451,19 +1584,21 @@
     unhydrate(app);
     stopPreview(); closeSearch();
     closeModal();
-    const nav = { '': 'home', play: 'play', discover: 'play', g: 'play', week: 'play', weeks: 'play', guides: 'play', guide: 'play', standards: 'play', creators: 'play', c: 'play', review: 'play',
+    const nav = { '': 'home', play: 'play', discover: 'play', g: 'play', week: 'play', weeks: 'play', guides: 'play', guide: 'play', standards: 'play', creators: 'play', c: 'play', review: 'play', m: 'play',
       create: 'create', studio: 'create', game: 'create', games: 'create', mechanics: 'create', mechanic: 'create', mcp: 'create', library: 'library', saved: 'library' }[page];
     $$('[data-nav]').forEach(a => a.classList.toggle('on', a.dataset.nav === nav));
     const tab = { home: 'home', play: 'play', create: 'create', library: 'library' }[nav];
     $$('[data-tab]').forEach(a => a.classList.toggle('on', a.dataset.tab === tab));
     const a = decodeURIComponent(arg);
-    ({ '': home, create: () => (a === 'studio' ? (LOCAL ? createPage() : notFound()) : createHub()), studio: () => studioPage(a), library: savedPage, standards: standardsPage, saved: savedPage, guides: guidesPage, guide: () => guidePage(a), week: () => weekPage(a), weeks: weeksPage, g: () => discGamePage(a), play: () => discoverPage(a), discover: () => discoverPage(a), creators: creatorsPage, c: () => creatorProfile(a), games: () => gamesPage(a), mcp: mcpPage, game: () => gamePage(a), mechanics: mechanicsPage, mechanic: () => mechanicPage(a), review: LOCAL ? reviewPage : notFound }[page] || notFound)();
+    ({ '': home, create: () => (a === 'studio' ? (CREATE_API ? createPage(sub) : notFound()) : createHub()), m: () => (CREATE_API ? madePage(a) : notFound()), studio: () => studioPage(a), library: savedPage, standards: standardsPage, saved: savedPage, guides: guidesPage, guide: () => guidePage(a), week: () => weekPage(a), weeks: weeksPage, g: () => discGamePage(a), play: () => discoverPage(a), discover: () => discoverPage(a), creators: creatorsPage, c: () => creatorProfile(a), games: () => gamesPage(a), mcp: mcpPage, 'open-source': openSourcePage, game: () => gamePage(a), mechanics: mechanicsPage, mechanic: () => mechanicPage(a), review: LOCAL ? reviewPage : notFound }[page] || notFound)();
     hydrate();
+    fillMade($('#madeRail'), '/api/games?sort=new&limit=12', 'Made on Playbook', 'New games people made with the AI studio and published.');
+    fillMade($('#myGames'), '/api/me/games', 'Your published games', 'Games you made in the studio and published.', true);
     window.scrollTo(0, back || 0);
     if (sub === 'kit') requestAnimationFrame(() => $('.kit')?.scrollIntoView({ block: 'start' }));
     if (sub === 'claim') { if (page === 'g' && G_BY[a]) claimModal(G_BY[a]._i); if (page === 'c' && crBySlug[a]) claimCreatorModal(a); }
     const ttl = page === 'game' && byId[a] ? byId[a].title : page === 'mechanic' && mechBySlug[a] ? mechBySlug[a].name : page === 'c' && crBySlug[a] ? crBySlug[a].handle : page === 'g' && G_BY[a] ? G_BY[a].title : page === 'week' && WEEKS.find(w => w.id === a) ? `Week of ${weekName(a)}` : page === 'guide' && GUIDES.find(x => x.slug === a) ? GUIDES.find(x => x.slug === a).title
-      : { create: a === 'studio' ? (LOCAL ? 'AI game studio' : '') : 'Create', studio: 'Studio', library: 'Library', standards: 'Quality standards', saved: 'Library', guides: 'Guides', weeks: 'Weekly picks', play: 'Play', discover: 'Play', creators: 'Creators', mechanics: 'Game feel', games: 'Templates', mcp: 'Connect MCP' }[page];
+      : { m: CREATE_API ? 'Made on Playbook' : '', create: a === 'studio' ? (CREATE_API ? 'AI game studio' : '') : 'Create', studio: 'Studio', library: 'Library', standards: 'Quality standards', saved: 'Library', guides: 'Guides', weeks: 'Weekly picks', play: 'Play', discover: 'Play', creators: 'Creators', mechanics: 'Game feel', games: 'Templates', mcp: 'Connect MCP', 'open-source': 'Open source' }[page];
     document.title = ttl ? `${ttl} — Playbook` : 'Playbook — the home of vibe gaming';
     track('/' + path.replace(/^\//, ''), document.title);
     if (I18N) document.title = I18N.tr(document.title);

@@ -267,5 +267,151 @@
   "source_raw": "https://raw.githubusercontent.com/rexgu9911/playbook/main/games/tile-forge.html",
   "theme_param": "theme=0",
   "license": "MIT"
+ },
+ {
+  "id": "pulse-lanes",
+  "title": "Pulse Lanes",
+  "kind": "original",
+  "remix_of": null,
+  "genres": [
+   "Rhythm",
+   "Arcade"
+  ],
+  "is3d": false,
+  "engine": "Canvas 2D",
+  "files": 1,
+  "controls": "D F J K (or arrows) · tap a lane on touch",
+  "mechanics": [
+   {
+    "slug": "procedural-sfx",
+    "name": "Procedural SFX"
+   },
+   {
+    "slug": "particle-burst",
+    "name": "Layered Particle Burst"
+   },
+   {
+    "slug": "screen-shake",
+    "name": "Trauma Screen Shake"
+   },
+   {
+    "slug": "health-bar-lag",
+    "name": "Health Bar Lag"
+   },
+   {
+    "slug": "number-roll",
+    "name": "Number Roll"
+   }
+  ],
+  "art_direction": "Neon night · moonlit skyline · glowing lanes",
+  "palette": [
+   "#170b3c",
+   "#ff3d9a"
+  ],
+  "sound": "Live seeded synth track: kick, clap, hats, bass and a pentatonic lead, plus hit ticks (WebAudio)",
+  "prompt": "Make a four-lane rhythm game in one HTML file on Canvas 2D. Generate the music live with WebAudio from a seeded pattern (kick, hat, bass, a simple melody) and build the note chart from the same step generator, scheduled on AudioContext.currentTime so notes never drift. Tap D F J K or the lanes as notes cross the hit line; Perfect/Good/Miss windows, a combo multiplier, a groove bar that drains on misses, and tempo and density that keep rising. Add lane flashes, hit bursts, combo pops and a screen pulse on every beat.",
+  "play_url": "https://rexgu9911.github.io/playbook/games/pulse-lanes.html?theme=0",
+  "page_url": "https://rexgu9911.github.io/playbook/#/game/pulse-lanes",
+  "source_url": "https://rexgu9911.github.io/playbook/games/pulse-lanes.html",
+  "source_raw": "https://raw.githubusercontent.com/rexgu9911/playbook/main/games/pulse-lanes.html",
+  "theme_param": "theme=0",
+  "license": "MIT"
+ },
+ {
+  "id": "bank-shot",
+  "title": "Bank Shot",
+  "kind": "original",
+  "remix_of": null,
+  "genres": [
+   "Sports",
+   "Puzzle"
+  ],
+  "is3d": false,
+  "engine": "Canvas 2D",
+  "files": 1,
+  "controls": "Drag back from anywhere and release to shoot · arrows aim, hold Space for power",
+  "mechanics": [
+   {
+    "slug": "squash-stretch",
+    "name": "Squash & Stretch"
+   },
+   {
+    "slug": "particle-burst",
+    "name": "Layered Particle Burst"
+   },
+   {
+    "slug": "screen-shake",
+    "name": "Trauma Screen Shake"
+   },
+   {
+    "slug": "hit-stop",
+    "name": "Hit Stop"
+   },
+   {
+    "slug": "camera-follow",
+    "name": "Smooth Camera"
+   },
+   {
+    "slug": "procedural-sfx",
+    "name": "Procedural SFX"
+   }
+  ],
+  "art_direction": "Bright miniature park · striped felt · white rails",
+  "palette": [
+   "#4cbf63",
+   "#ff5a5f"
+  ],
+  "sound": "Pitch-varied wall clacks, bumper boing, cup plunk and star chimes (WebAudio)",
+  "prompt": "Make a top-down mini golf game in one HTML file on Canvas 2D with 9 short hand-designed holes that scale to fit portrait and landscape. Drag back from the ball and release to shoot, with a dotted trajectory preview and a power ring. Fixed-timestep physics: rolling friction, bouncy angled walls, round bumpers, sliders, a spinner and sand. The cup only swallows a slow ball, faster ones lip out. Par, strokes, 1-3 stars per hole and a scorecard. Add impact squash, wall sparks, a cup plunk with confetti and a gentle camera.",
+  "play_url": "https://rexgu9911.github.io/playbook/games/bank-shot.html?theme=0",
+  "page_url": "https://rexgu9911.github.io/playbook/#/game/bank-shot",
+  "source_url": "https://rexgu9911.github.io/playbook/games/bank-shot.html",
+  "source_raw": "https://raw.githubusercontent.com/rexgu9911/playbook/main/games/bank-shot.html",
+  "theme_param": "theme=0",
+  "license": "MIT"
+ },
+ {
+  "id": "bloom-guard",
+  "title": "Bloom Guard",
+  "kind": "original",
+  "remix_of": null,
+  "genres": [
+   "Strategy"
+  ],
+  "is3d": false,
+  "engine": "Canvas 2D",
+  "files": 1,
+  "controls": "Click / tap a soil bed, then pick a flower · Space next wave · F speed · 1 2 3 plant, U upgrade, S sell",
+  "mechanics": [
+   {
+    "slug": "screen-shake",
+    "name": "Trauma Screen Shake"
+   },
+   {
+    "slug": "particle-burst",
+    "name": "Layered Particle Burst"
+   },
+   {
+    "slug": "hit-stop",
+    "name": "Hit Stop"
+   },
+   {
+    "slug": "damage-numbers",
+    "name": "Damage Numbers"
+   }
+  ],
+  "art_direction": "Soft warm garden · terracotta pots · cute pests",
+  "palette": [
+   "#a9c97f",
+   "#e5845a"
+  ],
+  "sound": "Plucky planting chime, seed ticks, spore thumps, pitched pest pops (WebAudio)",
+  "prompt": "Make a compact garden tower defense in one HTML file on Canvas 2D. Pests walk one winding path toward a greenhouse; tap a soil bed beside the path and plant one of three flowers from a big bottom menu: a fast single-target thistle, a slow splash puffcap that lobs spore bombs, and a lavender aura that slows. Each upgrades once and can be sold. Coins from kills, lives at the greenhouse, 10 waves with a Next wave button, a 2x speed toggle and a boss on wave 10. Lay the map out in a fixed grid that transposes for portrait. Show range on selection, health bars, floating coin numbers, hit flashes and screen shake on leaks.",
+  "play_url": "https://rexgu9911.github.io/playbook/games/bloom-guard.html?theme=0",
+  "page_url": "https://rexgu9911.github.io/playbook/#/game/bloom-guard",
+  "source_url": "https://rexgu9911.github.io/playbook/games/bloom-guard.html",
+  "source_raw": "https://raw.githubusercontent.com/rexgu9911/playbook/main/games/bloom-guard.html",
+  "theme_param": "theme=0",
+  "license": "MIT"
  }
 ]

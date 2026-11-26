@@ -84,6 +84,36 @@ window.PB = (() => {
         { title: 'Mochi Pop',  by: 'nuri', colors: ['#ffe9f2', '#ff9ec4'], style: 'Pastel squishy blobs with faces', plays: 889000, remixes: 1203, days: 7 },
       ],
     },
+    {
+      slug: 'pulse-lanes', is3d: false, genres: ["Rhythm", "Arcade"],
+      controls: "D F J K (or arrows) · tap a lane on touch",
+      mechanics: ["procedural-sfx", "particle-burst", "screen-shake", "health-bar-lag", "number-roll"],
+      audio: "Live seeded synth track: kick, clap, hats, bass and a pentatonic lead, plus hit ticks (WebAudio)",
+      prompt: "Make a four-lane rhythm game in one HTML file on Canvas 2D. Generate the music live with WebAudio from a seeded pattern (kick, hat, bass, a simple melody) and build the note chart from the same step generator, scheduled on AudioContext.currentTime so notes never drift. Tap D F J K or the lanes as notes cross the hit line; Perfect/Good/Miss windows, a combo multiplier, a groove bar that drains on misses, and tempo and density that keep rising. Add lane flashes, hit bursts, combo pops and a screen pulse on every beat.",
+      themes: [
+        { title: "Pulse Lanes", by: 'Playbook', colors: ["#170b3c", "#ff3d9a"], style: "Neon night · moonlit skyline · glowing lanes", plays: 0, remixes: 0, days: 0 },
+      ],
+    },
+    {
+      slug: 'bank-shot', is3d: false, genres: ["Sports", "Puzzle"],
+      controls: "Drag back from anywhere and release to shoot · arrows aim, hold Space for power",
+      mechanics: ["squash-stretch", "particle-burst", "screen-shake", "hit-stop", "camera-follow", "procedural-sfx"],
+      audio: "Pitch-varied wall clacks, bumper boing, cup plunk and star chimes (WebAudio)",
+      prompt: "Make a top-down mini golf game in one HTML file on Canvas 2D with 9 short hand-designed holes that scale to fit portrait and landscape. Drag back from the ball and release to shoot, with a dotted trajectory preview and a power ring. Fixed-timestep physics: rolling friction, bouncy angled walls, round bumpers, sliders, a spinner and sand. The cup only swallows a slow ball, faster ones lip out. Par, strokes, 1-3 stars per hole and a scorecard. Add impact squash, wall sparks, a cup plunk with confetti and a gentle camera.",
+      themes: [
+        { title: "Bank Shot", by: 'Playbook', colors: ["#4cbf63", "#ff5a5f"], style: "Bright miniature park · striped felt · white rails", plays: 0, remixes: 0, days: 0 },
+      ],
+    },
+    {
+      slug: 'bloom-guard', is3d: false, genres: ["Strategy"],
+      controls: "Click / tap a soil bed, then pick a flower · Space next wave · F speed · 1 2 3 plant, U upgrade, S sell",
+      mechanics: ["screen-shake", "particle-burst", "hit-stop", "damage-numbers"],
+      audio: "Plucky planting chime, seed ticks, spore thumps, pitched pest pops (WebAudio)",
+      prompt: "Make a compact garden tower defense in one HTML file on Canvas 2D. Pests walk one winding path toward a greenhouse; tap a soil bed beside the path and plant one of three flowers from a big bottom menu: a fast single-target thistle, a slow splash puffcap that lobs spore bombs, and a lavender aura that slows. Each upgrades once and can be sold. Coins from kills, lives at the greenhouse, 10 waves with a Next wave button, a 2x speed toggle and a boss on wave 10. Lay the map out in a fixed grid that transposes for portrait. Show range on selection, health bars, floating coin numbers, hit flashes and screen shake on leaks.",
+      themes: [
+        { title: "Bloom Guard", by: 'Playbook', colors: ["#a9c97f", "#e5845a"], style: "Soft warm garden · terracotta pots · cute pests", plays: 0, remixes: 0, days: 0 },
+      ],
+    },
   ];
 
   const games = [];
@@ -93,6 +123,7 @@ window.PB = (() => {
       id: i === 0 ? b.slug : `${b.slug}-${i}`,
       base: b.slug, theme: i,
       src: `games/${b.slug}.html?theme=${i}`,
+      cover: i === 0 ? `games/covers/${b.slug}.jpg` : null,   // a still from the game's attract mode, shown until the live preview loads
       parent: i === 0 ? null : b.slug,
       title: t.title, by: t.by, colors: t.colors, style: t.style,
       plays: t.plays, remixes: t.remixes, days: t.days,

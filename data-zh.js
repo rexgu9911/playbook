@@ -2,6 +2,18 @@
 // games: by base recipe slug · styles: by theme title · mechanics: by slug (desc, key notes by key name)
 window.PB_ZH = {
  "games": {
+  "bloom-guard": {
+   "controls": "点击 / 轻触土壤花圃，再选一种花 · 空格开始下一波 · F 加速 · 1 2 3 种花，U 升级，S 出售",
+   "audio": "清脆的种植音、种子嗒嗒声、孢子闷响、按音高变化的害虫爆破声（WebAudio）"
+  },
+  "bank-shot": {
+   "controls": "在任意位置向后拖动再松开即可击球 · 方向键瞄准，按住空格蓄力",
+   "audio": "音高随撞击变化的撞墙声、弹簧柱回弹声、进洞的扑通声和星星叮咚声（WebAudio）"
+  },
+  "pulse-lanes": {
+   "controls": "D F J K（或方向键）· 触屏点击轨道",
+   "audio": "按种子实时合成的音乐：底鼓、拍手、踩镲、贝斯和五声音阶旋律，外加击中音效（WebAudio）"
+  },
   "neon-drift": {
    "controls": "A / D 或 ← / → 转向 · 触屏拖动",
    "audio": "合成器引擎嗡鸣、拾取提示音、撞击闷响（WebAudio）"
@@ -28,6 +40,9 @@ window.PB_ZH = {
   }
  },
  "styles": {
+  "Bloom Guard": "温暖柔和的花园 · 陶土花盆 · 呆萌害虫",
+  "Bank Shot": "明亮的迷你公园 · 条纹草皮 · 白色围栏",
+  "Pulse Lanes": "霓虹夜色 · 月下天际线 · 发光轨道",
   "Neon Drift": "合成波夜景 · 网格地面 · 发光的太阳",
   "Dune Drift": "沙漠日落 · 砂岩石柱",
   "Frost Drift": "冰川蓝 · 水晶障碍 · 飘雪",

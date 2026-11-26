@@ -10,16 +10,33 @@
 
   const MON = { Jan: 1, Feb: 2, Mar: 3, Apr: 4, May: 5, Jun: 6, Jul: 7, Aug: 8, Sep: 9, Oct: 10, Nov: 11, Dec: 12 };
   const G = { Action: '动作', Adventure: '冒险', Sim: '模拟', Shooter: '射击', Puzzle: '解谜', Strategy: '策略', Racing: '竞速', Arcade: '街机',
-    Sports: '体育', RPG: '角色扮演', Roguelike: 'Roguelike', Flight: '飞行', Platformer: '平台跳跃', Survivor: '幸存者', Other: '其他',
+    Sports: '体育', RPG: '角色扮演', Roguelike: 'Roguelike', Flight: '飞行', Platformer: '平台跳跃', Survivor: '幸存者', Other: '其他', Rhythm: '节奏', 'Tower defense': '塔防',
     Movement: '移动', Feel: '手感', Progression: '成长', Feedback: '反馈', Camera: '镜头', Combat: '战斗', UI: '界面', Audio: '音效', Generation: '生成' };
   const P = { 'Game jam': 'Game Jam', Web: '网页', X: 'X', YouTube: 'YouTube', 'Hacker News': 'Hacker News', Reddit: 'Reddit', 'itch.io': 'itch.io', Wavedash: 'Wavedash' };
   const g = s => G[s] || s;
   const week = (m, d, y) => `${y ? y + '年' : ''}${MON[m]}月${d}日这一周`;
-  const GENRE_RX = '(Action|Adventure|Sim|Shooter|Puzzle|Strategy|Racing|Arcade|Sports|RPG|Roguelike|Flight|Platformer|Survivor|Other)';
+  const GENRE_RX = '(Action|Adventure|Sim|Shooter|Puzzle|Strategy|Racing|Arcade|Sports|RPG|Roguelike|Flight|Platformer|Survivor|Rhythm|Tower defense|Other)';
 
   // exact strings (text nodes, attributes, or whole elements; {0} {1} keep the element's own links)
   const D = {
     // create hub (2026-11-26 restructure)
+    // create hub prompt box + home (2026-11-26 rebuild)
+    'Make a game by describing it': '<em>说出来</em>，就是一款游戏',
+    'The AI plans it with you, writes it, tests it, and keeps changing it as you chat. When it is ready, publish it to Playbook.': 'AI 先和你一起规划，再写出来、自动试玩，你在对话里说怎么改它就怎么改。做好了一键发布到 Playbook。',
+    'Describe your game: what you do, how you win, how it looks…': '描述你的游戏：玩家做什么、怎么赢、长什么样……',
+    'Both': '都要', 'Start planning': '开始规划', 'Try': '试试', 'Platform': '平台', 'Orientation': '方向', 'Mode': '模式',
+    'A neon snake that leaves a glowing trail': '一条留下发光轨迹的霓虹贪吃蛇', 'A one-button runner where you jump to the beat': '跟着节拍跳的单键跑酷', 'A cozy marble maze you tilt to roll': '倾斜木板让弹珠滚动的治愈迷宫', 'A top-down space shooter with a boss': '有 Boss 的俯视角太空射击',
+    'Describe a game. Play it right away.': '描述一款游戏，马上就能玩。', 'The AI plans it with you, writes it and tests it. Keep changing it by chatting, then publish it here.': 'AI 和你一起规划、写好并试玩。在对话里接着改，做好了发布到这里。',
+    // open source credits (2026-11-26 rebuild)
+    'Open source': '开源致谢', 'Built on open source': '建立在<em>开源</em>之上',
+    'The projects Playbook uses, what each one does here, and its license. Thank you to everyone who made them.': 'Playbook 用到的开源项目、在这里的用途和许可证。感谢做出它们的每一个人。',
+    'Game-making handbooks (genres, controls, game feel, audio, quality checks). Condensed and rewritten as the knowledge the AI studio uses when it writes a game.': '游戏制作手册（玩法类型、操作、手感、音频、质量检查）。经过压缩和改写，成为 AI 工作室写游戏时用的知识。',
+    'Part of those handbooks was ported from here by OpenGame. Its license and copyright travel with them.': '其中一部分手册是 OpenGame 从这里移植的，它的许可证和版权声明随手册一起保留。',
+    'The 3D templates and game-feel demos.': '3D 模板和手感组件的演示。',
+    'The Playbook MCP server for coding agents.': '给编程 agent 用的 Playbook MCP 服务器。',
+    'Checks the inputs of the Playbook MCP tools.': '校验 Playbook MCP 工具的输入。',
+    'The typeface of this site.': '本站使用的字体。', 'The pixel display type.': '像素标题字体。',
+    "Each license is kept with the code or text that uses it. Playbook's own site, templates and MCP are open source on {0}.": '每份许可证都和用到它的代码或文字放在一起。Playbook 自己的网站、模板和 MCP 也在 {0} 上开源。',
     'Make a game': '做一款<em>游戏</em>', 'Everything for making web games in one place. The asset makers are free and run in your browser, and every finished game can be submitted to Playbook.': '做网页游戏需要的东西都在这里。素材工具免费、在浏览器里运行，做好的游戏可以提交到 Playbook。',
     'AI game studio · local preview': 'AI 游戏工作室 · 本地预览', 'Describe a game. Play it. Keep changing it.': '描述一款游戏，马上玩，接着改。', 'AI game studio': 'AI 游戏工作室',
     'The AI plans the game with you, writes the whole thing, and you refine it by chatting. Shown only on this computer until accounts and credits are ready.': 'AI 先和你一起规划，再写出完整的游戏，之后用聊天的方式继续修改。账号和点数上线之前，只在这台电脑上显示。', 'Open the studio': '打开工作室',
@@ -29,6 +46,14 @@
     'For coding agents': '给编程 agent', 'Use Playbook in your own agent': '在你自己的 agent 里用 Playbook', 'Templates, game feel and search inside Claude Code, Cursor or Codex. Free and open source.': '在 Claude Code、Cursor 或 Codex 里直接用模板、手感组件和搜索。免费开源。',
     'Make your own game': '做你自己的游戏', 'Free sound effects, pixel sprites and music loops, open templates and game feel, all in one place.': '免费的音效、像素精灵和音乐循环，还有开放模板和手感组件，都在这里。', 'Start creating': '开始创作',
     'Templates': '模板', 'Developers (MCP)': '开发者（MCP）', 'All creation tools': '全部创作工具',
+    // made on Playbook + studio publishing (2026-11-26)
+    'Made on Playbook': '在 Playbook 制作', 'New games people made with the AI studio and published.': '大家用 AI 工作室做好并发布的新游戏。',
+    'Your published games': '你发布的游戏', 'Games you made in the studio and published.': '你在工作室里做好并发布的游戏。',
+    'Nothing published yet': '还没有发布的游戏', 'Publish a game from the studio and it shows up here.': '在工作室里发布游戏后，会出现在这里。',
+    'Loading the game…': '正在加载游戏…', 'Remix in the studio': '在工作室里改编', 'Copy link': '复制链接', 'Full screen ↗': '全屏 ↗', 'Edit in the studio': '在工作室里编辑',
+    'Report': '举报', 'Like': '点赞', 'Liked': '已点赞', 'plays': '次游玩', 'likes': '个赞', 'remixes': '次改编', 'Publish': '发布', 'Published': '已发布',
+    'Made with Playbook Create and published by its creator. Games run in a locked-down sandbox and can\'t see your account.': '由作者用 Playbook Create 制作并发布。游戏在严格隔离的沙盒里运行，看不到你的账号。',
+    'Or start from a Playbook template': '或者从 Playbook 模板开始',
     // chrome
     'Play': '游戏', 'Make': '制作', 'Creators': '创作者', 'Jam': 'Jam', 'Submit a game': '提交游戏', 'Connect MCP': '接入 MCP', 'Search': '搜索',
     'Search games, creators…': '搜索游戏、创作者…', 'Search games, creators, mechanics…': '搜索游戏、创作者、手感组件…', 'Home': '首页', 'Skip to content': '跳到正文',
@@ -222,6 +247,7 @@
 
   // patterns (text nodes, attributes and whole elements)
   const R = [
+    [/^by (.+)$/, (_, a) => `作者 ${a}`],
     [/^(\d+) small parts that make a game feel good, each with a live demo and its key numbers\.$/, (_, n) => `${n} 个让游戏手感变好的小组件，每个都有在线演示和关键参数。`],
     [/^(\d+) open games you can play right now, each a single HTML file with its prompt, mechanics and art direction\. Pick one and remake it your way\.$/, (_, n) => `${n} 款现在就能玩的开放游戏，每款都是一个 HTML 文件，附带提示词、机制和美术方向。挑一个，按你的想法重做。`],
     [/^Issue #(\d+) · Week of (\w{3}) (\d+) · picked by hand from (\d+) games$/, (_, n, m, d, c) => `第 ${n} 期 · ${week(m, d)} · 从 ${c} 款游戏中人工精选`],

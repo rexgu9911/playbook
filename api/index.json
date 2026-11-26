@@ -1,7 +1,7 @@
 {
  "name": "Playbook API",
  "version": 1,
- "updated": "2026-11-25T12:23:35+00:00",
+ "updated": "2026-11-26T18:25:31+00:00",
  "base": "https://rexgu9911.github.io/playbook/api",
  "endpoints": {
   "recipes": "recipes.json",
@@ -9,8 +9,8 @@
   "discover": "discover.json"
  },
  "counts": {
-  "recipes": 6,
-  "originals": 6,
+  "recipes": 9,
+  "originals": 9,
   "mechanics": 30,
   "discover": 273
  },
